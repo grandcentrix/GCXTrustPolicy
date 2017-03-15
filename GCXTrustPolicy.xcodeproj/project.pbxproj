@@ -1,0 +1,710 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		4FB651681D4F367900D431B5 /* GCXTrustPolicy-Universal */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 4FB6516B1D4F367A00D431B5 /* Build configuration list for PBXAggregateTarget "GCXTrustPolicy-Universal" */;
+			buildPhases = (
+				4FB6516C1D4F369A00D431B5 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = "GCXTrustPolicy-Universal";
+			productName = "GCXTrustPolicy-Universal";
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		4F1BFA251E728F8200139A5D /* gcx-wildcard-expired.cer in Resources */ = {isa = PBXBuildFile; fileRef = 4F1BFA221E728F8200139A5D /* gcx-wildcard-expired.cer */; };
+		4F1BFA261E728F8200139A5D /* gcx-wildcard-valid.cer in Resources */ = {isa = PBXBuildFile; fileRef = 4F1BFA231E728F8200139A5D /* gcx-wildcard-valid.cer */; };
+		4F28B4521E1CFEFB00F14DF8 /* TrustDirective.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F28B44F1E1CFEFB00F14DF8 /* TrustDirective.swift */; };
+		4F28B4531E1CFEFB00F14DF8 /* TrustEvaluation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F28B4501E1CFEFB00F14DF8 /* TrustEvaluation.swift */; };
+		4F28B4541E1CFEFB00F14DF8 /* TrustPolicyBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F28B4511E1CFEFB00F14DF8 /* TrustPolicyBuilder.swift */; };
+		4F28B47E1E1D37DD00F14DF8 /* GCXTrustPolicyTestObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F28B4671E1D37DD00F14DF8 /* GCXTrustPolicyTestObjC.m */; };
+		4F28B47F1E1D37DD00F14DF8 /* GCXTrustPolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F28B4681E1D37DD00F14DF8 /* GCXTrustPolicyTests.swift */; };
+		4F28B4801E1D37DD00F14DF8 /* ComposePolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F28B46A1E1D37DD00F14DF8 /* ComposePolicyTests.swift */; };
+		4F28B4811E1D37DD00F14DF8 /* TrustDirectivePinCertificateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F28B46B1E1D37DD00F14DF8 /* TrustDirectivePinCertificateTests.swift */; };
+		4F28B4821E1D37DD00F14DF8 /* TrustDirectivePinPublicKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F28B46C1E1D37DD00F14DF8 /* TrustDirectivePinPublicKeyTests.swift */; };
+		4F28B4831E1D37DD00F14DF8 /* TrustDirectiveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F28B46D1E1D37DD00F14DF8 /* TrustDirectiveTests.swift */; };
+		4F28B4841E1D37DD00F14DF8 /* TrustManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F28B46E1E1D37DD00F14DF8 /* TrustManagerTests.swift */; };
+		4F3DE5CD1D509DCB0069BBD9 /* TrustPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3DE5CC1D509DCB0069BBD9 /* TrustPolicy.swift */; };
+		4F5331571D4A4BA500502FE9 /* TrustManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5331561D4A4BA500502FE9 /* TrustManager.swift */; };
+		4F53315F1D4A65E300502FE9 /* TestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F53315E1D4A65E300502FE9 /* TestHelper.swift */; };
+		4F7FBDED1E1E660F0049B262 /* CA Disig R2I2 Certification Service.cer in Resources */ = {isa = PBXBuildFile; fileRef = 4F7FBDE11E1E660F0049B262 /* CA Disig R2I2 Certification Service.cer */; };
+		4F7FBDEE1E1E660F0049B262 /* CA Disig Root R2.cer in Resources */ = {isa = PBXBuildFile; fileRef = 4F7FBDE21E1E660F0049B262 /* CA Disig Root R2.cer */; };
+		4F7FBDEF1E1E660F0049B262 /* testssl-expire-r2i2.disig.sk.cer in Resources */ = {isa = PBXBuildFile; fileRef = 4F7FBDE31E1E660F0049B262 /* testssl-expire-r2i2.disig.sk.cer */; };
+		4F7FBDF01E1E660F0049B262 /* testssl-revoked-r2i2.disig.sk.cer in Resources */ = {isa = PBXBuildFile; fileRef = 4F7FBDE41E1E660F0049B262 /* testssl-revoked-r2i2.disig.sk.cer */; };
+		4F7FBDF11E1E660F0049B262 /* testssl-valid-r2i2.disig.sk.cer in Resources */ = {isa = PBXBuildFile; fileRef = 4F7FBDE51E1E660F0049B262 /* testssl-valid-r2i2.disig.sk.cer */; };
+		4F7FBDF61E1E660F0049B262 /* invalidCertFile.cer in Resources */ = {isa = PBXBuildFile; fileRef = 4F7FBDEC1E1E660F0049B262 /* invalidCertFile.cer */; };
+		4F7FBDFA1E1E68D50049B262 /* gcx-DigiCertCA.cer in Resources */ = {isa = PBXBuildFile; fileRef = 4F7FBDF71E1E68D50049B262 /* gcx-DigiCertCA.cer */; };
+		4F7FBDFC1E1E68D50049B262 /* gcx-TrustedRoot.cer in Resources */ = {isa = PBXBuildFile; fileRef = 4F7FBDF91E1E68D50049B262 /* gcx-TrustedRoot.cer */; };
+		4F7FBDFF1E1E696E0049B262 /* gcx-selfsigned-expired.cer in Resources */ = {isa = PBXBuildFile; fileRef = 4F7FBDFD1E1E696E0049B262 /* gcx-selfsigned-expired.cer */; };
+		4F7FBE001E1E696E0049B262 /* gcx-selfsigned-valid.cer in Resources */ = {isa = PBXBuildFile; fileRef = 4F7FBDFE1E1E696E0049B262 /* gcx-selfsigned-valid.cer */; };
+		4FBC97091E1BFFDE008BB35C /* ComposePolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FBC97081E1BFFDE008BB35C /* ComposePolicy.swift */; };
+		4FDD341C1D48F24D0013A271 /* GCXTrustPolicy.h in Headers */ = {isa = PBXBuildFile; fileRef = 4FDD341B1D48F24D0013A271 /* GCXTrustPolicy.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4FDD34231D48F24D0013A271 /* GCXTrustPolicy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FDD34181D48F24D0013A271 /* GCXTrustPolicy.framework */; };
+		F8274DBB1E69ABE100B5E38C /* TrustDirectivePinPublicKeyOnlineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8274DBA1E69ABE100B5E38C /* TrustDirectivePinPublicKeyOnlineTests.swift */; };
+		F859541E1E6EAB2000ADAA8D /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F859541C1E6EAB2000ADAA8D /* libcrypto.a */; };
+		F859541F1E6EAB2000ADAA8D /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F859541D1E6EAB2000ADAA8D /* libssl.a */; };
+		F85954251E6EC71600ADAA8D /* libpkcs7_union_accessors.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F85954241E6EC71600ADAA8D /* libpkcs7_union_accessors.a */; };
+		F85954271E6F06D700ADAA8D /* TrustDirectivePinCertificateOnlineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85954261E6F06D700ADAA8D /* TrustDirectivePinCertificateOnlineTests.swift */; };
+		F859542A1E6FF48B00ADAA8D /* gcx-expired.json.signed in Resources */ = {isa = PBXBuildFile; fileRef = F85954291E6FF48B00ADAA8D /* gcx-expired.json.signed */; };
+		F859542C1E70053C00ADAA8D /* gcx-valid.json.signed in Resources */ = {isa = PBXBuildFile; fileRef = F859542B1E70053C00ADAA8D /* gcx-valid.json.signed */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		4FDD34241D48F24D0013A271 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4FDD340F1D48F24D0013A271 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4FDD34171D48F24D0013A271;
+			remoteInfo = GCXTrustPolicy;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		4F1BFA221E728F8200139A5D /* gcx-wildcard-expired.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "gcx-wildcard-expired.cer"; sourceTree = "<group>"; };
+		4F1BFA231E728F8200139A5D /* gcx-wildcard-valid.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "gcx-wildcard-valid.cer"; sourceTree = "<group>"; };
+		4F28B44F1E1CFEFB00F14DF8 /* TrustDirective.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrustDirective.swift; sourceTree = "<group>"; };
+		4F28B4501E1CFEFB00F14DF8 /* TrustEvaluation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrustEvaluation.swift; sourceTree = "<group>"; };
+		4F28B4511E1CFEFB00F14DF8 /* TrustPolicyBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrustPolicyBuilder.swift; sourceTree = "<group>"; };
+		4F28B4671E1D37DD00F14DF8 /* GCXTrustPolicyTestObjC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCXTrustPolicyTestObjC.m; sourceTree = "<group>"; };
+		4F28B4681E1D37DD00F14DF8 /* GCXTrustPolicyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GCXTrustPolicyTests.swift; sourceTree = "<group>"; };
+		4F28B46A1E1D37DD00F14DF8 /* ComposePolicyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposePolicyTests.swift; sourceTree = "<group>"; };
+		4F28B46B1E1D37DD00F14DF8 /* TrustDirectivePinCertificateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrustDirectivePinCertificateTests.swift; sourceTree = "<group>"; };
+		4F28B46C1E1D37DD00F14DF8 /* TrustDirectivePinPublicKeyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrustDirectivePinPublicKeyTests.swift; sourceTree = "<group>"; };
+		4F28B46D1E1D37DD00F14DF8 /* TrustDirectiveTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrustDirectiveTests.swift; sourceTree = "<group>"; };
+		4F28B46E1E1D37DD00F14DF8 /* TrustManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrustManagerTests.swift; sourceTree = "<group>"; };
+		4F3DE5CC1D509DCB0069BBD9 /* TrustPolicy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrustPolicy.swift; sourceTree = "<group>"; };
+		4F5331561D4A4BA500502FE9 /* TrustManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrustManager.swift; sourceTree = "<group>"; };
+		4F53315E1D4A65E300502FE9 /* TestHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHelper.swift; sourceTree = "<group>"; };
+		4F5331641D4BBD8300502FE9 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		4F7FBDE11E1E660F0049B262 /* CA Disig R2I2 Certification Service.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "CA Disig R2I2 Certification Service.cer"; sourceTree = "<group>"; };
+		4F7FBDE21E1E660F0049B262 /* CA Disig Root R2.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "CA Disig Root R2.cer"; sourceTree = "<group>"; };
+		4F7FBDE31E1E660F0049B262 /* testssl-expire-r2i2.disig.sk.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "testssl-expire-r2i2.disig.sk.cer"; sourceTree = "<group>"; };
+		4F7FBDE41E1E660F0049B262 /* testssl-revoked-r2i2.disig.sk.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "testssl-revoked-r2i2.disig.sk.cer"; sourceTree = "<group>"; };
+		4F7FBDE51E1E660F0049B262 /* testssl-valid-r2i2.disig.sk.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "testssl-valid-r2i2.disig.sk.cer"; sourceTree = "<group>"; };
+		4F7FBDEC1E1E660F0049B262 /* invalidCertFile.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = invalidCertFile.cer; sourceTree = "<group>"; };
+		4F7FBDF71E1E68D50049B262 /* gcx-DigiCertCA.cer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "gcx-DigiCertCA.cer"; sourceTree = "<group>"; };
+		4F7FBDF91E1E68D50049B262 /* gcx-TrustedRoot.cer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "gcx-TrustedRoot.cer"; sourceTree = "<group>"; };
+		4F7FBDFD1E1E696E0049B262 /* gcx-selfsigned-expired.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "gcx-selfsigned-expired.cer"; sourceTree = "<group>"; };
+		4F7FBDFE1E1E696E0049B262 /* gcx-selfsigned-valid.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "gcx-selfsigned-valid.cer"; sourceTree = "<group>"; };
+		4FBC97081E1BFFDE008BB35C /* ComposePolicy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposePolicy.swift; sourceTree = "<group>"; };
+		4FDD34181D48F24D0013A271 /* GCXTrustPolicy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GCXTrustPolicy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4FDD341B1D48F24D0013A271 /* GCXTrustPolicy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GCXTrustPolicy.h; sourceTree = "<group>"; };
+		4FDD341D1D48F24D0013A271 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4FDD34221D48F24D0013A271 /* GCXTrustPolicyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GCXTrustPolicyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4FDD34291D48F24D0013A271 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F8274DBA1E69ABE100B5E38C /* TrustDirectivePinPublicKeyOnlineTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrustDirectivePinPublicKeyOnlineTests.swift; sourceTree = "<group>"; };
+		F859541C1E6EAB2000ADAA8D /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = libs/OpenSSL/lib/iOS/libcrypto.a; sourceTree = "<group>"; };
+		F859541D1E6EAB2000ADAA8D /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssl.a; path = libs/OpenSSL/lib/iOS/libssl.a; sourceTree = "<group>"; };
+		F85954241E6EC71600ADAA8D /* libpkcs7_union_accessors.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpkcs7_union_accessors.a; path = libs/Pkcs7UnionAccessors/lib/iOS/libpkcs7_union_accessors.a; sourceTree = "<group>"; };
+		F85954261E6F06D700ADAA8D /* TrustDirectivePinCertificateOnlineTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrustDirectivePinCertificateOnlineTests.swift; sourceTree = "<group>"; };
+		F85954291E6FF48B00ADAA8D /* gcx-expired.json.signed */ = {isa = PBXFileReference; lastKnownFileType = file; path = "gcx-expired.json.signed"; sourceTree = "<group>"; };
+		F859542B1E70053C00ADAA8D /* gcx-valid.json.signed */ = {isa = PBXFileReference; lastKnownFileType = file; path = "gcx-valid.json.signed"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4FDD34141D48F24D0013A271 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F85954251E6EC71600ADAA8D /* libpkcs7_union_accessors.a in Frameworks */,
+				F859541E1E6EAB2000ADAA8D /* libcrypto.a in Frameworks */,
+				F859541F1E6EAB2000ADAA8D /* libssl.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4FDD341F1D48F24D0013A271 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4FDD34231D48F24D0013A271 /* GCXTrustPolicy.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		4F28B44E1E1CFEFB00F14DF8 /* internal */ = {
+			isa = PBXGroup;
+			children = (
+				4F28B44F1E1CFEFB00F14DF8 /* TrustDirective.swift */,
+				4F28B4501E1CFEFB00F14DF8 /* TrustEvaluation.swift */,
+				4F28B4511E1CFEFB00F14DF8 /* TrustPolicyBuilder.swift */,
+			);
+			path = internal;
+			sourceTree = "<group>";
+		};
+		4F28B4561E1D37DD00F14DF8 /* Certificates */ = {
+			isa = PBXGroup;
+			children = (
+				4F7FBDE01E1E660F0049B262 /* Disig */,
+				4F7FBDE61E1E660F0049B262 /* GCX */,
+				4F7FBDEB1E1E660F0049B262 /* Invalid */,
+			);
+			path = Certificates;
+			sourceTree = "<group>";
+		};
+		4F28B4661E1D37DD00F14DF8 /* Framework Integration */ = {
+			isa = PBXGroup;
+			children = (
+				4F28B4671E1D37DD00F14DF8 /* GCXTrustPolicyTestObjC.m */,
+				4F28B4681E1D37DD00F14DF8 /* GCXTrustPolicyTests.swift */,
+			);
+			path = "Framework Integration";
+			sourceTree = "<group>";
+		};
+		4F28B4691E1D37DD00F14DF8 /* Unit Tests */ = {
+			isa = PBXGroup;
+			children = (
+				4F28B46A1E1D37DD00F14DF8 /* ComposePolicyTests.swift */,
+				4F28B46B1E1D37DD00F14DF8 /* TrustDirectivePinCertificateTests.swift */,
+				4F28B46C1E1D37DD00F14DF8 /* TrustDirectivePinPublicKeyTests.swift */,
+				F85954261E6F06D700ADAA8D /* TrustDirectivePinCertificateOnlineTests.swift */,
+				F8274DBA1E69ABE100B5E38C /* TrustDirectivePinPublicKeyOnlineTests.swift */,
+				4F28B46D1E1D37DD00F14DF8 /* TrustDirectiveTests.swift */,
+				4F28B46E1E1D37DD00F14DF8 /* TrustManagerTests.swift */,
+			);
+			path = "Unit Tests";
+			sourceTree = "<group>";
+		};
+		4F7FBDE01E1E660F0049B262 /* Disig */ = {
+			isa = PBXGroup;
+			children = (
+				4F7FBDE11E1E660F0049B262 /* CA Disig R2I2 Certification Service.cer */,
+				4F7FBDE21E1E660F0049B262 /* CA Disig Root R2.cer */,
+				4F7FBDE31E1E660F0049B262 /* testssl-expire-r2i2.disig.sk.cer */,
+				4F7FBDE41E1E660F0049B262 /* testssl-revoked-r2i2.disig.sk.cer */,
+				4F7FBDE51E1E660F0049B262 /* testssl-valid-r2i2.disig.sk.cer */,
+			);
+			path = Disig;
+			sourceTree = "<group>";
+		};
+		4F7FBDE61E1E660F0049B262 /* GCX */ = {
+			isa = PBXGroup;
+			children = (
+				4F1BFA221E728F8200139A5D /* gcx-wildcard-expired.cer */,
+				4F1BFA231E728F8200139A5D /* gcx-wildcard-valid.cer */,
+				4F7FBDFD1E1E696E0049B262 /* gcx-selfsigned-expired.cer */,
+				4F7FBDFE1E1E696E0049B262 /* gcx-selfsigned-valid.cer */,
+				4F7FBDF71E1E68D50049B262 /* gcx-DigiCertCA.cer */,
+				4F7FBDF91E1E68D50049B262 /* gcx-TrustedRoot.cer */,
+			);
+			path = GCX;
+			sourceTree = "<group>";
+		};
+		4F7FBDEB1E1E660F0049B262 /* Invalid */ = {
+			isa = PBXGroup;
+			children = (
+				4F7FBDEC1E1E660F0049B262 /* invalidCertFile.cer */,
+			);
+			path = Invalid;
+			sourceTree = "<group>";
+		};
+		4FDD340E1D48F24D0013A271 = {
+			isa = PBXGroup;
+			children = (
+				4F5331641D4BBD8300502FE9 /* README.md */,
+				4FDD341A1D48F24D0013A271 /* GCXTrustPolicy */,
+				4FDD34261D48F24D0013A271 /* GCXTrustPolicyTests */,
+				4FDD34191D48F24D0013A271 /* Products */,
+				F85953781E6E14E200ADAA8D /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		4FDD34191D48F24D0013A271 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4FDD34181D48F24D0013A271 /* GCXTrustPolicy.framework */,
+				4FDD34221D48F24D0013A271 /* GCXTrustPolicyTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4FDD341A1D48F24D0013A271 /* GCXTrustPolicy */ = {
+			isa = PBXGroup;
+			children = (
+				4FDD341D1D48F24D0013A271 /* Info.plist */,
+				4FDD341B1D48F24D0013A271 /* GCXTrustPolicy.h */,
+				4F5331561D4A4BA500502FE9 /* TrustManager.swift */,
+				4F3DE5CC1D509DCB0069BBD9 /* TrustPolicy.swift */,
+				4FBC97081E1BFFDE008BB35C /* ComposePolicy.swift */,
+				4F28B44E1E1CFEFB00F14DF8 /* internal */,
+			);
+			path = GCXTrustPolicy;
+			sourceTree = "<group>";
+		};
+		4FDD34261D48F24D0013A271 /* GCXTrustPolicyTests */ = {
+			isa = PBXGroup;
+			children = (
+				4F28B4661E1D37DD00F14DF8 /* Framework Integration */,
+				4F28B4691E1D37DD00F14DF8 /* Unit Tests */,
+				4FDD34291D48F24D0013A271 /* Info.plist */,
+				4F53315E1D4A65E300502FE9 /* TestHelper.swift */,
+				4F28B4561E1D37DD00F14DF8 /* Certificates */,
+				F85954281E6FF45300ADAA8D /* TrustStores */,
+			);
+			path = GCXTrustPolicyTests;
+			sourceTree = "<group>";
+		};
+		F85953781E6E14E200ADAA8D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F85954241E6EC71600ADAA8D /* libpkcs7_union_accessors.a */,
+				F859541C1E6EAB2000ADAA8D /* libcrypto.a */,
+				F859541D1E6EAB2000ADAA8D /* libssl.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F85954281E6FF45300ADAA8D /* TrustStores */ = {
+			isa = PBXGroup;
+			children = (
+				F859542B1E70053C00ADAA8D /* gcx-valid.json.signed */,
+				F85954291E6FF48B00ADAA8D /* gcx-expired.json.signed */,
+			);
+			path = TrustStores;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		4FDD34151D48F24D0013A271 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4FDD341C1D48F24D0013A271 /* GCXTrustPolicy.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		4FDD34171D48F24D0013A271 /* GCXTrustPolicy */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4FDD342C1D48F24D0013A271 /* Build configuration list for PBXNativeTarget "GCXTrustPolicy" */;
+			buildPhases = (
+				4FDD34131D48F24D0013A271 /* Sources */,
+				4FDD34141D48F24D0013A271 /* Frameworks */,
+				4FDD34151D48F24D0013A271 /* Headers */,
+				4FDD34161D48F24D0013A271 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GCXTrustPolicy;
+			productName = GCXTrustPolicy;
+			productReference = 4FDD34181D48F24D0013A271 /* GCXTrustPolicy.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		4FDD34211D48F24D0013A271 /* GCXTrustPolicyTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4FDD342F1D48F24D0013A271 /* Build configuration list for PBXNativeTarget "GCXTrustPolicyTests" */;
+			buildPhases = (
+				4FDD341E1D48F24D0013A271 /* Sources */,
+				4FDD341F1D48F24D0013A271 /* Frameworks */,
+				4FDD34201D48F24D0013A271 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4FDD34251D48F24D0013A271 /* PBXTargetDependency */,
+			);
+			name = GCXTrustPolicyTests;
+			productName = GCXTrustPolicyTests;
+			productReference = 4FDD34221D48F24D0013A271 /* GCXTrustPolicyTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4FDD340F1D48F24D0013A271 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0730;
+				LastUpgradeCheck = 0820;
+				ORGANIZATIONNAME = "grandcentrix GmbH";
+				TargetAttributes = {
+					4FB651681D4F367900D431B5 = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
+					4FDD34171D48F24D0013A271 = {
+						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 0820;
+					};
+					4FDD34211D48F24D0013A271 = {
+						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 0820;
+					};
+				};
+			};
+			buildConfigurationList = 4FDD34121D48F24D0013A271 /* Build configuration list for PBXProject "GCXTrustPolicy" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 4FDD340E1D48F24D0013A271;
+			productRefGroup = 4FDD34191D48F24D0013A271 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4FDD34171D48F24D0013A271 /* GCXTrustPolicy */,
+				4FDD34211D48F24D0013A271 /* GCXTrustPolicyTests */,
+				4FB651681D4F367900D431B5 /* GCXTrustPolicy-Universal */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4FDD34161D48F24D0013A271 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4FDD34201D48F24D0013A271 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4F7FBE001E1E696E0049B262 /* gcx-selfsigned-valid.cer in Resources */,
+				4F7FBDFF1E1E696E0049B262 /* gcx-selfsigned-expired.cer in Resources */,
+				4F7FBDFC1E1E68D50049B262 /* gcx-TrustedRoot.cer in Resources */,
+				4F1BFA251E728F8200139A5D /* gcx-wildcard-expired.cer in Resources */,
+				4F1BFA261E728F8200139A5D /* gcx-wildcard-valid.cer in Resources */,
+				4F7FBDFA1E1E68D50049B262 /* gcx-DigiCertCA.cer in Resources */,
+				4F7FBDF01E1E660F0049B262 /* testssl-revoked-r2i2.disig.sk.cer in Resources */,
+				F859542A1E6FF48B00ADAA8D /* gcx-expired.json.signed in Resources */,
+				4F7FBDEE1E1E660F0049B262 /* CA Disig Root R2.cer in Resources */,
+				4F7FBDED1E1E660F0049B262 /* CA Disig R2I2 Certification Service.cer in Resources */,
+				4F7FBDF61E1E660F0049B262 /* invalidCertFile.cer in Resources */,
+				4F7FBDF11E1E660F0049B262 /* testssl-valid-r2i2.disig.sk.cer in Resources */,
+				4F7FBDEF1E1E660F0049B262 /* testssl-expire-r2i2.disig.sk.cer in Resources */,
+				F859542C1E70053C00ADAA8D /* gcx-valid.json.signed in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		4FB6516C1D4F369A00D431B5 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "######################\n# Options\n######################\n\nREVEAL_ARCHIVE_IN_FINDER=false\n\nFRAMEWORK_NAME=\"${PROJECT_NAME}\"\n\nSIMULATOR_LIBRARY_PATH=\"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${FRAMEWORK_NAME}.framework\"\n\nDEVICE_LIBRARY_PATH=\"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${FRAMEWORK_NAME}.framework\"\n\nUNIVERSAL_LIBRARY_DIR=\"${BUILD_DIR}/${CONFIGURATION}-iphoneuniversal\"\n\nFRAMEWORK=\"${UNIVERSAL_LIBRARY_DIR}/${FRAMEWORK_NAME}.framework\"\n\n\n######################\n# Build Frameworks\n######################\n\n###xcodebuild -workspace ${PROJECT_NAME}.xcworkspace -scheme ${PROJECT_NAME} -sdk iphonesimulator -configuration ${CONFIGURATION} clean build CONFIGURATION_BUILD_DIR=${BUILD_DIR}/${CONFIGURATION}-iphonesimulator 2>&1\n\n###xcodebuild -workspace ${PROJECT_NAME}.xcworkspace -scheme ${PROJECT_NAME} -sdk iphoneos -configuration ${CONFIGURATION} clean build CONFIGURATION_BUILD_DIR=${BUILD_DIR}/${CONFIGURATION}-iphoneos 2>&1\n\nxcodebuild -project ${PROJECT_NAME}.xcodeproj -target ${PROJECT_NAME} -sdk iphonesimulator -configuration ${CONFIGURATION} clean build CONFIGURATION_BUILD_DIR=${BUILD_DIR}/${CONFIGURATION}-iphonesimulator 2>&1\n\nxcodebuild -project ${PROJECT_NAME}.xcodeproj -target ${PROJECT_NAME} -sdk iphoneos -configuration ${CONFIGURATION} clean build CONFIGURATION_BUILD_DIR=${BUILD_DIR}/${CONFIGURATION}-iphoneos 2>&1\n\n\n\n######################\n# Create directory for universal\n######################\n\nrm -rf \"${UNIVERSAL_LIBRARY_DIR}\"\n\nmkdir \"${UNIVERSAL_LIBRARY_DIR}\"\n\nmkdir \"${FRAMEWORK}\"\n\n\n######################\n# Copy files Framework\n######################\n\ncp -r \"${DEVICE_LIBRARY_PATH}/.\" \"${FRAMEWORK}\"\n\n\n######################\n# Make an universal binary\n######################\n\nlipo \"${SIMULATOR_LIBRARY_PATH}/${FRAMEWORK_NAME}\" \"${DEVICE_LIBRARY_PATH}/${FRAMEWORK_NAME}\" -create -output \"${FRAMEWORK}/${FRAMEWORK_NAME}\" | echo\n\n# For Swift framework, Swiftmodule needs to be copied in the universal framework\nif [ -d \"${SIMULATOR_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" ]; then\ncp -f '${SIMULATOR_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/*' '${FRAMEWORK}/Modules/${FRAMEWORK_NAME}.swiftmodule/' | echo\nfi\n\nif [ -d \"${DEVICE_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" ]; then\ncp -f '${DEVICE_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/*' '${FRAMEWORK}/Modules/${FRAMEWORK_NAME}.swiftmodule/' | echo\nfi\n\n######################\n# On Release, copy the result to release directory\n######################\nOUTPUT_DIR=\"${PROJECT_DIR}/Output/${FRAMEWORK_NAME}-${CONFIGURATION}-iphoneuniversal/\"\n\nrm -rf \"$OUTPUT_DIR\"\nmkdir -p \"$OUTPUT_DIR\"\n\ncp -r \"${FRAMEWORK}\" \"$OUTPUT_DIR\"\n\nif [ ${REVEAL_ARCHIVE_IN_FINDER} = true ]; then\nopen \"${OUTPUT_DIR}/\"\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4FDD34131D48F24D0013A271 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4F28B4531E1CFEFB00F14DF8 /* TrustEvaluation.swift in Sources */,
+				4F28B4521E1CFEFB00F14DF8 /* TrustDirective.swift in Sources */,
+				4F5331571D4A4BA500502FE9 /* TrustManager.swift in Sources */,
+				4F3DE5CD1D509DCB0069BBD9 /* TrustPolicy.swift in Sources */,
+				4F28B4541E1CFEFB00F14DF8 /* TrustPolicyBuilder.swift in Sources */,
+				4FBC97091E1BFFDE008BB35C /* ComposePolicy.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4FDD341E1D48F24D0013A271 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F8274DBB1E69ABE100B5E38C /* TrustDirectivePinPublicKeyOnlineTests.swift in Sources */,
+				4F28B4801E1D37DD00F14DF8 /* ComposePolicyTests.swift in Sources */,
+				4F28B4811E1D37DD00F14DF8 /* TrustDirectivePinCertificateTests.swift in Sources */,
+				4F28B4841E1D37DD00F14DF8 /* TrustManagerTests.swift in Sources */,
+				4F53315F1D4A65E300502FE9 /* TestHelper.swift in Sources */,
+				F85954271E6F06D700ADAA8D /* TrustDirectivePinCertificateOnlineTests.swift in Sources */,
+				4F28B4831E1D37DD00F14DF8 /* TrustDirectiveTests.swift in Sources */,
+				4F28B4821E1D37DD00F14DF8 /* TrustDirectivePinPublicKeyTests.swift in Sources */,
+				4F28B47F1E1D37DD00F14DF8 /* GCXTrustPolicyTests.swift in Sources */,
+				4F28B47E1E1D37DD00F14DF8 /* GCXTrustPolicyTestObjC.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4FDD34251D48F24D0013A271 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4FDD34171D48F24D0013A271 /* GCXTrustPolicy */;
+			targetProxy = 4FDD34241D48F24D0013A271 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		4FB651691D4F367A00D431B5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEFINES_MODULE = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		4FB6516A1D4F367A00D431B5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEFINES_MODULE = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		4FDD342A1D48F24D0013A271 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 3;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEFINES_MODULE = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		4FDD342B1D48F24D0013A271 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 3;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		4FDD342D1D48F24D0013A271 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				APPLICATION_EXTENSION_API_ONLY = NO;
+				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
+				CLANG_ENABLE_MODULES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = GCXTrustPolicy/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/openssl/lib/iOS",
+					"$(PROJECT_DIR)/libs/OpenSSL/lib/iOS",
+					"$(PROJECT_DIR)/libs/Pkcs7UnionAccessors/lib/iOS",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = net.grandcentrix.GCXTrustPolicy;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_INCLUDE_PATHS = "${SRCROOT}/libs/**";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/openssl/include/";
+			};
+			name = Debug;
+		};
+		4FDD342E1D48F24D0013A271 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				APPLICATION_EXTENSION_API_ONLY = NO;
+				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
+				CLANG_ENABLE_MODULES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = GCXTrustPolicy/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/openssl/lib/iOS",
+					"$(PROJECT_DIR)/libs/OpenSSL/lib/iOS",
+					"$(PROJECT_DIR)/libs/Pkcs7UnionAccessors/lib/iOS",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = net.grandcentrix.GCXTrustPolicy;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_INCLUDE_PATHS = "${SRCROOT}/libs/**";
+				SWIFT_VERSION = 3.0;
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/openssl/include/";
+			};
+			name = Release;
+		};
+		4FDD34301D48F24D0013A271 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = GCXTrustPolicyTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = net.grandcentrix.GCXTrustPolicyTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_INCLUDE_PATHS = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		4FDD34311D48F24D0013A271 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = GCXTrustPolicyTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = net.grandcentrix.GCXTrustPolicyTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_INCLUDE_PATHS = "";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4FB6516B1D4F367A00D431B5 /* Build configuration list for PBXAggregateTarget "GCXTrustPolicy-Universal" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4FB651691D4F367A00D431B5 /* Debug */,
+				4FB6516A1D4F367A00D431B5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4FDD34121D48F24D0013A271 /* Build configuration list for PBXProject "GCXTrustPolicy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4FDD342A1D48F24D0013A271 /* Debug */,
+				4FDD342B1D48F24D0013A271 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4FDD342C1D48F24D0013A271 /* Build configuration list for PBXNativeTarget "GCXTrustPolicy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4FDD342D1D48F24D0013A271 /* Debug */,
+				4FDD342E1D48F24D0013A271 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4FDD342F1D48F24D0013A271 /* Build configuration list for PBXNativeTarget "GCXTrustPolicyTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4FDD34301D48F24D0013A271 /* Debug */,
+				4FDD34311D48F24D0013A271 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 4FDD340F1D48F24D0013A271 /* Project object */;
+}
