@@ -1,5 +1,5 @@
 # GCXTrustPolicy
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) ![Release](https://img.shields.io/github/release/grandcentrix/GCXTrustPolicy.svg) [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) [![Cocoapods compatible](https://img.shields.io/cocoapods/v/GCXTrustPolicy.svg)](https://cocoapods.org/)  
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) ![Release](https://img.shields.io/github/release/grandcentrix/GCXTrustPolicy.svg) [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
 SSL pinning and trust validation framework for iOS
 
@@ -24,14 +24,6 @@ When using a self-signed certificate, connecting to a host by IP address (where 
 
 ```ruby
 git "https://github.com/grandcentrix/GCXTrustPolicy.git" ~> 1.1.0
-```
-
-#### CocoaPods
-
-```ruby
-use_frameworks!
-
-pod 'GCXTrustPolicy', :git => 'https://github.com/grandcentrix/GCXTrustPolicy.git', :tag => '1.1.0'
 ```
 
 #### Manual
