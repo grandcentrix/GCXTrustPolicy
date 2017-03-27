@@ -23,7 +23,7 @@ When using a self-signed certificate, connecting to a host by IP address (where 
 #### Carthage
 
 ```ruby
-git "https://github.com/grandcentrix/GCXTrustPolicy.git" ~> 1.1.0
+github "grandcentrix/GCXTrustPolicy"
 ```
 
 #### Manual
