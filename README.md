@@ -111,9 +111,7 @@ typedef SWIFT_ENUM_NAMED(NSInteger, GCXValidationType, "ValidationType") {
 * add the policy to the TrustManager
 * on authentication challenge, validate the trust against the policy
 
-###### Swift
-
-#######Simple setup: 
+###### Simple setup: 
 
 
 ```swift
@@ -127,7 +125,7 @@ TrustManager.sharedInstance.add(policy: pinningPolicy)
     
 ```
 
-#######Simple validation: 
+###### Simple validation: 
 
 ```swift
 if let policy = TrustManager.sharedInstance.policy(forHost: challengedHost) {
@@ -139,7 +137,7 @@ if let policy = TrustManager.sharedInstance.policy(forHost: challengedHost) {
     
 ```
 
-####### Setup of multiple policies
+###### Setup of multiple policies (Swift):
 
 ```swift
 
@@ -173,9 +171,7 @@ func setupTrustPolicies() {
 }
 ```
 
-###### Objective-C
-
-####### Setup of multiple policies
+###### Setup of multiple policies (Objective-C)
 
 ```objective-c
 
