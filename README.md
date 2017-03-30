@@ -45,7 +45,7 @@ If you want to use Pinning do not forget to add the certificates into your Proje
 1. Define a host and a `ValidationType` to evaluate
 2. Create the `TrustPolicy` using the `ComposePolicy` abstraction class
 3. Use the `TrustManager` to manage multiple trust policies
-3. Use the `-validate(withTrust: SecTrust)` of the `TrustPolicy` to evaluate authentication challenges
+4. Use the `-validate(withTrust: SecTrust)` of the `TrustPolicy` to evaluate authentication challenges
 
 
 ## Hands-On
@@ -104,22 +104,59 @@ typedef SWIFT_ENUM_NAMED(NSInteger, GCXValidationType, "ValidationType") {
 
 ###  Setup example
 
+##### Preparations: 
+
+* add certificates to pin to your project
+* create the policy
+* add the policy to the TrustManager
+* on authentication challenge, validate the trust against the policy
 
 ###### Swift
 
+#######Simple setup: 
+
+
+```swift
+let exampleHost = "https://www.the-host-to-pin.com"
+    
+// create a policy
+let pinningPolicy = ComposePolicy(withValidation: .pinPublicKey, forHost: exampleHost).create()
+    
+// use add(policy:) for adding a singe policy
+TrustManager.sharedInstance.add(policy: pinningPolicy)
+    
+```
+
+#######Simple validation: 
+
+```swift
+if let policy = TrustManager.sharedInstance.policy(forHost: challengedHost) {
+   if policy.validate(with: trust) {
+        // Success! Server trust has been established.
+   } else {
+        // Failed validation! Not secure to connect!!!
+   }
+    
+```
+
+####### Setup of multiple policies
+
 ```swift
 
-func setupTrustValidation() {
+func setupTrustPolicies() {
 
+    // - .standard: - //
     // compose and build a default validation policy
-    let exampleHost = EXAMPLE_HOST_URL_STRING
+    let exampleHost = "https://www.the-host-to-pin.com"
     let defaultPolicy = ComposePolicy(withValidation: .standard, forHost: exampleHost).create()
 
+    // - .pinPublicKey: - //
     // compose and build a public key pinning policy
     let pinningHost = URL(string:PINNING_HOST_URL_STRING)!.host!
     let composer = ComposePolicy(withValidation: .pinPublicKey, forHost: pinningHost)
     let pinningPolicy = composer.create()
 
+    // - .pinPublicKeyOnline: - //
     // compose and build a public key pinning with trustServer policy
     let grandcentrix = URL(string: "https://www.grandcentrix.net")!.host!
     let pkOnline = ComposePolicy(withValidation: .pinPublicKeyOnline, forHost: grandcentrix)
@@ -133,28 +170,29 @@ func setupTrustValidation() {
 
     // add the three policies to the manager class at once
     TrustManager.sharedInstance.add(policies: [defaultPolicy, pinningPolicy, pkOnlinePolicy])
-    // OR
-    // use add(policy:) for adding a singe policy
-    TrustManager.sharedInstance.add(policy: defaultPolicy)
 }
 ```
 
 ###### Objective-C
 
+####### Setup of multiple policies
 
 ```objective-c
 
-- (void)setupTrustValidation {
+- (void)setupTrustPolicies {
 
+    // - .standard: - //
     // compose and build a default validation policy
-    NSString *exampleHost = EXAMPLE_HOST_URL_STRING;
+    NSString *exampleHost = "https://www.the-host-to-pin.com";
     id<GCXTrustPolicy> defaultPolicy = [[[GCXComposePolicy alloc] initWithValidation:GCXValidationTypeStandard forHost:exampleHost] create];
 
+    // - .pinPublicKey: - //
     // compose and build a public key pinning policy
     NSString *pinningHost = [NSURL URLWithString:PINNING_HOST_URL_STRING].host;
     GCXComposePolicy *composer = [[GCXComposePolicy alloc] initWithValidation:GCXValidationTypePinPublicKey forHost:pinningHost];
     id<GCXTrustPolicy> pinningPolicy = [composer create];
 
+    // - .pinPublicKeyOnline: - //
     // compose and build a public key with TrustServer pinning policy
     NSString *grandcentrix = [NSURL URLWithString:@"https://www.grandcentrix.net"].host;
     GCXComposePolicy *pkOnline = [[GCXComposePolicy alloc] initWithValidation:GCXValidationTypePinPublicKeyOnline forHost:pinningHost];
@@ -170,9 +208,6 @@ func setupTrustValidation() {
     // add the three policies to the manager class at once
     GCXTrustManager *manager = [GCXTrustManager sharedInstance];
     [manager addWithPolicies:@[defaultPolicy, pinningPolicy, pkOnlinePolicy]];
-    // OR
-    // use addWithPolicy for adding a singe policy
-    [manager addWithPolicy:defaultPolicy];
 }
 ```
 
@@ -181,10 +216,14 @@ func setupTrustValidation() {
 
 ###### Swift
 
+Perform the policy validation in your URLSessionDelegate callback in response to an authentication request:
+You can also use NSURLConnection to authenticate.
 ```swift
-extension ViewController:URLSessionDelegate {
+extension ViewController: URLSessionDelegate {
    // Of course it is also possible to use NSURLConnection here...
-   func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+   func urlSession(_ session: URLSession, 
+        didReceive challenge: URLAuthenticationChallenge, 
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
         
        let challengedHost = challenge.protectionSpace.host
         
@@ -215,9 +254,14 @@ extension ViewController:URLSessionDelegate {
 
 ###### Objective-C
 
+Perform the policy validation in your URLSessionDelegate callback in response to an authentication request:
+You can also use NSURLConnection to authenticate.
+
 ```objective-c
 // Of course it is also possible to use NSURLConnection here...
--(void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable))completionHandler
+-(void)URLSession:(NSURLSession *)session 
+       didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge 
+       completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable))completionHandler
 {
     NSString *challengedHost = challenge.protectionSpace.host;
     NSString *authorizationMethod = challenge.protectionSpace.authenticationMethod;
