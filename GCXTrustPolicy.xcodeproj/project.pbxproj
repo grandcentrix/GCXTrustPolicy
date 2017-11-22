@@ -589,7 +589,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/openssl/lib/iOS",
 					"$(PROJECT_DIR)/libs/OpenSSL/lib/iOS",
 					"$(PROJECT_DIR)/libs/Pkcs7UnionAccessors/lib/iOS",
 				);
@@ -599,7 +598,7 @@
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/libs/**";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
-				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/openssl/include/";
+				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Debug;
 		};
@@ -621,7 +620,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/openssl/lib/iOS",
 					"$(PROJECT_DIR)/libs/OpenSSL/lib/iOS",
 					"$(PROJECT_DIR)/libs/Pkcs7UnionAccessors/lib/iOS",
 				);
@@ -630,7 +628,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = "${SRCROOT}/libs/**";
 				SWIFT_VERSION = 3.0;
-				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/openssl/include/";
+				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Release;
 		};
