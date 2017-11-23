@@ -1,10 +1,12 @@
 # GCXTrustPolicy
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) ![Release](https://img.shields.io/github/release/grandcentrix/GCXTrustPolicy.svg) [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
+
 SSL pinning and trust validation framework for iOS.  💻  <- 👮 -> ☁️
 
 Optimized for Swift 4 and working from plain old Objective-C as well.
 
+<br />
 
 ## Abstract
 
@@ -13,11 +15,13 @@ This framework is intended as customizable drop-in-solution that makes SSL-valid
 
 It helpes, decouple the release cycle from the certificate validity.
 
+<br />
 
 ## General
 
 When a TLS certificate is verified, the operating system verifies its chain of trust. If that chain of trust contains only valid certificates and ends at a known (trusted) anchor certificate, then the certificate is considered valid. If it does not, it is considered invalid. When using a commercially signed certificate from a major vendor, the certificate should “just work”.
 When using a self-signed certificate, connecting to a host by IP address (where the networking stack cannot determine the server’s hostname) or providing service for multiple domains with a single certificate that is not trusted for those domains the certificate will not operate and you will have to do some extra work.
+
 <br />
 
 ## Installation
@@ -29,8 +33,8 @@ github "grandcentrix/GCXTrustPolicy"
 ```
 
 If you encounter problems check our [troubleshooting section](#Troubleshooting) or file an Issue.
-We will give our best trying to help you out. 🙂
 
+We will give our best trying to help you out. 🙂
 
 #### Manual
 
@@ -41,6 +45,7 @@ We will give our best trying to help you out. 🙂
 - Add `GCXTrustPolicy.framework` to the "Embedded Binaries" section
 - Build and Run
 
+<br />
 
 ## Usage
 
@@ -53,6 +58,7 @@ If you want to use Pinning do not forget to add the certificates into your Proje
 3. Use the `TrustManager` to manage multiple trust policies
 4. Use the `-validate(withTrust: SecTrust)` of the `TrustPolicy` to evaluate authentication challenges
 
+<br />
 
 ## Hands-On
 ### Host name
@@ -78,7 +84,7 @@ The provided host name must match either the leaf certificate’s Common Name or
 
 ### TrustPolicyType enumeration
 
-###### Swift
+#### Swift
 
 ```swift
 public enum ValidationType: Int {
@@ -93,7 +99,7 @@ public enum ValidationType: Int {
 ```
 
 
-###### Objective-C
+#### Objective-C
 
 ```objective-c
 typedef SWIFT_ENUM_NAMED(NSInteger, GCXValidationType, "ValidationType") {
@@ -110,14 +116,14 @@ typedef SWIFT_ENUM_NAMED(NSInteger, GCXValidationType, "ValidationType") {
 
 ###  Setup example
 
-##### Preparations: 
+#### Preparations: 
 
 * add certificates to pin to your project
 * create the policy
 * add the policy to the TrustManager
 * on authentication challenge, validate the trust against the policy
 
-###### Simple setup: 
+#### Simple setup: 
 
 
 ```swift
@@ -131,7 +137,7 @@ TrustManager.sharedInstance.add(policy: pinningPolicy)
     
 ```
 
-###### Simple validation: 
+#### Simple validation: 
 
 ```swift
 if let policy = TrustManager.sharedInstance.policy(forHost: challengedHost) {
@@ -143,7 +149,7 @@ if let policy = TrustManager.sharedInstance.policy(forHost: challengedHost) {
     
 ```
 
-###### Setup of multiple policies (Swift):
+#### Setup of multiple policies (Swift):
 
 ```swift
 
@@ -177,7 +183,7 @@ func setupTrustPolicies() {
 }
 ```
 
-###### Setup of multiple policies (Objective-C)
+#### Setup of multiple policies (Objective-C)
 
 ```objective-c
 
@@ -216,7 +222,7 @@ func setupTrustPolicies() {
 
 ### Validation example
 
-###### Swift
+#### Swift
 
 Perform the policy validation in your URLSessionDelegate callback in response to an authentication request:
 You can also use NSURLConnection to authenticate.
@@ -254,7 +260,7 @@ extension ViewController: URLSessionDelegate {
 ```
 
 
-###### Objective-C
+#### Objective-C
 
 Perform the policy validation in your URLSessionDelegate callback in response to an authentication request:
 You can also use NSURLConnection to authenticate.
@@ -295,7 +301,7 @@ You can also use NSURLConnection to authenticate.
 ### Examples on validation customization:
 
 
-###### Swift
+#### Swift
 
 ```swift
 // construct the TrustPolicyComposer
@@ -324,7 +330,7 @@ composer.customValidation = {(trust: SecTrust?) -> Bool in
 ```
 
 
-###### Objective-C
+##### Objective-C
 
 ```objective-c
 // construct the TrustPolicyComposer
@@ -352,20 +358,26 @@ composer.customValidation = ^BOOL(SecTrustRef _Null_unspecified trust) {
 }
 ```
 
+<br />
+
 ## Online trust server
 
-#### Grandcentrix
+### Grandcentrix
 
 To verify the trust with an online server you can use the grandcentrix.net server. Contact us at hello@grandcentrix.net.
 
-#### Selfhosted
+### Selfhosted
 
 see the bin/ directory for further information. This Script needs to run every 5 Minutes, so it generates a fresh copy of the signed json. It will output the pinning certificate the first time it is used. 
+
+<br />
 
 ## Documentation
 
 Please see the soure code for further informations.
 
+
+<br />
 
 ## Troubleshooting
 
@@ -374,7 +386,7 @@ Please see the soure code for further informations.
 * If you running an Objective-C project and encounter  an  `dyld: Library not loaded: @rpath/libswiftCore.dylib` error try to
 set the Xcode build option 'Embedded Content Contains Swift Code' to 'YES'.
 
-
+<br />
 
 ## Further reference
 
@@ -382,11 +394,13 @@ The following OWASP page gives an detailed overview about [Transport Layer Prote
 
 The following informative blog post provides some information on which keys to pin and what the trade-offs are: https://noncombatant.org/2015/05/01/about-http-public-key-pinning/.
 
+<br />
 
 ## Credits
 
 The underlying code is based on the suggestions and implementation strategies of OWASP's chapter on [Certificate and Public Key Pinning](https://www.owasp.org/index.php/Certificate_and_Public_Key_Pinning). Unit Test approaches in Swift are inspired from the well-known [Alamofire](https://github.com/Alamofire/Alamofire) and [TrustKit](https://github.com/datatheorem/TrustKit).
 
+<br />
 
 ## License
 
@@ -405,3 +419,5 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
+
+<br />
