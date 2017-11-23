@@ -26,6 +26,9 @@ When using a self-signed certificate, connecting to a host by IP address (where 
 github "grandcentrix/GCXTrustPolicy"
 ```
 
+Make sure you have Apple's `Xcode Commandline Tools` installed. This allows Module `CommonCrypto` to reference the Umbrella Header at `/usr/include/CommonCrypto/`
+
+
 #### Manual
 
 - Start new XCode Workspace.
