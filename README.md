@@ -1,7 +1,9 @@
 # GCXTrustPolicy
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) ![Release](https://img.shields.io/github/release/grandcentrix/GCXTrustPolicy.svg) [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
-SSL pinning and trust validation framework for iOS
+SSL pinning and trust validation framework for iOS.  💻  <- 👮 -> ☁️
+
+Optimized for Swift 4 and working from plain old Objective-C as well.
 
 
 ## Abstract
@@ -26,13 +28,17 @@ When using a self-signed certificate, connecting to a host by IP address (where 
 github "grandcentrix/GCXTrustPolicy"
 ```
 
+If you encounter problems check our [troubleshooting section](#Troubleshooting) or file an Issue.
+We will give our best trying to help you out. 🙂
+
+
 #### Manual
 
-- Start new XCode Workspace.
+- Start a new XCode Workspace.
 - Create new App
-- Import GCXTrustPolicy.xcodeproj into Workspace
-- Go to Project Settings -> General Tab
--- Add GCXTrustPolicy.framework in the Embedded Binaries
+- Import GCXTrustPolicy.xcodeproj into your Workspace
+- Go to "Project Settings" -> "General Tab"
+- Add `GCXTrustPolicy.framework` to the "Embedded Binaries" section
 - Build and Run
 
 
@@ -264,7 +270,7 @@ You can also use NSURLConnection to authenticate.
     
     // Validate the remote trust
     if([authorizationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-        BOOL isTrusted = false;
+        BOOL isTrusted = NO;
         SecTrustRef serverTrust = challenge.protectionSpace.serverTrust;
         
         // Retrieve a matching policy for the challenged host
@@ -359,6 +365,15 @@ see the bin/ directory for further information. This Script needs to run every 5
 ## Documentation
 
 Please see the soure code for further informations.
+
+
+## Troubleshooting
+
+* When stumbling upon errors stating the module CommonCrypo can not be created make sure you have Apple's `Xcode Commandline Tools` installed. This allows Module `CommonCrypto` to reference the Umbrella Header at `/usr/include/CommonCrypto/CommonCrypto.h` on the filesystem.
+
+* If you running an Objective-C project and encounter  an  `dyld: Library not loaded: @rpath/libswiftCore.dylib` error try to
+set the Xcode build option 'Embedded Content Contains Swift Code' to 'YES'.
+
 
 
 ## Further reference

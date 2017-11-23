@@ -31,7 +31,7 @@ open class ComposePolicy: NSObject {
     /// ValidationType.pinPublicKey and ValidationType.pinCertificate
     ///
     /// Default setting is 'false'.
-    open var allowInsecureServerTrust = false
+    @objc open var allowInsecureServerTrust = false
     
     /// Define if the host name(s) will be checked during the standard X.509 validation.
     ///
@@ -39,7 +39,7 @@ open class ComposePolicy: NSObject {
     /// 'allowInsecureServerTrust = true'.
     ///
     /// Default setting is 'true'.
-    open var validateHostName = true
+    @objc open var validateHostName = true
     
     /// The bundle where to search for certificates.
     ///
@@ -47,21 +47,21 @@ open class ComposePolicy: NSObject {
     /// ValidationType.pinPublicKey and ValidationType.pinCertificate
     ///
     /// Default setting is the main Bundle.
-    open var certificateBundle = Bundle.main
+    @objc open var certificateBundle = Bundle.main
     
     /// A custom closure for validation with ValidationType.custom.
-    open var customValidation: CustomValidationClosure?
+    @objc open var customValidation: CustomValidationClosure?
     
     /// The validation type of the trust policy.
     open var validationType: ValidationType!
     
     /// The host name that the policy applies for.
-    open var hostName: String!
+    @objc open var hostName: String!
     
     /// the TrustServer for validation with ValidationType.*Online
-    open var trustServer: URL?
-    open var trustServerCertificate: Data?
-    open var customer: String?
+    @objc open var trustServer: URL?
+    @objc open var trustServerCertificate: Data?
+    @objc open var customer: String?
 
     
     
@@ -87,7 +87,7 @@ open class ComposePolicy: NSObject {
      
       - returns: an instance of this class
      */
-    public init(withValidation type: ValidationType, forHost host: String) {
+    @objc public init(withValidation type: ValidationType, forHost host: String) {
         self.validationType = type
         self.hostName = host
 
@@ -100,7 +100,7 @@ open class ComposePolicy: NSObject {
      
       - returns: an object of type 'TrustDirective' conforming to 'TrustPolicy' protocol
      */
-    open func create() -> TrustPolicy {
+    @objc open func create() -> TrustPolicy {
         
         // A concrete builder creating the final TrustPolicy object.
         var concreteBuilder: AbstractBuilder!

@@ -26,7 +26,8 @@
 @implementation GCXTrustPolicyTestObjC
 
 - (void)test_integration_objc_shouldWorkFlawlessWithFramework {
-    GCXComposePolicy *composerA = [[GCXComposePolicy alloc] initWithValidation: GCXValidationTypeStandard forHost: @"A"];
+    GCXValidationType standardValidationType = GCXValidationTypeStandard;
+    GCXComposePolicy *composerA = [[GCXComposePolicy alloc] initWithValidation: standardValidationType forHost: @"A"];
     GCXComposePolicy *composerB = [[GCXComposePolicy alloc] initWithValidation: GCXValidationTypeDisabled forHost: @"B"];
     
     // Note: The typealias `CustomValidationClosure` is not available on ObjC side. Use ^BOOL(SecTrustRef  _Nullable trust) instead.
