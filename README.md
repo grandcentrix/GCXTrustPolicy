@@ -28,16 +28,17 @@ When using a self-signed certificate, connecting to a host by IP address (where 
 github "grandcentrix/GCXTrustPolicy"
 ```
 
-Make sure you have Apple's `Xcode Commandline Tools` installed. This allows Module `CommonCrypto` to reference the Umbrella Header at `/usr/include/CommonCrypto/`
+If you encounter problems check our [troubleshooting section](#Troubleshooting) or file an Issue.
+We will give our best trying to help you out. 🙂
 
 
 #### Manual
 
-- Start new XCode Workspace.
+- Start a new XCode Workspace.
 - Create new App
-- Import GCXTrustPolicy.xcodeproj into Workspace
-- Go to Project Settings -> General Tab
--- Add GCXTrustPolicy.framework in the Embedded Binaries
+- Import GCXTrustPolicy.xcodeproj into your Workspace
+- Go to "Project Settings" -> "General Tab"
+- Add `GCXTrustPolicy.framework` to the "Embedded Binaries" section
 - Build and Run
 
 
@@ -269,7 +270,7 @@ You can also use NSURLConnection to authenticate.
     
     // Validate the remote trust
     if([authorizationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-        BOOL isTrusted = false;
+        BOOL isTrusted = NO;
         SecTrustRef serverTrust = challenge.protectionSpace.serverTrust;
         
         // Retrieve a matching policy for the challenged host
@@ -364,6 +365,15 @@ see the bin/ directory for further information. This Script needs to run every 5
 ## Documentation
 
 Please see the soure code for further informations.
+
+
+## Troubleshooting
+
+* When stumbling upon errors stating the module CommonCrypo can not be created make sure you have Apple's `Xcode Commandline Tools` installed. This allows Module `CommonCrypto` to reference the Umbrella Header at `/usr/include/CommonCrypto/CommonCrypto.h` on the filesystem.
+
+* If you running an Objective-C project and encounter  an  `dyld: Library not loaded: @rpath/libswiftCore.dylib` error try to
+set the Xcode build option 'Embedded Content Contains Swift Code' to 'YES'.
+
 
 
 ## Further reference
