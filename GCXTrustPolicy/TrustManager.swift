@@ -30,7 +30,7 @@ open class TrustManager: NSObject {
       A shared instance to use from e.g. NSURLSession or NSURLConnection.
       Will call the default initializer -init().
      */
-    open static let sharedInstance = TrustManager()
+    @objc open static let sharedInstance = TrustManager()
     
     /**
       Convenience initializer for trust policies per host.
@@ -43,7 +43,7 @@ open class TrustManager: NSObject {
      
       - returns: the instance
      */
-    public convenience init (trustPolicies: [TrustPolicy]) {
+    @objc public convenience init (trustPolicies: [TrustPolicy]) {
         self.init()
         
         add(policies: trustPolicies)
@@ -57,7 +57,7 @@ open class TrustManager: NSObject {
      
       - returns: a TrustPolicy conforming object
      */
-    open func policy(forHost hostName: String) -> TrustPolicy? {
+    @objc open func policy(forHost hostName: String) -> TrustPolicy? {
         return policies[hostName]
     }
     
@@ -67,7 +67,7 @@ open class TrustManager: NSObject {
      
       - returns: an array of string
      */
-    open func allHostNames() -> [String] {
+    @objc open func allHostNames() -> [String] {
         return Array(policies.keys)
     }
     
@@ -77,7 +77,7 @@ open class TrustManager: NSObject {
      
         - returns: array of TrustPolicy conforming objects
      */
-    open func allPolicies() -> [TrustPolicy] {
+    @objc open func allPolicies() -> [TrustPolicy] {
         return Array(policies.values)
     }
     
@@ -88,7 +88,7 @@ open class TrustManager: NSObject {
      
       - parameter policy: a TrustPolicy conforming object
      */
-    open func add(policy trustPolicy: TrustPolicy) {
+    @objc open func add(policy trustPolicy: TrustPolicy) {
         policies[trustPolicy.hostName] = trustPolicy
     }
     
@@ -99,7 +99,7 @@ open class TrustManager: NSObject {
      
       - parameter policies: a TrustPolicy conforming object
      */
-    open func add(policies trustPolicies: [TrustPolicy]) {
+    @objc open func add(policies trustPolicies: [TrustPolicy]) {
         for item in trustPolicies {
             add(policy: item)
         }
@@ -112,7 +112,7 @@ open class TrustManager: NSObject {
      
      - parameter hostName: a host name
      */
-    open func removePolicy(for hostName: String) {
+    @objc open func removePolicy(for hostName: String) {
         policies.removeValue(forKey: hostName)
     }
 }

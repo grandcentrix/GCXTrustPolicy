@@ -67,8 +67,7 @@ public protocol TrustPolicy {
                         downloaded from a trusted third party.
  
  */
-@objc(GCXValidationType)
-public enum ValidationType: Int {
+@objc(GCXValidationType) public enum ValidationType: Int {
     case disabled = 0
     case standard
     case custom
