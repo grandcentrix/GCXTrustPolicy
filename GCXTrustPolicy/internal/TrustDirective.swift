@@ -24,11 +24,11 @@
 ////////////////////////////////////////////////
 
 import Foundation
-//import OpenSSL
-//import CommonCrypto
+import OpenSSL
+import CommonCrypto
 
 // so swift sees the c structs
-//import Pkcs7UnionAccessors
+import Pkcs7UnionAccessors
 
 // MARK: - Base class for validation -
 
@@ -71,7 +71,6 @@ class TrustDirective: NSObject, TrustPolicy {
         return false
     }
     
-/*
     fileprivate func sha256hex(data: Data) -> String? {
         var digestData = Data(count: Int(CC_SHA256_DIGEST_LENGTH))
         
@@ -82,7 +81,6 @@ class TrustDirective: NSObject, TrustPolicy {
         }
         return digestData.map { String(format: "%02hhx", $0) }.joined()
     }
- */
 }
 
 
@@ -188,9 +186,6 @@ class DefaultOnlineDirective: DefaultDirective {
     /**
      * returnes Content of Trust Store for hostname, if the signature is correct.
      */
-    
-    
-    /*
     fileprivate func loadTrustStore() -> [String: Any]? {
         let fm = FileManager.default
         var verifyTimestamp = false
@@ -306,9 +301,7 @@ class DefaultOnlineDirective: DefaultDirective {
             return nil
         }
     }
-  */
 }
-
 
 
 // MARK: - Custom validation -
@@ -414,16 +407,13 @@ class PinPublicKeyDirective: DefaultDirective {
  */
 class PinCertificateOnlineDirective: DefaultOnlineDirective {
     override func validate(with trust: SecTrust) -> Bool {
-        //return certificateOnlinePinningValidation(withTrust: trust, forceReload: false)
-        
-        return false
+        return certificateOnlinePinningValidation(withTrust: trust, forceReload: false)
     }
     
     fileprivate func certificatePinningValidation(withTrust trust: SecTrust) -> Bool {
-        return false
+               return false
     }
 
-    /*
     fileprivate func certificateOnlinePinningValidation(withTrust trust: SecTrust, forceReload: Bool) -> Bool {
         if forceReload {
             removeTrustStore()
@@ -461,7 +451,6 @@ class PinCertificateOnlineDirective: DefaultOnlineDirective {
         
         return fingerprints as! [String]
     }
- */
 }
 
 
@@ -476,11 +465,6 @@ class PinPublicKeyOnlineDirective: DefaultOnlineDirective {
     }
     
     fileprivate func keyPinningOnlineValidation(withTrust trust: SecTrust, forceReload: Bool) -> Bool {
-        return false
-    }
-    
-    /*
-    
         if forceReload {
             removeTrustStore()
         }
@@ -574,6 +558,5 @@ class PinPublicKeyOnlineDirective: DefaultOnlineDirective {
         
         return keys
     }
- */
 }
 
