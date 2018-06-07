@@ -72,7 +72,7 @@ class TrustEvaluation {
     static func publicKeysFromCertificates(in bundle: Bundle = Bundle.main) -> [SecKey] {
         return readDERCertificates(in: bundle)
                 .map { publicKey(from: $0) }
-                .flatMap { $0 }
+                .compactMap { $0 }
     }
     
     /**
@@ -86,7 +86,7 @@ class TrustEvaluation {
         return bundle
                 .paths(forResourcesOfType: "cer", inDirectory: nil)
                 .map { readSecCertificate(from: $0) }
-                .flatMap { $0 }
+                .compactMap { $0 }
     }
     
     /**
