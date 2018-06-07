@@ -137,7 +137,7 @@ class DefaultOnlineDirective: DefaultDirective {
         self.trustCertificate = trustServerCertificate
         self.customer = customer
         
-        let docsurl = try! FileManager.default.url(for:.documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+        let docsurl = try! FileManager.default.url(for:.documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         trustStore = docsurl.appendingPathComponent("trustedCertificates.json.signed")
         
         super.init(withHostName: hostName, validateServerTrust: validateServerTrust, validateHost: validateHost)
