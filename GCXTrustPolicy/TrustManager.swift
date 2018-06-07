@@ -23,7 +23,7 @@ open class TrustManager: NSObject {
 
     
     /// trust policies by hostname
-    fileprivate var policies: [String: TrustPolicy] = [:]
+    private var policies: [String: TrustPolicy] = [:]
     
 
     /**

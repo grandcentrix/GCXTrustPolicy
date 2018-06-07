@@ -39,8 +39,8 @@ class TrustDirective: NSObject, TrustPolicy {
     
     var hostName: String
     
-    fileprivate var validateServerTrust: Bool
-    fileprivate var validateHost: Bool
+    private var validateServerTrust: Bool
+    private var validateHost: Bool
     
     
     // MARK: - Initialisation -
@@ -56,7 +56,7 @@ class TrustDirective: NSObject, TrustPolicy {
                     userInfo: nil).raise()
     }
     
-    fileprivate init(withHostName host: String, validateServerTrust: Bool, validateHost: Bool) {
+    private init(withHostName host: String, validateServerTrust: Bool, validateHost: Bool) {
         self.hostName = host
         self.validateServerTrust = validateServerTrust
         self.validateHost = validateHost
@@ -71,7 +71,7 @@ class TrustDirective: NSObject, TrustPolicy {
         return false
     }
     
-    fileprivate func sha256hex(data: Data) -> String? {
+    private func sha256hex(data: Data) -> String? {
         var digestData = Data(count: Int(CC_SHA256_DIGEST_LENGTH))
         
         _ = digestData.withUnsafeMutableBytes {digestBytes in
@@ -116,7 +116,7 @@ class DefaultDirective: TrustDirective {
         return defaultValidation(withTrust: trust)
     }
     
-    fileprivate func defaultValidation(withTrust trust: SecTrust, skipValidation: Bool = false) -> Bool {
+    private func defaultValidation(withTrust trust: SecTrust, skipValidation: Bool = false) -> Bool {
         var isServerTrustValidationSuccessful = true
         if !skipValidation {
             let host: String? = validateHost ? hostName : nil
@@ -152,7 +152,7 @@ class DefaultOnlineDirective: DefaultDirective {
         super.init(withHostName: hostName, validateServerTrust: validateServerTrust, validateHost: validateHost)
     }
     
-    fileprivate func reloadPinningFileFromServer() {
+    private func reloadPinningFileFromServer() {
         // this request must be syncron otherwise we cannot tell if the certs are pinned
         let semaphore = DispatchSemaphore(value: 0)
         let task = URLSession.shared.dataTask(with: self.trustServer) { data, response, error in
@@ -186,7 +186,7 @@ class DefaultOnlineDirective: DefaultDirective {
     /**
      * returnes Content of Trust Store for hostname, if the signature is correct.
      */
-    fileprivate func loadTrustStore() -> [String: Any]? {
+    private func loadTrustStore() -> [String: Any]? {
         let fm = FileManager.default
         var verifyTimestamp = false
         
@@ -324,7 +324,7 @@ class CustomDirective: DefaultDirective {
         return customValidation(withTrust: trust)
     }
     
-    fileprivate func customValidation(withTrust trust: SecTrust) -> Bool {
+    private func customValidation(withTrust trust: SecTrust) -> Bool {
         return validationClosure(trust)
     }
 }
@@ -350,7 +350,7 @@ class PinCertificateDirective: DefaultDirective {
         return certificatePinningValidation(withTrust: trust)
     }
     
-    fileprivate func certificatePinningValidation(withTrust trust: SecTrust) -> Bool {
+    private func certificatePinningValidation(withTrust trust: SecTrust) -> Bool {
         if defaultValidation(withTrust: trust, skipValidation: !validateServerTrust) {
             let remoteCertificateDatas = TrustEvaluation.certificateData(from: trust)
             for pinnedCertificateData in pinnedCertificateDatas {
@@ -385,7 +385,7 @@ class PinPublicKeyDirective: DefaultDirective {
         return keyPinningValidation(withTrust: trust)
     }
 
-    fileprivate func keyPinningValidation(withTrust trust: SecTrust) -> Bool {
+    private func keyPinningValidation(withTrust trust: SecTrust) -> Bool {
         if defaultValidation(withTrust: trust, skipValidation: !validateServerTrust) {
             for pinnedPublicKey in pinnedPublicKeys as [AnyObject] {
                 for remotePublicKey in TrustEvaluation.publicKeys(from: trust) as [AnyObject] {
@@ -410,11 +410,11 @@ class PinCertificateOnlineDirective: DefaultOnlineDirective {
         return certificateOnlinePinningValidation(withTrust: trust, forceReload: false)
     }
     
-    fileprivate func certificatePinningValidation(withTrust trust: SecTrust) -> Bool {
+    private func certificatePinningValidation(withTrust trust: SecTrust) -> Bool {
                return false
     }
 
-    fileprivate func certificateOnlinePinningValidation(withTrust trust: SecTrust, forceReload: Bool) -> Bool {
+    private func certificateOnlinePinningValidation(withTrust trust: SecTrust, forceReload: Bool) -> Bool {
         if forceReload {
             removeTrustStore()
         }
@@ -441,7 +441,7 @@ class PinCertificateOnlineDirective: DefaultOnlineDirective {
         }
     }
     
-    fileprivate func loadPinnedFingerprints() -> [String] {
+    private func loadPinnedFingerprints() -> [String] {
         let trustStoreData = loadTrustStore()
         
         // load fingerprints from Truststore
@@ -464,7 +464,7 @@ class PinPublicKeyOnlineDirective: DefaultOnlineDirective {
         return keyPinningOnlineValidation(withTrust: trust, forceReload: false)
     }
     
-    fileprivate func keyPinningOnlineValidation(withTrust trust: SecTrust, forceReload: Bool) -> Bool {
+    private func keyPinningOnlineValidation(withTrust trust: SecTrust, forceReload: Bool) -> Bool {
         if forceReload {
             removeTrustStore()
         }
@@ -488,7 +488,7 @@ class PinPublicKeyOnlineDirective: DefaultOnlineDirective {
         }
     }
     
-    fileprivate func loadPinnedPublicKeys() -> [SecKey] {
+    private func loadPinnedPublicKeys() -> [SecKey] {
         let trustStoreData = loadTrustStore()
         
         // load publicKeys from Truststore
