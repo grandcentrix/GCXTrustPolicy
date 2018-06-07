@@ -26,9 +26,8 @@
 import Foundation
 import OpenSSL
 import CommonCrypto
+import Pkcs7UnionAccessors // so swift sees the c structs
 
-// so swift sees the c structs
-import Pkcs7UnionAccessors
 
 // MARK: - Base class for validation -
 
@@ -37,26 +36,21 @@ class TrustDirective: NSObject, TrustPolicy {
 
     // MARK: - Variables -
     
-    var hostName: String
+    var hostName: String!
     
-    private var validateServerTrust: Bool
-    private var validateHost: Bool
+    fileprivate var validateServerTrust: Bool!
+    fileprivate var validateHost: Bool!
     
     
     // MARK: - Initialisation -
     
     override init() {
-        // Make the compiler stop demanding for initialized values, we are using custom init anyway.
-        self.hostName = ""
-        self.validateServerTrust = true
-        self.validateHost = true
-        
         NSException(name: NSExceptionName(rawValue: "Unintended initialisation"),
                     reason: "Please use a concrete child class to perform initialisation.",
                     userInfo: nil).raise()
     }
     
-    private init(withHostName host: String, validateServerTrust: Bool, validateHost: Bool) {
+    fileprivate init(withHostName host: String, validateServerTrust: Bool, validateHost: Bool) {
         self.hostName = host
         self.validateServerTrust = validateServerTrust
         self.validateHost = validateHost
@@ -71,7 +65,7 @@ class TrustDirective: NSObject, TrustPolicy {
         return false
     }
     
-    private func sha256hex(data: Data) -> String? {
+    fileprivate func sha256hex(data: Data) -> String? {
         var digestData = Data(count: Int(CC_SHA256_DIGEST_LENGTH))
         
         _ = digestData.withUnsafeMutableBytes {digestBytes in
@@ -116,7 +110,7 @@ class DefaultDirective: TrustDirective {
         return defaultValidation(withTrust: trust)
     }
     
-    private func defaultValidation(withTrust trust: SecTrust, skipValidation: Bool = false) -> Bool {
+    fileprivate func defaultValidation(withTrust trust: SecTrust, skipValidation: Bool = false) -> Bool {
         var isServerTrustValidationSuccessful = true
         if !skipValidation {
             let host: String? = validateHost ? hostName : nil
@@ -142,12 +136,9 @@ class DefaultOnlineDirective: DefaultDirective {
         self.trustServer = trustServer
         self.trustCertificate = trustServerCertificate
         self.customer = customer
- 
         
-        let fm = FileManager.default
-        let docsurl = try! fm.url(for:.documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+        let docsurl = try! FileManager.default.url(for:.documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
         trustStore = docsurl.appendingPathComponent("trustedCertificates.json.signed")
-        
         
         super.init(withHostName: hostName, validateServerTrust: validateServerTrust, validateHost: validateHost)
     }
@@ -174,9 +165,9 @@ class DefaultOnlineDirective: DefaultDirective {
     
     func removeTrustStore() {
         do {
-            let fm = FileManager.default
-            if fm.fileExists(atPath: self.trustStore.path) {
-                try fm.removeItem(atPath: self.trustStore.path)
+            let fileManager = FileManager.default
+            if fileManager.fileExists(atPath: trustStore.path) {
+                try fileManager.removeItem(atPath: trustStore.path)
             }
         } catch let error as NSError {
             print(error)
@@ -186,11 +177,11 @@ class DefaultOnlineDirective: DefaultDirective {
     /**
      * returnes Content of Trust Store for hostname, if the signature is correct.
      */
-    private func loadTrustStore() -> [String: Any]? {
-        let fm = FileManager.default
+    fileprivate func loadTrustStore() -> [String: Any]? {
+        let fileManager = FileManager.default
         var verifyTimestamp = false
         
-        if !fm.fileExists(atPath: self.trustStore.path) {
+        if !fileManager.fileExists(atPath: self.trustStore.path) {
             reloadPinningFileFromServer()
             
             // newly downloaded files need to check the timestamp
@@ -198,7 +189,7 @@ class DefaultOnlineDirective: DefaultDirective {
         }
         
         // if file still does not exists -> no trust at all -> panic
-        if !fm.fileExists(atPath: self.trustStore.path) {
+        if !fileManager.fileExists(atPath: self.trustStore.path) {
             return nil
         }
         
@@ -285,7 +276,7 @@ class DefaultOnlineDirective: DefaultDirective {
             }
             
             for host in parsedData["hashes"] as! [[String: Any]] {
-                if host["hostname"] as! String != self.hostName {
+                if host["hostname"] as? String != self.hostName {
                     // The Hostname is not the correct => try the next
                     continue
                 }
@@ -324,7 +315,7 @@ class CustomDirective: DefaultDirective {
         return customValidation(withTrust: trust)
     }
     
-    private func customValidation(withTrust trust: SecTrust) -> Bool {
+    fileprivate func customValidation(withTrust trust: SecTrust) -> Bool {
         return validationClosure(trust)
     }
 }
@@ -350,7 +341,7 @@ class PinCertificateDirective: DefaultDirective {
         return certificatePinningValidation(withTrust: trust)
     }
     
-    private func certificatePinningValidation(withTrust trust: SecTrust) -> Bool {
+    fileprivate func certificatePinningValidation(withTrust trust: SecTrust) -> Bool {
         if defaultValidation(withTrust: trust, skipValidation: !validateServerTrust) {
             let remoteCertificateDatas = TrustEvaluation.certificateData(from: trust)
             for pinnedCertificateData in pinnedCertificateDatas {
@@ -385,7 +376,7 @@ class PinPublicKeyDirective: DefaultDirective {
         return keyPinningValidation(withTrust: trust)
     }
 
-    private func keyPinningValidation(withTrust trust: SecTrust) -> Bool {
+    fileprivate func keyPinningValidation(withTrust trust: SecTrust) -> Bool {
         if defaultValidation(withTrust: trust, skipValidation: !validateServerTrust) {
             for pinnedPublicKey in pinnedPublicKeys as [AnyObject] {
                 for remotePublicKey in TrustEvaluation.publicKeys(from: trust) as [AnyObject] {

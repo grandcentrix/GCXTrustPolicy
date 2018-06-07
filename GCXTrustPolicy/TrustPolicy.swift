@@ -23,7 +23,7 @@ import Foundation
 public protocol TrustPolicy {
     
     /// The name of the host
-    var hostName: String { get set }
+    var hostName: String! { get set }
     
     /// Validates a policy against a given trust
     func validate(with trust: SecTrust) -> Bool
