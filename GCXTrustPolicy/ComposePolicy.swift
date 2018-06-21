@@ -69,7 +69,7 @@ open class ComposePolicy: NSObject {
       Not available.
       Use the designated initializer instead.
      */
-    fileprivate override init() {
+    private override init() {
         super.init()
         NSException(name: NSExceptionName(rawValue: "Unintended instantiation"),
                     reason: "Please use the designated initializer to construct object.",

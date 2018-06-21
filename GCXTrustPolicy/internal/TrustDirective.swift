@@ -26,9 +26,8 @@
 import Foundation
 import OpenSSL
 import CommonCrypto
+import Pkcs7UnionAccessors // so swift sees the c structs
 
-// so swift sees the c structs
-import Pkcs7UnionAccessors
 
 // MARK: - Base class for validation -
 
@@ -37,20 +36,15 @@ class TrustDirective: NSObject, TrustPolicy {
 
     // MARK: - Variables -
     
-    var hostName: String
+    var hostName: String!
     
-    fileprivate var validateServerTrust: Bool
-    fileprivate var validateHost: Bool
+    fileprivate var validateServerTrust: Bool!
+    fileprivate var validateHost: Bool!
     
     
     // MARK: - Initialisation -
     
     override init() {
-        // Make the compiler stop demanding for initialized values, we are using custom init anyway.
-        self.hostName = ""
-        self.validateServerTrust = true
-        self.validateHost = true
-        
         NSException(name: NSExceptionName(rawValue: "Unintended initialisation"),
                     reason: "Please use a concrete child class to perform initialisation.",
                     userInfo: nil).raise()
@@ -142,17 +136,14 @@ class DefaultOnlineDirective: DefaultDirective {
         self.trustServer = trustServer
         self.trustCertificate = trustServerCertificate
         self.customer = customer
- 
         
-        let fm = FileManager.default
-        let docsurl = try! fm.url(for:.documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+        let docsurl = try! FileManager.default.url(for:.documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         trustStore = docsurl.appendingPathComponent("trustedCertificates.json.signed")
-        
         
         super.init(withHostName: hostName, validateServerTrust: validateServerTrust, validateHost: validateHost)
     }
     
-    fileprivate func reloadPinningFileFromServer() {
+    private func reloadPinningFileFromServer() {
         // this request must be syncron otherwise we cannot tell if the certs are pinned
         let semaphore = DispatchSemaphore(value: 0)
         let task = URLSession.shared.dataTask(with: self.trustServer) { data, response, error in
@@ -174,9 +165,9 @@ class DefaultOnlineDirective: DefaultDirective {
     
     func removeTrustStore() {
         do {
-            let fm = FileManager.default
-            if fm.fileExists(atPath: self.trustStore.path) {
-                try fm.removeItem(atPath: self.trustStore.path)
+            let fileManager = FileManager.default
+            if fileManager.fileExists(atPath: trustStore.path) {
+                try fileManager.removeItem(atPath: trustStore.path)
             }
         } catch let error as NSError {
             print(error)
@@ -187,10 +178,10 @@ class DefaultOnlineDirective: DefaultDirective {
      * returnes Content of Trust Store for hostname, if the signature is correct.
      */
     fileprivate func loadTrustStore() -> [String: Any]? {
-        let fm = FileManager.default
+        let fileManager = FileManager.default
         var verifyTimestamp = false
         
-        if !fm.fileExists(atPath: self.trustStore.path) {
+        if !fileManager.fileExists(atPath: self.trustStore.path) {
             reloadPinningFileFromServer()
             
             // newly downloaded files need to check the timestamp
@@ -198,7 +189,7 @@ class DefaultOnlineDirective: DefaultDirective {
         }
         
         // if file still does not exists -> no trust at all -> panic
-        if !fm.fileExists(atPath: self.trustStore.path) {
+        if !fileManager.fileExists(atPath: self.trustStore.path) {
             return nil
         }
         
@@ -285,7 +276,7 @@ class DefaultOnlineDirective: DefaultDirective {
             }
             
             for host in parsedData["hashes"] as! [[String: Any]] {
-                if host["hostname"] as! String != self.hostName {
+                if host["hostname"] as? String != self.hostName {
                     // The Hostname is not the correct => try the next
                     continue
                 }
@@ -410,11 +401,11 @@ class PinCertificateOnlineDirective: DefaultOnlineDirective {
         return certificateOnlinePinningValidation(withTrust: trust, forceReload: false)
     }
     
-    fileprivate func certificatePinningValidation(withTrust trust: SecTrust) -> Bool {
+    private func certificatePinningValidation(withTrust trust: SecTrust) -> Bool {
                return false
     }
 
-    fileprivate func certificateOnlinePinningValidation(withTrust trust: SecTrust, forceReload: Bool) -> Bool {
+    private func certificateOnlinePinningValidation(withTrust trust: SecTrust, forceReload: Bool) -> Bool {
         if forceReload {
             removeTrustStore()
         }
@@ -441,7 +432,7 @@ class PinCertificateOnlineDirective: DefaultOnlineDirective {
         }
     }
     
-    fileprivate func loadPinnedFingerprints() -> [String] {
+    private func loadPinnedFingerprints() -> [String] {
         let trustStoreData = loadTrustStore()
         
         // load fingerprints from Truststore
@@ -464,7 +455,7 @@ class PinPublicKeyOnlineDirective: DefaultOnlineDirective {
         return keyPinningOnlineValidation(withTrust: trust, forceReload: false)
     }
     
-    fileprivate func keyPinningOnlineValidation(withTrust trust: SecTrust, forceReload: Bool) -> Bool {
+    private func keyPinningOnlineValidation(withTrust trust: SecTrust, forceReload: Bool) -> Bool {
         if forceReload {
             removeTrustStore()
         }
@@ -488,7 +479,7 @@ class PinPublicKeyOnlineDirective: DefaultOnlineDirective {
         }
     }
     
-    fileprivate func loadPinnedPublicKeys() -> [SecKey] {
+    private func loadPinnedPublicKeys() -> [SecKey] {
         let trustStoreData = loadTrustStore()
         
         // load publicKeys from Truststore
