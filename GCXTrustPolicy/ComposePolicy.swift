@@ -141,75 +141,7 @@ open class ComposePolicy: NSObject {
             builder.allowInsecureTrust = allowInsecureServerTrust
             builder.certificateBundle = certificateBundle
             concreteBuilder = builder
-            
-        case .pinCertificateOnline:
-            let builder = CertificateOnlineBuilder(withHostName: hostName)
-            builder.validateHost = validateHostName
-            builder.allowInsecureTrust = allowInsecureServerTrust
-            
-            // add infos for TrustServer
-            if let closure = trustServer {
-                builder.trustServer = closure
-            } else {
-                NSException(name: NSExceptionName(rawValue: "Missing Parameter"),
-                            reason: "Please provide a TrustServer closure.",
-                            userInfo: nil).raise()
-
-            }
-            
-            if let closure = trustServerCertificate {
-                builder.trustServerCertificate = closure
-            } else {
-                NSException(name: NSExceptionName(rawValue: "Missing Parameter"),
-                            reason: "Please provide a TrustServerCertificate closure.",
-                            userInfo: nil).raise()
-            }
-
-            if let closure = customer {
-                builder.customer = closure
-            } else {
-                NSException(name: NSExceptionName(rawValue: "Missing Parameter"),
-                            reason: "Please provide a Customer closure.",
-                            userInfo: nil).raise()
-            }
-
-            concreteBuilder = builder
-            
-        case .pinPublicKeyOnline:
-            let builder = PublicKeyOnlineBuilder(withHostName: hostName)
-            builder.validateHost = validateHostName
-            builder.allowInsecureTrust = allowInsecureServerTrust
-            
-            // add infos for TrustServer
-            if let closure = trustServer {
-                builder.trustServer = closure
-            } else {
-                NSException(name: NSExceptionName(rawValue: "Missing Parameter"),
-                            reason: "Please provide a TrustServer closure.",
-                            userInfo: nil).raise()
-                
-            }
-            
-            if let closure = trustServerCertificate {
-                builder.trustServerCertificate = closure
-            } else {
-                NSException(name: NSExceptionName(rawValue: "Missing Parameter"),
-                            reason: "Please provide a TrustServerCertificate closure.",
-                            userInfo: nil).raise()
-            }
-            
-            if let closure = customer {
-                builder.customer = closure
-            } else {
-                NSException(name: NSExceptionName(rawValue: "Missing Parameter"),
-                            reason: "Please provide a Customer closure.",
-                            userInfo: nil).raise()
-            }
-
-            concreteBuilder = builder
-            
         }
-        
         return concreteBuilder.build()
     }
 }

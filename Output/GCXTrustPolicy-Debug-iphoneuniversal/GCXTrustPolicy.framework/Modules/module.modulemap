@@ -1,0 +1,11 @@
+framework module GCXTrustPolicy {
+  umbrella header "GCXTrustPolicy.h"
+
+  export *
+  module * { export * }
+}
+
+module GCXTrustPolicy.Swift {
+    header "GCXTrustPolicy-Swift.h"
+    requires objc
+}
