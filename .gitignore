@@ -17,6 +17,7 @@
 DerivedData/
 DerivedData
 build/
+Output/
 
 ############################
 # Xcode private settings   #
