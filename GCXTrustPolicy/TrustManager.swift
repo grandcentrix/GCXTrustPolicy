@@ -18,6 +18,40 @@
 
 import Foundation
 
+@objc(GCXTrusting)
+public protocol Trusting {
+    
+    /// Dictionary of `TrustPolicy`s.
+    /// It's advised to use the host's name as key.
+    var policies: [String: TrustPolicy] { get set }
+    
+    /// Retrieve all policy names.
+    var allNames: [String] { get }
+    
+    /// Retrieve all `TrustPolicy` objects.
+    var allPolicies: [TrustPolicy] { get }
+    
+    /// Retrieve matching policy by its name.
+    ///
+    /// - Parameter name: the name of the policy
+    /// - Returns: optional `TrustPolicy` conforming object
+    func policy(for name: String) -> TrustPolicy?
+    
+    /// Adds a new `TrustPolicy` object.
+    ///
+    /// - Parameter policy: `TrustPolicy` conforming object
+    func add(policy: TrustPolicy)
+    
+    /// Adds a batch of `TrustPolicy` objects at once.
+    ///
+    /// - Parameter policies: Array of `TrustPolicy` conforming objects
+    func add(policies: [TrustPolicy])
+    
+    /// Remove a `TrustPolicy` by it's name.
+    ///
+    /// - Parameter name: the name with which the `TrustPolicy` was added
+    func removePolicy(name: String)
+}
 
 @objc(GCXTrustManager)
 open class TrustManager: NSObject {
@@ -26,8 +60,7 @@ open class TrustManager: NSObject {
     /// this class as Singleton.
     @objc public static let shared = TrustManager()
     
-    /// Dictionary of `TrustPolicy`s.
-    /// It is intended to use the host's name as key.
+    /// `Trusting` protocol implementation
     @objc open var policies: [String: TrustPolicy] = [:]
     
     /// Convenience initializer tha allows to pass an Array
@@ -44,49 +77,33 @@ open class TrustManager: NSObject {
         
         add(policies: policies)
     }
-    
-    /// Retrieve matching policy by host name.
-    ///
-    /// - Parameter hostName: the name of the host
-    /// - Returns: optional TrustPolicy conforming object
-    @objc open func policy(for hostName: String) -> TrustPolicy? {
-        return policies[hostName]
-    }
-    
-    /// Retrieve all registered host names.
-    ///
-    /// - Returns: Array of host names
-    @objc open func allHostNames() -> [String] {
-        return Array(policies.keys)
-    }
+}
 
-    /// Retrieve all registered `TrustPolicy` objects.
-    ///
-    /// - Returns: Array of `TrustPolicy` conforming objects
-    @objc open func allPolicies() -> [TrustPolicy] {
+@objc extension TrustManager: Trusting {
+    
+    public var allPolicies: [TrustPolicy] {
         return Array(policies.values)
     }
-
-    /// Adds a new `TrustPolicy` object.
-    ///
-    /// - Parameter trustPolicy: `TrustPolicy` conforming object
-    @objc open func add(policy trustPolicy: TrustPolicy) {
-        policies[trustPolicy.hostName] = trustPolicy
+    
+    public var allNames: [String] {
+        return Array(policies.keys)
     }
     
-    /// Adds a batch of `TrustPolicy` objects at once.
-    ///
-    /// - Parameter trustPolicies: Array of `TrustPolicy` conforming objects
-    @objc open func add(policies trustPolicies: [TrustPolicy]) {
-        for item in trustPolicies {
+    public func policy(for name: String) -> TrustPolicy? {
+        return policies[name]
+    }
+    
+    public func add(policy: TrustPolicy) {
+        policies[policy.hostName] = policy
+    }
+    
+    public func add(policies: [TrustPolicy]) {
+        for item in policies {
             add(policy: item)
         }
     }
     
-    /// Remove a TrustPolicy object by it`s key.
-    ///
-    /// - Parameter hostName: a host name
-    @objc open func removePolicy(for hostName: String) {
-        policies.removeValue(forKey: hostName)
+    public func removePolicy(name: String) {
+        policies.removeValue(forKey: name)
     }
 }

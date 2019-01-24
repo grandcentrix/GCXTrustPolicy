@@ -61,26 +61,26 @@ class TrustManagerTests: XCTestCase {
     func test_manager_initialisation_correctBehaviour() {
         manager = TrustManager()
         XCTAssertNotNil(manager, "Manager should not be nil.")
-        XCTAssertTrue(manager.allPolicies().count == 0, "Should be initialized with empty TrustPolicies.")
+        XCTAssertTrue(manager.allPolicies.count == 0, "Should be initialized with empty TrustPolicies.")
         
         manager = TrustManager(with: trustPolicies)
         XCTAssertNotNil(manager, "Manager should not be nil.")
-        XCTAssertTrue(manager.allPolicies().count == trustPolicies.count, "Should be initialized with 3 TrustPolicies.")
+        XCTAssertTrue(manager.allPolicies.count == trustPolicies.count, "Should be initialized with 3 TrustPolicies.")
         
         manager = TrustManager.shared
         XCTAssertNotNil(manager, "Manager should not be nil.")
-        XCTAssertTrue(manager.allPolicies().count == 0, "Singleton should be initialized with empty TrustPolicies.")
+        XCTAssertTrue(manager.allPolicies.count == 0, "Singleton should be initialized with empty TrustPolicies.")
     }
     
     
     func test_manager_functionality_correctBehaviour() {
 
-        let names = manager.allHostNames()
+        let names = manager.allNames
         let policyNameA = names.filter{$0 == hostA}.first!
         XCTAssertTrue(names.count == 3, "Host name array should have length of 3.")
         XCTAssertTrue(policyNameA == hostA, "Host names should be equal.")
         
-        var policies = manager.allPolicies()
+        var policies = manager.allPolicies
         let trustPolicyB = policies.filter{$0 === policyB}.first!
         XCTAssertTrue(policies.count == 3, "Policies array should have length of 3.")
         XCTAssertTrue(trustPolicyB === policyB, "Policies should be equal.")
@@ -93,30 +93,30 @@ class TrustManagerTests: XCTestCase {
         let newPolicyHostName = "newPolicyHostName"
         let newPolicy = ComposePolicy(withValidation: .disabled, forHost: newPolicyHostName).create()
         manager.add(policy: newPolicy)
-        policies = manager.allPolicies()
+        policies = manager.allPolicies
         XCTAssertTrue(policies.count == 4, "Policies array should have length of 4.")
         
-        manager.removePolicy(for: newPolicyHostName)
-        policies = manager.allPolicies()
+        manager.removePolicy(name: newPolicyHostName)
+        policies = manager.allPolicies
         XCTAssertTrue(policies.count == 3, "Policies array should have length of 3.")
     }
     
     func test_manager_noPolicies_correctBehaviour() {
         
-        var names = manager.allHostNames()
+        var names = manager.allNames
         XCTAssertTrue(names.count == 3, "Host name array should have length of 3.")
         
         let policy = manager.policy(for: "")
         XCTAssertNil(policy, "Policy should be nil.")
         
-        manager.removePolicy(for: hostA)
-        manager.removePolicy(for: hostB)
-        manager.removePolicy(for: hostC)
+        manager.removePolicy(name: hostA)
+        manager.removePolicy(name: hostB)
+        manager.removePolicy(name: hostC)
         
-        names = manager.allHostNames()
+        names = manager.allNames
         XCTAssertTrue(names.count == 0, "Host name array should have length of 0.")
         
-        let policies = manager.allPolicies()
+        let policies = manager.allPolicies
         XCTAssertTrue(policies.count == 0, "Policies array should have length of 0.")
     }
 }
