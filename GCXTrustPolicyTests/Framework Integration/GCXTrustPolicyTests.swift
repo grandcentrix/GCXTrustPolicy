@@ -32,20 +32,20 @@ class GCXTrustPolicyTests: XCTestCase {
         let customPolicy = customPolicyComposal.create()
         
         let trustPolicies = [defaultPolicy, disabledPolicy, customPolicy]
-        let manager = TrustManager(trustPolicies: trustPolicies)
+        let manager = TrustManager(with: trustPolicies)
         let trust = TestTrusts.validGCXTrustChain.trust
         
-        let policyHostNameA = manager.policy(forHost: "hostNameA")
+        let policyHostNameA = manager.policy(for: "hostNameA")
         XCTAssertTrue(defaultPolicy === policyHostNameA!, "Objects should be equal.")
         var isTrusted = policyHostNameA!.validate(with: trust)
         XCTAssertFalse(isTrusted, "That should fail in every condition as there is no valid trust object.")
         
-        let policyHostNameB = manager.policy(forHost: "hostNameB")
+        let policyHostNameB = manager.policy(for: "hostNameB")
         XCTAssertTrue(disabledPolicy === policyHostNameB!, "Objects should be equal.")
         isTrusted = policyHostNameB!.validate(with: trust)
         XCTAssertTrue(isTrusted, "Disabled validation always returns TRUE regardless of all input.")
         
-        let policyHostNameC = manager.policy(forHost: "hostNameC")
+        let policyHostNameC = manager.policy(for: "hostNameC")
         XCTAssertTrue(customPolicy === policyHostNameC!, "Objects should be equal.")
         isTrusted = policyHostNameC!.validate(with: trust)
         XCTAssertTrue(isTrusted, "We previously defined cusom validation to return TRUE, so it should succeed.")

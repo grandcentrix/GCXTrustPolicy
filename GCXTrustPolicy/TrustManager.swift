@@ -18,100 +18,74 @@
 
 import Foundation
 
+
 @objc(GCXTrustManager)
 open class TrustManager: NSObject {
 
+    /// Shared instance to the `TrustManager` object to use
+    /// this class as Singleton.
+    @objc public static let shared = TrustManager()
     
-    /// trust policies by hostname
-    private var policies: [String: TrustPolicy] = [:]
+    /// Dictionary of `TrustPolicy`s.
+    /// It is intended to use the host's name as key.
+    @objc open var policies: [String: TrustPolicy] = [:]
     
-
-    /**
-      A shared instance to use from e.g. NSURLSession or NSURLConnection.
-      Will call the default initializer -init().
-     */
-    @objc open static let sharedInstance = TrustManager()
-    
-    /**
-      Convenience initializer for trust policies per host.
-      This offers the opportunity to apply different trust
-      evaluation policies on a per-host basis.
-      e.g. host 1 uses certificate pinning, host 2 simple 
-      host validation and host 3 uses public key pinning.
-     
-      - parameter trustPolicies: an Array containing TrustPolicy conforming objects
-     
-      - returns: the instance
-     */
-    @objc public convenience init (trustPolicies: [TrustPolicy]) {
+    /// Convenience initializer tha allows to pass an Array
+    /// of `TrustPolicy`s upon initialisation.
+    ///
+    /// Which offers the opportunity to apply different trust
+    /// evaluation policies on a per-host basis.
+    /// E.g. host 1 uses certificate pinning, host 2 simple
+    /// host validation and host 3 uses public key pinning.
+    ///
+    /// - Parameter trustPolicies: Array of `TrustPolicy` conforming objects
+    @objc public convenience init (with policies: [TrustPolicy]) {
         self.init()
         
-        add(policies: trustPolicies)
+        add(policies: policies)
     }
     
-    
-    /**
-      Retrieve the matching policy per host.
-     
-      - parameter hostName: the name of the host
-     
-      - returns: a TrustPolicy conforming object
-     */
-    @objc open func policy(forHost hostName: String) -> TrustPolicy? {
+    /// Retrieve matching policy by host name.
+    ///
+    /// - Parameter hostName: the name of the host
+    /// - Returns: optional TrustPolicy conforming object
+    @objc open func policy(for hostName: String) -> TrustPolicy? {
         return policies[hostName]
     }
     
-
-    /** 
-      Retrieve all registered host names.
-     
-      - returns: an array of string
-     */
+    /// Retrieve all registered host names.
+    ///
+    /// - Returns: Array of host names
     @objc open func allHostNames() -> [String] {
         return Array(policies.keys)
     }
-    
-    
-    /**
-        Retrieve all registered TrustPolicy objects.
-     
-        - returns: array of TrustPolicy conforming objects
-     */
+
+    /// Retrieve all registered `TrustPolicy` objects.
+    ///
+    /// - Returns: Array of `TrustPolicy` conforming objects
     @objc open func allPolicies() -> [TrustPolicy] {
         return Array(policies.values)
     }
-    
-    
-    /**
-      Add a new TrustPolicy object.
-      Key is the TrustPolicy`s 'hostName' property.
-     
-      - parameter policy: a TrustPolicy conforming object
-     */
+
+    /// Adds a new `TrustPolicy` object.
+    ///
+    /// - Parameter trustPolicy: `TrustPolicy` conforming object
     @objc open func add(policy trustPolicy: TrustPolicy) {
         policies[trustPolicy.hostName] = trustPolicy
     }
     
-    
-    /**
-      Convenience function to add a batch of TrustPolicy objects.
-      Key is the TrustPolicy`s 'hostName' property.
-     
-      - parameter policies: a TrustPolicy conforming object
-     */
+    /// Adds a batch of `TrustPolicy` objects at once.
+    ///
+    /// - Parameter trustPolicies: Array of `TrustPolicy` conforming objects
     @objc open func add(policies trustPolicies: [TrustPolicy]) {
         for item in trustPolicies {
             add(policy: item)
         }
     }
     
-    
-    /**
-      Remove a TrustPolicy object by it`s key.
-      Key is the TrustPolicy`s 'hostName' property
-     
-     - parameter hostName: a host name
-     */
+    /// Remove a TrustPolicy object by it`s key.
+    ///
+    /// - Parameter hostName: a host name
     @objc open func removePolicy(for hostName: String) {
         policies.removeValue(forKey: hostName)
     }

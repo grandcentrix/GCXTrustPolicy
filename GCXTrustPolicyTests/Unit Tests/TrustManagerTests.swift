@@ -45,7 +45,7 @@ class TrustManagerTests: XCTestCase {
         policyB = ComposePolicy(withValidation: .standard, forHost: hostB).create()
         policyC = ComposePolicy(withValidation: .standard, forHost: hostC).create()
         trustPolicies = [policyA, policyB, policyC]
-        manager = TrustManager(trustPolicies: trustPolicies)
+        manager = TrustManager(with: trustPolicies)
     }
     
     override func tearDown() {
@@ -63,11 +63,11 @@ class TrustManagerTests: XCTestCase {
         XCTAssertNotNil(manager, "Manager should not be nil.")
         XCTAssertTrue(manager.allPolicies().count == 0, "Should be initialized with empty TrustPolicies.")
         
-        manager = TrustManager(trustPolicies: trustPolicies)
+        manager = TrustManager(with: trustPolicies)
         XCTAssertNotNil(manager, "Manager should not be nil.")
         XCTAssertTrue(manager.allPolicies().count == trustPolicies.count, "Should be initialized with 3 TrustPolicies.")
         
-        manager = TrustManager.sharedInstance
+        manager = TrustManager.shared
         XCTAssertNotNil(manager, "Manager should not be nil.")
         XCTAssertTrue(manager.allPolicies().count == 0, "Singleton should be initialized with empty TrustPolicies.")
     }
@@ -86,7 +86,7 @@ class TrustManagerTests: XCTestCase {
         XCTAssertTrue(trustPolicyB === policyB, "Policies should be equal.")
         
         let policyNameC = names.filter{$0 == hostC}
-        let trustPolicyC = manager.policy(forHost: policyNameC.first!)
+        let trustPolicyC = manager.policy(for: policyNameC.first!)
         XCTAssertNotNil(trustPolicyC, "Policy should not be nil.")
         XCTAssertTrue(trustPolicyC === policyC, "Policys should be equal.")
         
@@ -106,7 +106,7 @@ class TrustManagerTests: XCTestCase {
         var names = manager.allHostNames()
         XCTAssertTrue(names.count == 3, "Host name array should have length of 3.")
         
-        let policy = manager.policy(forHost: "")
+        let policy = manager.policy(for: "")
         XCTAssertNil(policy, "Policy should be nil.")
         
         manager.removePolicy(for: hostA)

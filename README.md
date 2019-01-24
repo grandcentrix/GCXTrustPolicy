@@ -125,14 +125,14 @@ let exampleHost = "https://www.the-host-to-pin.com"
 let pinningPolicy = ComposePolicy(withValidation: .pinPublicKey, forHost: exampleHost).create()
     
 // use add(policy:) for adding a singe policy
-TrustManager.sharedInstance.add(policy: pinningPolicy)
+TrustManager.shared.add(policy: pinningPolicy)
     
 ```
 
 #### Simple validation: 
 
 ```swift
-if let policy = TrustManager.sharedInstance.policy(forHost: challengedHost) {
+if let policy = TrustManager.shared.policy(forHost: challengedHost) {
    if policy.validate(with: trust) {
         // Success! Server trust has been established.
    } else {
@@ -159,7 +159,7 @@ func setupTrustPolicies() {
     let pinningPolicy = composer.create()
 
     // add the three policies to the manager class at once
-    TrustManager.sharedInstance.add(policies: [defaultPolicy, pinningPolicy])
+    TrustManager.shared.add(policies: [defaultPolicy, pinningPolicy])
 }
 ```
 
@@ -181,7 +181,7 @@ func setupTrustPolicies() {
     id<GCXTrustPolicy> pinningPolicy = [composer create];
     
     // add the three policies to the manager class at once
-    GCXTrustManager *manager = [GCXTrustManager sharedInstance];
+    GCXTrustManager *manager = [GCXTrustManager shared];
     [manager addWithPolicies:@[defaultPolicy, pinningPolicy]];
 }
 ```
@@ -208,7 +208,7 @@ extension ViewController: URLSessionDelegate {
             
            // Retrieve a matching policy for the challenged host
            
-           if let policy = TrustManager.sharedInstance.policy(forHost: challengedHost) {
+           if let policy = TrustManager.shared.policy(forHost: challengedHost) {
                isTrusted = policy.validate(with: trust)
                 
                if isTrusted {
@@ -247,7 +247,7 @@ You can also use NSURLConnection to authenticate.
         SecTrustRef serverTrust = challenge.protectionSpace.serverTrust;
         
         // Retrieve a matching policy for the challenged host
-        id <GCXTrustPolicy> policy = [[GCXTrustManager sharedInstance] policyForHost:challengedHost];
+        id <GCXTrustPolicy> policy = [[GCXTrustManager shared] policyForHost:challengedHost];
         
         // Validate the server trust
         isTrusted = [policy validateWith:serverTrust];

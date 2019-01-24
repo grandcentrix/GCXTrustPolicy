@@ -43,17 +43,17 @@
 
     NSArray *policies = @[defaultPolicy, disabledPolicy, customPolicy];
     
-    GCXTrustManager *manager = [[GCXTrustManager alloc] initWithTrustPolicies: policies];
+    GCXTrustManager *manager = [[GCXTrustManager alloc] initWith: policies];
     SecTrustRef trust = nil;
     BOOL isTrusted;
     
-    isTrusted = [[manager policyForHost: @"A"] validateWith: trust];
+    isTrusted = [[manager policyFor: @"A"] validateWith: trust];
     XCTAssertFalse(isTrusted, @"That should fail in every condition as there is no trust object.");
     
-    isTrusted = [[manager policyForHost: @"B"] validateWith: trust];
+    isTrusted = [[manager policyFor: @"B"] validateWith: trust];
     XCTAssertTrue(isTrusted, @"Disabled validation always returns TRUE regardless of all input.");
 
-    isTrusted = [[manager policyForHost: @"C"] validateWith: trust];
+    isTrusted = [[manager policyFor: @"C"] validateWith: trust];
     XCTAssertTrue(isTrusted, @"We previously defined cusom validation to return TRUE, so it should succeed.");
 }
 
