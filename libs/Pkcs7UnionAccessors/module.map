@@ -1,6 +1,0 @@
-module Pkcs7UnionAccessors {
-
-    header "pkcs7_union_accessors.h"
-
-    export *
-}

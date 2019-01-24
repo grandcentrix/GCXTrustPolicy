@@ -136,32 +136,3 @@ class PublicKeyBuilder: DefaultBuilder, PinTrustPolicyBuilding {
         return PinPublicKeyDirective(certificateBundle: certificateBundle, hostName: hostName, validateServerTrust: !allowInsecureTrust, validateHost: validateHost)
     }
 }
-
-///
-/// Build a TrustDirective with certificate pinning capabilities.
-///
-class CertificateOnlineBuilder: DefaultBuilder, PinTrustOnlinePolicyBuilding {
-    
-    var trustServer: URL!
-    var trustServerCertificate: Data!
-    var customer: String!
-    
-    override func build() -> TrustDirective {
-        return PinCertificateOnlineDirective(trustServer: trustServer, trustServerCertificate: trustServerCertificate, customer: customer, hostName: hostName, validateServerTrust: !allowInsecureTrust, validateHost: validateHost)
-    }
-}
-
-
-///
-/// Build a TrustDirective with public key pinning capabilities.
-///
-class PublicKeyOnlineBuilder: DefaultBuilder, PinTrustOnlinePolicyBuilding {
-    
-    var trustServer: URL!
-    var trustServerCertificate: Data!
-    var customer: String!
-    
-    override func build() -> TrustDirective {
-        return PinPublicKeyOnlineDirective(trustServer: trustServer, trustServerCertificate: trustServerCertificate, customer: customer, hostName: hostName, validateServerTrust: !allowInsecureTrust, validateHost: validateHost)
-    }
-}

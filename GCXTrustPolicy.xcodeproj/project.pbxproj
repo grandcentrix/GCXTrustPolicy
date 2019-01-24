@@ -49,11 +49,6 @@
 		4FBC97091E1BFFDE008BB35C /* ComposePolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FBC97081E1BFFDE008BB35C /* ComposePolicy.swift */; };
 		4FDD341C1D48F24D0013A271 /* GCXTrustPolicy.h in Headers */ = {isa = PBXBuildFile; fileRef = 4FDD341B1D48F24D0013A271 /* GCXTrustPolicy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4FDD34231D48F24D0013A271 /* GCXTrustPolicy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FDD34181D48F24D0013A271 /* GCXTrustPolicy.framework */; };
-		F8274DBB1E69ABE100B5E38C /* TrustDirectivePinPublicKeyOnlineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8274DBA1E69ABE100B5E38C /* TrustDirectivePinPublicKeyOnlineTests.swift */; };
-		F859541E1E6EAB2000ADAA8D /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F859541C1E6EAB2000ADAA8D /* libcrypto.a */; };
-		F859541F1E6EAB2000ADAA8D /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F859541D1E6EAB2000ADAA8D /* libssl.a */; };
-		F85954251E6EC71600ADAA8D /* libpkcs7_union_accessors.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F85954241E6EC71600ADAA8D /* libpkcs7_union_accessors.a */; };
-		F85954271E6F06D700ADAA8D /* TrustDirectivePinCertificateOnlineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85954261E6F06D700ADAA8D /* TrustDirectivePinCertificateOnlineTests.swift */; };
 		F859542A1E6FF48B00ADAA8D /* gcx-expired.json.signed in Resources */ = {isa = PBXBuildFile; fileRef = F85954291E6FF48B00ADAA8D /* gcx-expired.json.signed */; };
 		F859542C1E70053C00ADAA8D /* gcx-valid.json.signed in Resources */ = {isa = PBXBuildFile; fileRef = F859542B1E70053C00ADAA8D /* gcx-valid.json.signed */; };
 /* End PBXBuildFile section */
@@ -101,11 +96,6 @@
 		4FDD341D1D48F24D0013A271 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4FDD34221D48F24D0013A271 /* GCXTrustPolicyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GCXTrustPolicyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FDD34291D48F24D0013A271 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F8274DBA1E69ABE100B5E38C /* TrustDirectivePinPublicKeyOnlineTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrustDirectivePinPublicKeyOnlineTests.swift; sourceTree = "<group>"; };
-		F859541C1E6EAB2000ADAA8D /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = libs/OpenSSL/lib/iOS/libcrypto.a; sourceTree = "<group>"; };
-		F859541D1E6EAB2000ADAA8D /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssl.a; path = libs/OpenSSL/lib/iOS/libssl.a; sourceTree = "<group>"; };
-		F85954241E6EC71600ADAA8D /* libpkcs7_union_accessors.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpkcs7_union_accessors.a; path = libs/Pkcs7UnionAccessors/lib/iOS/libpkcs7_union_accessors.a; sourceTree = "<group>"; };
-		F85954261E6F06D700ADAA8D /* TrustDirectivePinCertificateOnlineTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrustDirectivePinCertificateOnlineTests.swift; sourceTree = "<group>"; };
 		F85954291E6FF48B00ADAA8D /* gcx-expired.json.signed */ = {isa = PBXFileReference; lastKnownFileType = file; path = "gcx-expired.json.signed"; sourceTree = "<group>"; };
 		F859542B1E70053C00ADAA8D /* gcx-valid.json.signed */ = {isa = PBXFileReference; lastKnownFileType = file; path = "gcx-valid.json.signed"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -115,9 +105,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F85954251E6EC71600ADAA8D /* libpkcs7_union_accessors.a in Frameworks */,
-				F859541E1E6EAB2000ADAA8D /* libcrypto.a in Frameworks */,
-				F859541F1E6EAB2000ADAA8D /* libssl.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -167,8 +154,6 @@
 				4F28B46A1E1D37DD00F14DF8 /* ComposePolicyTests.swift */,
 				4F28B46B1E1D37DD00F14DF8 /* TrustDirectivePinCertificateTests.swift */,
 				4F28B46C1E1D37DD00F14DF8 /* TrustDirectivePinPublicKeyTests.swift */,
-				F85954261E6F06D700ADAA8D /* TrustDirectivePinCertificateOnlineTests.swift */,
-				F8274DBA1E69ABE100B5E38C /* TrustDirectivePinPublicKeyOnlineTests.swift */,
 				4F28B46D1E1D37DD00F14DF8 /* TrustDirectiveTests.swift */,
 				4F28B46E1E1D37DD00F14DF8 /* TrustManagerTests.swift */,
 			);
@@ -257,9 +242,6 @@
 		F85953781E6E14E200ADAA8D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				F85954241E6EC71600ADAA8D /* libpkcs7_union_accessors.a */,
-				F859541C1E6EAB2000ADAA8D /* libcrypto.a */,
-				F859541D1E6EAB2000ADAA8D /* libssl.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -408,7 +390,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "######################\n# Options\n######################\n\nREVEAL_ARCHIVE_IN_FINDER=false\n\nFRAMEWORK_NAME=\"${PROJECT_NAME}\"\n\nSIMULATOR_LIBRARY_PATH=\"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${FRAMEWORK_NAME}.framework\"\n\nDEVICE_LIBRARY_PATH=\"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${FRAMEWORK_NAME}.framework\"\n\nUNIVERSAL_LIBRARY_DIR=\"${BUILD_DIR}/${CONFIGURATION}-iphoneuniversal\"\n\nFRAMEWORK=\"${UNIVERSAL_LIBRARY_DIR}/${FRAMEWORK_NAME}.framework\"\n\n\n######################\n# Build Frameworks\n######################\n\n###xcodebuild -workspace ${PROJECT_NAME}.xcworkspace -scheme ${PROJECT_NAME} -sdk iphonesimulator -configuration ${CONFIGURATION} clean build CONFIGURATION_BUILD_DIR=${BUILD_DIR}/${CONFIGURATION}-iphonesimulator 2>&1\n\n###xcodebuild -workspace ${PROJECT_NAME}.xcworkspace -scheme ${PROJECT_NAME} -sdk iphoneos -configuration ${CONFIGURATION} clean build CONFIGURATION_BUILD_DIR=${BUILD_DIR}/${CONFIGURATION}-iphoneos 2>&1\n\nxcodebuild -project ${PROJECT_NAME}.xcodeproj -target ${PROJECT_NAME} -sdk iphonesimulator -configuration ${CONFIGURATION} clean build CONFIGURATION_BUILD_DIR=${BUILD_DIR}/${CONFIGURATION}-iphonesimulator 2>&1\n\nxcodebuild -project ${PROJECT_NAME}.xcodeproj -target ${PROJECT_NAME} -sdk iphoneos -configuration ${CONFIGURATION} clean build CONFIGURATION_BUILD_DIR=${BUILD_DIR}/${CONFIGURATION}-iphoneos 2>&1\n\n\n\n######################\n# Create directory for universal\n######################\n\nrm -rf \"${UNIVERSAL_LIBRARY_DIR}\"\n\nmkdir \"${UNIVERSAL_LIBRARY_DIR}\"\n\nmkdir \"${FRAMEWORK}\"\n\n\n######################\n# Copy files Framework\n######################\n\ncp -r \"${DEVICE_LIBRARY_PATH}/.\" \"${FRAMEWORK}\"\n\n\n######################\n# Make an universal binary\n######################\n\nlipo \"${SIMULATOR_LIBRARY_PATH}/${FRAMEWORK_NAME}\" \"${DEVICE_LIBRARY_PATH}/${FRAMEWORK_NAME}\" -create -output \"${FRAMEWORK}/${FRAMEWORK_NAME}\" | echo\n\n# For Swift framework, Swiftmodule needs to be copied in the universal framework\nif [ -d \"${SIMULATOR_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" ]; then\ncp -f '${SIMULATOR_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/*' '${FRAMEWORK}/Modules/${FRAMEWORK_NAME}.swiftmodule/' | echo\nfi\n\nif [ -d \"${DEVICE_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" ]; then\ncp -f '${DEVICE_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/*' '${FRAMEWORK}/Modules/${FRAMEWORK_NAME}.swiftmodule/' | echo\nfi\n\n######################\n# On Release, copy the result to release directory\n######################\nOUTPUT_DIR=\"${PROJECT_DIR}/Output/${FRAMEWORK_NAME}-${CONFIGURATION}-iphoneuniversal/\"\n\nrm -rf \"$OUTPUT_DIR\"\nmkdir -p \"$OUTPUT_DIR\"\n\ncp -r \"${FRAMEWORK}\" \"$OUTPUT_DIR\"\n\nif [ ${REVEAL_ARCHIVE_IN_FINDER} = true ]; then\nopen \"${OUTPUT_DIR}/\"\nfi";
+			shellScript = "######################\n# Options\n######################\n\nREVEAL_ARCHIVE_IN_FINDER=false # will open finder after build\n\nFRAMEWORK_NAME=\"${PROJECT_NAME}\"\n\nSIMULATOR_LIBRARY_PATH=\"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${FRAMEWORK_NAME}.framework\"\n\nDEVICE_LIBRARY_PATH=\"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${FRAMEWORK_NAME}.framework\"\n\nUNIVERSAL_LIBRARY_DIR=\"${BUILD_DIR}/${CONFIGURATION}-iphoneuniversal\"\n\nFRAMEWORK=\"${UNIVERSAL_LIBRARY_DIR}/${FRAMEWORK_NAME}.framework\"\n\n\n######################\n# Build Frameworks\n######################\n\n###xcodebuild -workspace ${PROJECT_NAME}.xcworkspace -scheme ${PROJECT_NAME} -sdk iphonesimulator -configuration ${CONFIGURATION} clean build CONFIGURATION_BUILD_DIR=${BUILD_DIR}/${CONFIGURATION}-iphonesimulator 2>&1\n\n###xcodebuild -workspace ${PROJECT_NAME}.xcworkspace -scheme ${PROJECT_NAME} -sdk iphoneos -configuration ${CONFIGURATION} clean build CONFIGURATION_BUILD_DIR=${BUILD_DIR}/${CONFIGURATION}-iphoneos 2>&1\n\nxcodebuild -project ${PROJECT_NAME}.xcodeproj -target ${PROJECT_NAME} -sdk iphonesimulator -configuration ${CONFIGURATION} clean build CONFIGURATION_BUILD_DIR=${BUILD_DIR}/${CONFIGURATION}-iphonesimulator 2>&1\n\nxcodebuild -project ${PROJECT_NAME}.xcodeproj -target ${PROJECT_NAME} -sdk iphoneos -configuration ${CONFIGURATION} clean build CONFIGURATION_BUILD_DIR=${BUILD_DIR}/${CONFIGURATION}-iphoneos 2>&1\n\n\n\n######################\n# Create directory for universal\n######################\n\nrm -rf \"${UNIVERSAL_LIBRARY_DIR}\"\n\nmkdir \"${UNIVERSAL_LIBRARY_DIR}\"\n\nmkdir \"${FRAMEWORK}\"\n\n\n######################\n# Copy files Framework\n######################\n\ncp -r \"${DEVICE_LIBRARY_PATH}/.\" \"${FRAMEWORK}\"\n\n\n######################\n# Make an universal binary\n######################\n\nlipo \"${SIMULATOR_LIBRARY_PATH}/${FRAMEWORK_NAME}\" \"${DEVICE_LIBRARY_PATH}/${FRAMEWORK_NAME}\" -create -output \"${FRAMEWORK}/${FRAMEWORK_NAME}\" | echo\n\n# For Swift framework, Swiftmodule needs to be copied in the universal framework\nif [ -d \"${SIMULATOR_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" ]; then\ncp -f '${SIMULATOR_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/*' '${FRAMEWORK}/Modules/${FRAMEWORK_NAME}.swiftmodule/' | echo\nfi\n\nif [ -d \"${DEVICE_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" ]; then\ncp -f '${DEVICE_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/*' '${FRAMEWORK}/Modules/${FRAMEWORK_NAME}.swiftmodule/' | echo\nfi\n\n######################\n# On Release, copy the result to release directory\n######################\nOUTPUT_DIR=\"${PROJECT_DIR}/Output/${FRAMEWORK_NAME}-${CONFIGURATION}-iphoneuniversal/\"\n\nrm -rf \"$OUTPUT_DIR\"\nmkdir -p \"$OUTPUT_DIR\"\n\ncp -r \"${FRAMEWORK}\" \"$OUTPUT_DIR\"\n\nif [ ${REVEAL_ARCHIVE_IN_FINDER} = true ]; then\nopen \"${OUTPUT_DIR}/\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -430,12 +412,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F8274DBB1E69ABE100B5E38C /* TrustDirectivePinPublicKeyOnlineTests.swift in Sources */,
 				4F28B4801E1D37DD00F14DF8 /* ComposePolicyTests.swift in Sources */,
 				4F28B4811E1D37DD00F14DF8 /* TrustDirectivePinCertificateTests.swift in Sources */,
 				4F28B4841E1D37DD00F14DF8 /* TrustManagerTests.swift in Sources */,
 				4F53315F1D4A65E300502FE9 /* TestHelper.swift in Sources */,
-				F85954271E6F06D700ADAA8D /* TrustDirectivePinCertificateOnlineTests.swift in Sources */,
 				4F28B4831E1D37DD00F14DF8 /* TrustDirectiveTests.swift in Sources */,
 				4F28B4821E1D37DD00F14DF8 /* TrustDirectivePinPublicKeyTests.swift in Sources */,
 				4F28B47F1E1D37DD00F14DF8 /* GCXTrustPolicyTests.swift in Sources */,
@@ -602,11 +582,7 @@
 				INFOPLIST_FILE = GCXTrustPolicy/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/libs/OpenSSL/lib/iOS",
-					"$(PROJECT_DIR)/libs/Pkcs7UnionAccessors/lib/iOS",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = net.grandcentrix.GCXTrustPolicy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -633,11 +609,7 @@
 				INFOPLIST_FILE = GCXTrustPolicy/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/libs/OpenSSL/lib/iOS",
-					"$(PROJECT_DIR)/libs/Pkcs7UnionAccessors/lib/iOS",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = net.grandcentrix.GCXTrustPolicy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

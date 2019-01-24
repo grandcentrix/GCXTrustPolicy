@@ -53,19 +53,6 @@ public protocol TrustPolicy {
                         The validation process is considered successful if one of the pinned
                         public key(s) match one of the servers public key(s) and standard
                         validation has also been successful.
- 
-- pinCertificateOnline: Perform a validation by pinning certificate(s).
-                        The validation process is considered successful if one of the pinned
-                        certificates match one of the servers certificates and standard
-                        validation has also been successful. The Pinning certificates are 
-                        downloaded from a trusted third party.
- 
-- pinPublicKeyOnline:   Perform a validation by pinning the certificate(s) public key.
-                        The validation process is considered successful if one of the pinned
-                        public key(s) match one of the servers public key(s) and standard
-                        validation has also been successful. The Pinning certificates are
-                        downloaded from a trusted third party.
- 
  */
 @objc(GCXValidationType) public enum ValidationType: Int {
     case disabled = 0
@@ -73,8 +60,6 @@ public protocol TrustPolicy {
     case custom
     case pinCertificate
     case pinPublicKey
-    case pinCertificateOnline
-    case pinPublicKeyOnline
 }
 
 

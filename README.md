@@ -73,10 +73,6 @@ The provided host name must match either the leaf certificate’s Common Name or
 
 - `pinCertificate`: Certificate pinning: Uses the pinned certificates to validate the server trust. The server trust is considered valid if one of the pinned certificates match one of the server certificates. A default host validation like in 'DefaultValidation' is also done. A drawback is that if the server renews it's certificate(s) a new app with new certificate has to be shipped as the old one bundeled with the app is no longer valid.
 
-- `pinPublicKeyOnline`: Public key pinning with a Trusted Server: Uses the provided TrustServer and TrustServerCertificate to recieve a signed file from the Server. The server trust is considered valid if one of the pinned public keys match one of the server certificate public keys. A default host validation like in 'DefaultValidation' is also done. Note: Applications that use public key pinning usually don't need an app update if the server renews it's certificate(s) as the underlying public key remains valid.
-
-- `pinCertificateOnline`: Certificate pinning with a Trusted Server: Uses the provided TrustServer and TrustServerCertificate to recieve a signed file from the Server. With this file the certificate is validated. A default host validation like in 'DefaultValidation' is also done.
-
 - `disabled`: No validation at all. This will always consider any server trust as valid.
 
 - `custom`: Perform a complete custom validation using a closure.
@@ -93,8 +89,6 @@ public enum ValidationType: Int {
     case custom
     case pinCertificate
     case pinPublicKey
-    case pinCertificateOnline
-    case pinPublicKeyOnline
 }
 ```
 
@@ -107,9 +101,7 @@ typedef SWIFT_ENUM_NAMED(NSInteger, GCXValidationType, "ValidationType") {
   GCXValidationTypeStandard = 1,
   GCXValidationTypeCustom = 2,
   GCXValidationTypePinCertificate = 3,
-  GCXValidationTypePinPublicKey = 4,
-  GCXValidationTypePinCertificateOnline = 5,
-  GCXValidationTypePinPublicKeyOnline = 6,
+  GCXValidationTypePinPublicKey = 4
 };
 ```
 
@@ -166,20 +158,8 @@ func setupTrustPolicies() {
     let composer = ComposePolicy(withValidation: .pinPublicKey, forHost: pinningHost)
     let pinningPolicy = composer.create()
 
-    // - .pinPublicKeyOnline: - //
-    // compose and build a public key pinning with trustServer policy
-    let grandcentrix = URL(string: "https://www.grandcentrix.net")!.host!
-    let pkOnline = ComposePolicy(withValidation: .pinPublicKeyOnline, forHost: grandcentrix)
-
-    // set Trust Anchor
-    pkOnline.trustServer = URL(string: "https://pinning.gcxi.de/gcx.json.signed")
-    pkOnline.trustServerCertificate = Data(base64Encoded: "MIIFIDCCAwgCCQCFB0NhqrdqPDANBgkqhkiG9w0BAQ0FADBSMQswCQYDVQQGEwJERTEMMAoGA1UECAwDTlJXMRAwDgYDVQQHDAdDb2xvZ25lMRUwEwYDVQQKDAxncmFuZGNlbnRyaXgxDDAKBgNVBAMMA2djeDAeFw0xNzAzMDgxNTI3MDhaFw0zNzAzMDMxNTI3MDhaMFIxCzAJBgNVBAYTAkRFMQwwCgYDVQQIDANOUlcxEDAOBgNVBAcMB0NvbG9nbmUxFTATBgNVBAoMDGdyYW5kY2VudHJpeDEMMAoGA1UEAwwDZ2N4MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAwmridNgOSL5qtU2VOVCtMg0cYonTl7KKH8QAU3DOF9bHUo/R5w5cwaNV7ICdfliknjV+6s83qqzj2hDucDuoxftaa02BxoSXl3zZ9rwzmsrLeD4n91V7m5FA2T9NrRojuIy1vcuYTn6DkSdEeRfyOGob4nYbtPGYQKQXYcwTTCm9TC16CYAmOIAEVDPXsl6nZXV2iH0N70tM1qc5qIYjZRdnR5Ig+oR8X+dyWo+vJMfaOwza8c/LlTZFhaJ1L7hK7QdcHlm6Gqx7iq5FePZSCyMdrcuTE2IJFFiCDN38sL3qezoVFDs/9YC09CM5AxVQDehd0t/30BtyrcqzXgdshIFlqwUv3i9Til2GW23vwkZik5q72zuxH/uG4XYwMhdl3MtHrypa99+o8nEt+iHN6LZ9T1dhs3xgihkvEZ1T7S95/Lg2Ek1EFyzgAyQtJa4x27q6epH+15lEMcuAB/f3e+AgRRbImKhGWVuqxu1xIbga5e0ZlY1/f0rxFmb0r55Zdl0ssZIjSpxT+wTsRchUr5DQlvX8OGFcO+gsLWlhlOFduVgHsllM0NnHu6tEdvCLj42Qcbcy+02upxnhDnItWXu9ZLUgVf23etpk2VNxv6AB59bspX+k9pTqVIxuvzyfnVqPrmzGt16RRYdlQ91vGs9ig1+rT1u8wP5MJe6bzxMCAwEAATANBgkqhkiG9w0BAQ0FAAOCAgEAf5J1V1YUPJffVhh/tXJWUkIjV8bj/a8aScjSINJIn0scomRrvTfHXrHw6dqws1ly3MunubrfISVc9ZIqUMW+zBMNK+EqEYqbsvVUSW/O327KkqxgH9evDb6+Cw10I4iA0GRJ+vp8ON/qD0bZAZN1b/4O9xdRR/aXAov9SiYaY+CRWrxqmTw4MY45Qzmo2S51wf4L+s59suFIE2zm+xU9OddptApxbkj4YRPB0jcosBWRqYZWKzUP8/qBYIXNolLkl42UbPcFnVLNDxAMLx8J8WWBHomjxoHkjD9/R6OCgeHNP49Nh9qeUtbLPcDx5bw/L2QiXi63+EO08nBs7dy/XPNRn+iNBsYA5bNtRSulw6TgatrwIv1flDBaFPR/2l91SpNEXvKCipkzCHK9XjHBzbZBhbHInGKMEz9WIYgbw1P60kV8U9zKwaWgjuN7g1QMmIpxqIaC64rY8ArBJyrhmKR1OHyRd/k2e6kigqyTzLt/1VZh8KaSzgmoHe/jqV8zyrK4wCvts3MCR/XDI2IVZPBx4iFlJ+CrD4kWslY0KjbpRS96stcVKQsEyFx1RbafINSH3OzHA3dDJ8wToYzyit6Fs9bzmqtIencYYxyrGQatJq8fUDIRXyNgqIZtFzWH4zruvi3ol8v0X/0W4Rjl1cEztWUvUzS2bmJxizen+tE=")
-    pkOnline.customer = "gcx"
-
-    let pkOnlinePolicy = pkOnline.create()
-
     // add the three policies to the manager class at once
-    TrustManager.sharedInstance.add(policies: [defaultPolicy, pinningPolicy, pkOnlinePolicy])
+    TrustManager.sharedInstance.add(policies: [defaultPolicy, pinningPolicy])
 }
 ```
 
@@ -199,23 +179,10 @@ func setupTrustPolicies() {
     NSString *pinningHost = [NSURL URLWithString:PINNING_HOST_URL_STRING].host;
     GCXComposePolicy *composer = [[GCXComposePolicy alloc] initWithValidation:GCXValidationTypePinPublicKey forHost:pinningHost];
     id<GCXTrustPolicy> pinningPolicy = [composer create];
-
-    // - .pinPublicKeyOnline: - //
-    // compose and build a public key with TrustServer pinning policy
-    NSString *grandcentrix = [NSURL URLWithString:@"https://www.grandcentrix.net"].host;
-    GCXComposePolicy *pkOnline = [[GCXComposePolicy alloc] initWithValidation:GCXValidationTypePinPublicKeyOnline forHost:pinningHost];
-
-    // set Trust Anchor
-    pkOnline.trustServer = [NSURL URLWithString:@"https://pinning.gcxi.de/gcx.json.signed"]
-    pkOnline.trustServerCertificate = [NSData dataFromBase64String: @"MIIFIDCCAwgCCQCFB0NhqrdqPDANBgkqhkiG9w0BAQ0FADBSMQswCQYDVQQGEwJERTEMMAoGA1UECAwDTlJXMRAwDgYDVQQHDAdDb2xvZ25lMRUwEwYDVQQKDAxncmFuZGNlbnRyaXgxDDAKBgNVBAMMA2djeDAeFw0xNzAzMDgxNTI3MDhaFw0zNzAzMDMxNTI3MDhaMFIxCzAJBgNVBAYTAkRFMQwwCgYDVQQIDANOUlcxEDAOBgNVBAcMB0NvbG9nbmUxFTATBgNVBAoMDGdyYW5kY2VudHJpeDEMMAoGA1UEAwwDZ2N4MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAwmridNgOSL5qtU2VOVCtMg0cYonTl7KKH8QAU3DOF9bHUo/R5w5cwaNV7ICdfliknjV+6s83qqzj2hDucDuoxftaa02BxoSXl3zZ9rwzmsrLeD4n91V7m5FA2T9NrRojuIy1vcuYTn6DkSdEeRfyOGob4nYbtPGYQKQXYcwTTCm9TC16CYAmOIAEVDPXsl6nZXV2iH0N70tM1qc5qIYjZRdnR5Ig+oR8X+dyWo+vJMfaOwza8c/LlTZFhaJ1L7hK7QdcHlm6Gqx7iq5FePZSCyMdrcuTE2IJFFiCDN38sL3qezoVFDs/9YC09CM5AxVQDehd0t/30BtyrcqzXgdshIFlqwUv3i9Til2GW23vwkZik5q72zuxH/uG4XYwMhdl3MtHrypa99+o8nEt+iHN6LZ9T1dhs3xgihkvEZ1T7S95/Lg2Ek1EFyzgAyQtJa4x27q6epH+15lEMcuAB/f3e+AgRRbImKhGWVuqxu1xIbga5e0ZlY1/f0rxFmb0r55Zdl0ssZIjSpxT+wTsRchUr5DQlvX8OGFcO+gsLWlhlOFduVgHsllM0NnHu6tEdvCLj42Qcbcy+02upxnhDnItWXu9ZLUgVf23etpk2VNxv6AB59bspX+k9pTqVIxuvzyfnVqPrmzGt16RRYdlQ91vGs9ig1+rT1u8wP5MJe6bzxMCAwEAATANBgkqhkiG9w0BAQ0FAAOCAgEAf5J1V1YUPJffVhh/tXJWUkIjV8bj/a8aScjSINJIn0scomRrvTfHXrHw6dqws1ly3MunubrfISVc9ZIqUMW+zBMNK+EqEYqbsvVUSW/O327KkqxgH9evDb6+Cw10I4iA0GRJ+vp8ON/qD0bZAZN1b/4O9xdRR/aXAov9SiYaY+CRWrxqmTw4MY45Qzmo2S51wf4L+s59suFIE2zm+xU9OddptApxbkj4YRPB0jcosBWRqYZWKzUP8/qBYIXNolLkl42UbPcFnVLNDxAMLx8J8WWBHomjxoHkjD9/R6OCgeHNP49Nh9qeUtbLPcDx5bw/L2QiXi63+EO08nBs7dy/XPNRn+iNBsYA5bNtRSulw6TgatrwIv1flDBaFPR/2l91SpNEXvKCipkzCHK9XjHBzbZBhbHInGKMEz9WIYgbw1P60kV8U9zKwaWgjuN7g1QMmIpxqIaC64rY8ArBJyrhmKR1OHyRd/k2e6kigqyTzLt/1VZh8KaSzgmoHe/jqV8zyrK4wCvts3MCR/XDI2IVZPBx4iFlJ+CrD4kWslY0KjbpRS96stcVKQsEyFx1RbafINSH3OzHA3dDJ8wToYzyit6Fs9bzmqtIencYYxyrGQatJq8fUDIRXyNgqIZtFzWH4zruvi3ol8v0X/0W4Rjl1cEztWUvUzS2bmJxizen+tE="]
-    pkOnline.customer = @"gcx"
-
-    id<GCXTrustPolicy> pkOnlinePolicy = [pkOnline create];
-
-
+    
     // add the three policies to the manager class at once
     GCXTrustManager *manager = [GCXTrustManager sharedInstance];
-    [manager addWithPolicies:@[defaultPolicy, pinningPolicy, pkOnlinePolicy]];
+    [manager addWithPolicies:@[defaultPolicy, pinningPolicy]];
 }
 ```
 
@@ -360,17 +327,6 @@ composer.customValidation = ^BOOL(SecTrustRef _Null_unspecified trust) {
 
 <br />
 
-## Online trust server
-
-### Grandcentrix
-
-To verify the trust with an online server you can use the grandcentrix.net server. Contact us at hello@grandcentrix.net.
-
-### Selfhosted
-
-see the bin/ directory for further information. This Script needs to run every 5 Minutes, so it generates a fresh copy of the signed json. It will output the pinning certificate the first time it is used. 
-
-<br />
 
 ## Documentation
 
@@ -380,8 +336,6 @@ Please see the soure code for further informations.
 <br />
 
 ## Troubleshooting
-
-* When stumbling upon errors stating the module CommonCrypo can not be created make sure you have Apple's `Xcode Commandline Tools` installed. This allows Module `CommonCrypto` to reference the Umbrella Header at `/usr/include/CommonCrypto/CommonCrypto.h` on the filesystem.
 
 * If you running an Objective-C project and encounter  an  `dyld: Library not loaded: @rpath/libswiftCore.dylib` error try to
 set the Xcode build option 'Embedded Content Contains Swift Code' to 'YES'.
