@@ -26,7 +26,7 @@ public protocol TrustPolicy {
     var hostName: String! { get set }
     
     /// Validates a policy against a given trust
-    func validate(with trust: SecTrust) -> Bool
+    func validate(trust: SecTrust) -> Bool
 }
 
 @objc(GCXValidationType)

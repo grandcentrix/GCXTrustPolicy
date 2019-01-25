@@ -97,10 +97,10 @@ open class TrustComposer: NSObject, TrustComposing {
     open func create() -> TrustPolicy {
         switch validationType {
         case .disabled:
-            return DisabledDirective(withHostName: hostName)
+            return DisabledDirective(hostName: hostName)
             
         case .standard:
-            return DefaultDirective(withHostName: hostName, validateServerTrust: true, validateHost: skipHostNameValidation)
+            return DefaultDirective(hostName: hostName, skipTrustChainValidation: true, skipHostValidation: skipHostNameValidation)
             
         case .custom:
             if customValidation == nil {
@@ -108,13 +108,13 @@ open class TrustComposer: NSObject, TrustComposing {
                 let reason = "Please provide a custom validation closure."
                 NSException(name: name, reason: reason, userInfo: nil).raise()
             }
-            return CustomDirective(withHostName: hostName, customValidation: customValidation!)
+            return CustomDirective(hostName: hostName, customValidation: customValidation!)
             
         case .pinCertificate:
-            return PinCertificateDirective(certificateBundle: certificateBundle, hostName: hostName, validateServerTrust: certificateSkipChainValidation, validateHost: skipHostNameValidation)
+            return PinCertificateDirective(certificateBundle: certificateBundle, hostName: hostName, skipTrustChainValidation: certificateSkipChainValidation, skipHostValidation: skipHostNameValidation)
             
         case .pinPublicKey:
-            return PinPublicKeyDirective(certificateBundle: certificateBundle, hostName: hostName, validateServerTrust: certificateSkipChainValidation, validateHost: skipHostNameValidation)
+            return PinPublicKeyDirective(certificateBundle: certificateBundle, hostName: hostName, skipTrustChainValidation: certificateSkipChainValidation, skipHostValidation: skipHostNameValidation)
         }
     }
 }
