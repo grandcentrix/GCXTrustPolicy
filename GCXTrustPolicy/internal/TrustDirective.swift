@@ -16,62 +16,38 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-
-////////////////////////////////////////////////
-///
-/// TrustDirective
-///
-////////////////////////////////////////////////
-
 import Foundation
 
-// MARK: - Base class for validation -
-
 class TrustDirective: NSObject, TrustPolicy {
-    
 
-    // MARK: - Variables -
-    
     var hostName: String!
-    
-    fileprivate var validateServerTrust: Bool!
-    fileprivate var validateHost: Bool!
-    
-    
-    // MARK: - Initialisation -
+    var skipTrustChainValidation: Bool!
+    var skipHostValidation: Bool!
     
     override init() {
-        NSException(name: NSExceptionName(rawValue: "Unintended initialisation"),
-                    reason: "Please use a concrete child class to perform initialisation.",
-                    userInfo: nil).raise()
+        let name = NSExceptionName(rawValue: "Unintended initialisation")
+        let reason = "Please use a concrete child class to perform initialisation."
+        NSException(name: name, reason: reason, userInfo: nil).raise()
     }
     
-    fileprivate init(withHostName host: String, validateServerTrust: Bool, validateHost: Bool) {
-        self.hostName = host
-        self.validateServerTrust = validateServerTrust
-        self.validateHost = validateHost
+    init(hostName: String, skipTrustChainValidation: Bool = false, skipHostValidation: Bool = false) {
+        self.hostName = hostName
+        self.skipTrustChainValidation = skipTrustChainValidation
+        self.skipHostValidation = skipHostValidation
         
         super.init()
     }
     
-    
-    // MARK: - TrustPolicy -
-    
     func validate(with trust: SecTrust) -> Bool {
-        return false
+        return false // intended to override in subclass
     }
 }
 
-
-// MARK: - Disabled validation -
-
-/**
-  Skip any validation and return a false success instead.
- */
+/// Skip any validation and return a false success instead.
 class DisabledDirective: TrustDirective {
     
-    init(withHostName host: String) {
-        super.init(withHostName: host, validateServerTrust: false, validateHost: false)
+    init(hostName: String) {
+        super.init(hostName: hostName)
     }
     
     override func validate(with trust: SecTrust) -> Bool {
@@ -79,16 +55,11 @@ class DisabledDirective: TrustDirective {
     }
 }
 
-
-// MARK: - Standard validation -
-
-/**
-  The standard procedure. Evaluate host and certificate chain for successful trust.
- */
+/// The standard validation. Evaluate host and certificate chain for successful trust.
 class DefaultDirective: TrustDirective {
     
-    override init(withHostName host: String, validateServerTrust: Bool, validateHost: Bool) {
-        super.init(withHostName: host, validateServerTrust: validateServerTrust, validateHost: validateHost)
+    init(hostName host: String, validateServerTrust: Bool, validateHost: Bool) {
+        super.init(hostName: hostName, validateServerTrust: validateServerTrust, validateHost: validateHost)
     }
     
     override func validate(with trust: SecTrust) -> Bool {
