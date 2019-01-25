@@ -18,12 +18,12 @@
 
 import Foundation
 
-@objc(GCXTrusting)
+@objc(GCXTrustManaging)
 /// Trusting protocol describing trust policiy management
 public protocol TrustManaging {
     
     /// Dictionary of `TrustPolicy`s.
-    /// It's advised to use the host's name as key.
+    /// It's suggested to use the host's name as key.
     var policies: [String: TrustPolicy] { get set }
     
     /// Retrieve all policy names.

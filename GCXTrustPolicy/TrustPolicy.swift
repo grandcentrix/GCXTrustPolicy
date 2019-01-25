@@ -18,8 +18,8 @@
 
 import Foundation
 
-/// Protocol definition for validating a policy against a remote trust
 @objc(GCXTrustPolicy)
+/// Protocol definition for validating a policy against a remote trust
 public protocol TrustPolicy {
     
     /// Name of the host

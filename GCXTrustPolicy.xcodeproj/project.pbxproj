@@ -46,7 +46,7 @@
 		4F7FBDFC1E1E68D50049B262 /* gcx-TrustedRoot.cer in Resources */ = {isa = PBXBuildFile; fileRef = 4F7FBDF91E1E68D50049B262 /* gcx-TrustedRoot.cer */; };
 		4F7FBDFF1E1E696E0049B262 /* gcx-selfsigned-expired.cer in Resources */ = {isa = PBXBuildFile; fileRef = 4F7FBDFD1E1E696E0049B262 /* gcx-selfsigned-expired.cer */; };
 		4F7FBE001E1E696E0049B262 /* gcx-selfsigned-valid.cer in Resources */ = {isa = PBXBuildFile; fileRef = 4F7FBDFE1E1E696E0049B262 /* gcx-selfsigned-valid.cer */; };
-		4FBC97091E1BFFDE008BB35C /* ComposePolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FBC97081E1BFFDE008BB35C /* ComposePolicy.swift */; };
+		4FBC97091E1BFFDE008BB35C /* TrustComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FBC97081E1BFFDE008BB35C /* TrustComposer.swift */; };
 		4FDD341C1D48F24D0013A271 /* GCXTrustPolicy.h in Headers */ = {isa = PBXBuildFile; fileRef = 4FDD341B1D48F24D0013A271 /* GCXTrustPolicy.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4FDD34231D48F24D0013A271 /* GCXTrustPolicy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FDD34181D48F24D0013A271 /* GCXTrustPolicy.framework */; };
 		F859542A1E6FF48B00ADAA8D /* gcx-expired.json.signed in Resources */ = {isa = PBXBuildFile; fileRef = F85954291E6FF48B00ADAA8D /* gcx-expired.json.signed */; };
@@ -90,7 +90,7 @@
 		4F7FBDF91E1E68D50049B262 /* gcx-TrustedRoot.cer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "gcx-TrustedRoot.cer"; sourceTree = "<group>"; };
 		4F7FBDFD1E1E696E0049B262 /* gcx-selfsigned-expired.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "gcx-selfsigned-expired.cer"; sourceTree = "<group>"; };
 		4F7FBDFE1E1E696E0049B262 /* gcx-selfsigned-valid.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = "gcx-selfsigned-valid.cer"; sourceTree = "<group>"; };
-		4FBC97081E1BFFDE008BB35C /* ComposePolicy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposePolicy.swift; sourceTree = "<group>"; };
+		4FBC97081E1BFFDE008BB35C /* TrustComposer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrustComposer.swift; sourceTree = "<group>"; };
 		4FDD34181D48F24D0013A271 /* GCXTrustPolicy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = GCXTrustPolicy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FDD341B1D48F24D0013A271 /* GCXTrustPolicy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GCXTrustPolicy.h; sourceTree = "<group>"; };
 		4FDD341D1D48F24D0013A271 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -220,7 +220,7 @@
 				4FDD341B1D48F24D0013A271 /* GCXTrustPolicy.h */,
 				4F3DE5CC1D509DCB0069BBD9 /* TrustPolicy.swift */,
 				4F5331561D4A4BA500502FE9 /* TrustManager.swift */,
-				4FBC97081E1BFFDE008BB35C /* ComposePolicy.swift */,
+				4FBC97081E1BFFDE008BB35C /* TrustComposer.swift */,
 				4F28B44E1E1CFEFB00F14DF8 /* internal */,
 			);
 			path = GCXTrustPolicy;
@@ -407,7 +407,7 @@
 				4F5331571D4A4BA500502FE9 /* TrustManager.swift in Sources */,
 				4F3DE5CD1D509DCB0069BBD9 /* TrustPolicy.swift in Sources */,
 				4F28B4541E1CFEFB00F14DF8 /* TrustPolicyBuilder.swift in Sources */,
-				4FBC97091E1BFFDE008BB35C /* ComposePolicy.swift in Sources */,
+				4FBC97091E1BFFDE008BB35C /* TrustComposer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
