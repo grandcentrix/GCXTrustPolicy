@@ -22,39 +22,38 @@ import Foundation
 @objc(GCXTrustPolicy)
 public protocol TrustPolicy {
     
-    /// The name of the host
+    /// Name of the host
     var hostName: String! { get set }
     
     /// Validates a policy against a given trust
     func validate(with trust: SecTrust) -> Bool
 }
 
-
-/**
-  Enummeration of all trust policy validation types.
- 
-  - disabled:           Perform no validation at all.
-                        Be careful, this will always consider any server trust as valid.
- 
-  - standard:           Perform a standard validation.
-                        Using the system provided standard mechanism that is basically a
-                        X.509 certificate trust evaluation in a recursive two-step
-                        process down to the trusted anchor certificate.
-
- - custom:              Perform a completely custom validation.
-                        The validation process is completely up to you.
- 
- - pinCertificate:      Perform a validation by pinning certificate(s).
-                        The validation process is considered successful if one of the pinned
-                        certificates match one of the servers certificates and standard
-                        validation has also been successful.
- 
- - pinPublicKey:        Perform a validation by pinning the certificate(s) public key.
-                        The validation process is considered successful if one of the pinned
-                        public key(s) match one of the servers public key(s) and standard
-                        validation has also been successful.
- */
-@objc(GCXValidationType) public enum ValidationType: Int {
+@objc(GCXValidationType)
+/// Trust policy validation types.
+///
+/// - disabled: Performs no validation at all.
+///				It is advised to be careful with disabling validation
+///				because *any* server trust will always be considerd as valid.
+///
+/// - standard: Performs a standard validation.
+///				Using the system provided standard mechanism that is basically a
+///				X.509 certificate trust evaluation in a recursive two-step
+///				process down to the trusted anchor certificate.
+///
+/// - custom:	Performx a completely custom validation.
+///				Handling the validation process is completely up to the developer.
+///
+/// - pinCertificate: 	Perform a validation by pinning certificate(s).
+///						The validation process is considered successful if one of the pinned
+///						public key(s) match one of the servers public key(s) and standard
+///						X.509 trust validation has also been successful.
+///
+/// - pinPublicKey:     Perform a validation by pinning the certificate(s) public key.
+///                     The validation process is considered successful if one of the pinned
+///                     public key(s) match one of the servers public key(s) and standard
+///                     X.509 trust validation has also been successful.
+public enum ValidationType: Int {
     case disabled = 0
     case standard
     case custom
@@ -62,6 +61,5 @@ public protocol TrustPolicy {
     case pinPublicKey
 }
 
-
-/// Custom validation closure type alias
+/// type alias for a closre that provides custom validation
 public typealias CustomValidationClosure = (SecTrust?) -> (Bool)

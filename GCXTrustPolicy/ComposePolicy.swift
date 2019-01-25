@@ -19,7 +19,7 @@
 import Foundation
 
 
-/// Abstraction layer to simplify the creation of a 'TrustPolicy' conforming objects.
+/// Abstraction layer to simplify the creation of 'TrustPolicy' conforming objects.
 @objc(GCXComposePolicy)
 open class ComposePolicy: NSObject {
     

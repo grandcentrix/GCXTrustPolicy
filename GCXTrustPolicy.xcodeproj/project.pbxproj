@@ -218,8 +218,8 @@
 			children = (
 				4FDD341D1D48F24D0013A271 /* Info.plist */,
 				4FDD341B1D48F24D0013A271 /* GCXTrustPolicy.h */,
-				4F5331561D4A4BA500502FE9 /* TrustManager.swift */,
 				4F3DE5CC1D509DCB0069BBD9 /* TrustPolicy.swift */,
+				4F5331561D4A4BA500502FE9 /* TrustManager.swift */,
 				4FBC97081E1BFFDE008BB35C /* ComposePolicy.swift */,
 				4F28B44E1E1CFEFB00F14DF8 /* internal */,
 			);
