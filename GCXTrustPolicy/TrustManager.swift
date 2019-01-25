@@ -19,7 +19,8 @@
 import Foundation
 
 @objc(GCXTrusting)
-public protocol Trusting {
+/// Trusting protocol describing trust policiy management
+public protocol TrustManaging {
     
     /// Dictionary of `TrustPolicy`s.
     /// It's advised to use the host's name as key.
@@ -54,6 +55,7 @@ public protocol Trusting {
 }
 
 @objc(GCXTrustManager)
+/// Class managing trust policies
 open class TrustManager: NSObject {
 
     /// Shared instance to the `TrustManager` object to use
@@ -79,7 +81,8 @@ open class TrustManager: NSObject {
     }
 }
 
-@objc extension TrustManager: Trusting {
+// MARK: - TrustManaging implementation -
+@objc extension TrustManager: TrustManaging {
     
     public var allPolicies: [TrustPolicy] {
         return Array(policies.values)
