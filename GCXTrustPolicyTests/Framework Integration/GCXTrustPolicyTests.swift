@@ -22,7 +22,7 @@ import GCXTrustPolicy
 class GCXTrustPolicyTests: XCTestCase {
 
     func test_integration_swift_shouldWorkFlawlessWithFramework() {
-        let defaultPolicy =  ComposePolicy(withValidation: .standard, forHost: "hostNameA").create()
+        let defaultPolicy = ComposePolicy(withValidation: .standard, forHost: "hostNameA").create()
         let disabledPolicy = ComposePolicy(withValidation: .disabled, forHost: "hostNameB").create()
         
         let customPolicyComposal = ComposePolicy(withValidation: .custom, forHost: "hostNameC")

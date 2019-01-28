@@ -18,42 +18,6 @@
 
 import Foundation
 
-@objc(GCXTrustManaging)
-/// Trusting protocol describing trust policiy management
-public protocol TrustManaging {
-    
-    /// Dictionary of `TrustPolicy`s.
-    /// It's suggested to use the host's name as key.
-    var policies: [String: TrustPolicy] { get set }
-    
-    /// Retrieve all policy names.
-    var allNames: [String] { get }
-    
-    /// Retrieve all `TrustPolicy` objects.
-    var allPolicies: [TrustPolicy] { get }
-    
-    /// Retrieve matching policy by its name.
-    ///
-    /// - Parameter name: the name of the policy
-    /// - Returns: optional `TrustPolicy` conforming object
-    func policy(for name: String) -> TrustPolicy?
-    
-    /// Adds a new `TrustPolicy` object.
-    ///
-    /// - Parameter policy: `TrustPolicy` conforming object
-    func add(policy: TrustPolicy)
-    
-    /// Adds a batch of `TrustPolicy` objects at once.
-    ///
-    /// - Parameter policies: Array of `TrustPolicy` conforming objects
-    func add(policies: [TrustPolicy])
-    
-    /// Remove a `TrustPolicy` by it's name.
-    ///
-    /// - Parameter name: the name with which the `TrustPolicy` was added
-    func removePolicy(name: String)
-}
-
 @objc(GCXTrustManager)
 /// Class managing trust policies
 open class TrustManager: NSObject {
@@ -81,7 +45,7 @@ open class TrustManager: NSObject {
     }
 }
 
-// MARK: - TrustManaging implementation -
+/// TrustManaging protocol implementation
 @objc extension TrustManager: TrustManaging {
     
     public var allPolicies: [TrustPolicy] {

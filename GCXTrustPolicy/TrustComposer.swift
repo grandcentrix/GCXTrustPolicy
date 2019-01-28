@@ -18,64 +18,13 @@
 
 import Foundation
 
-@objc(GCXTrustComposing)
-/// Protocol defining the creation of 'TrustPolicy' conforming objects.
-public protocol TrustComposing {
-
-    /// Prepares creation of a `TrustPolicy` object for a given host name.
-    /// The `ValidationType` enummeration values specify which kind of
-    /// trust is constucted upon `create()` call.
-    ///
-    /// - Parameters:
-    ///   - type: `ValidationType` the policy type
-    ///   - host:  host name String
-    init(with type: ValidationType, for host: String)
-    
-    /// Creation method for a new `TrustPolicy'
-    ///
-    /// - Returns: a new created `TrustPolicy` conforming objects.
-    func create() -> TrustPolicy
-
-    /// The host name that the policy applies for.
-    var hostName: String { get set }
-    
-    /// Define if host name checks will be skipped the standard X.509 validation.
-    ///
-    /// Default setting is 'false'.
-    var skipHostNameValidation: Bool { get set }
-    
-    /// The bundle where to search for certificates.
-    ///
-    /// Taken into account only for certificate validation types:
-    /// `ValidationType.pinPublicKey` and `ValidationType.pinCertificate`
-    ///
-    /// Default setting is the main Bundle.
-   var certificateBundle: Bundle { get set }
-    
-    /// Skip certificate chain validation during standard X.509 validation.
-    /// Careful with this option as it allows an unsecure server trust.
-    /// Can be useful when performing validation with servers that use self-signed
-    /// or expired certificates.
-    ///
-    /// Taken into account only for:
-    /// `ValidationType.pinPublicKey` and `ValidationType.pinCertificate`
-    ///
-    /// Default setting is `false`.
-    var certificateSkipChainValidation: Bool { get set }
-    
-    /// A custom closure for validation with `ValidationType.custom`.
-    var customValidation: CustomValidationClosure? { get set }
-}
-
 /// Abstraction layer to simplify the creation of 'TrustPolicy' conforming objects.
 @objc(GCXTrustComposer)
 open class TrustComposer: NSObject, TrustComposing {
     
     public var validationType: ValidationType = .standard
-    public var hostName = "undefined"
-    public var skipHostNameValidation = false
+    public var hostName: String?
     public var certificateBundle = Bundle.main
-    public var certificateSkipChainValidation = false
     public var customValidation: CustomValidationClosure?
     
     /// Defauilt initializer is not available. Use the designated initializer instead.
@@ -87,7 +36,7 @@ open class TrustComposer: NSObject, TrustComposing {
         NSException(name: name, reason: reason, userInfo: nil).raise()
     }
     
-    required public init(with type: ValidationType, for host: String) {
+    required public init(with type: ValidationType, for host: String?) {
         self.validationType = type
         self.hostName = host
 
@@ -100,7 +49,7 @@ open class TrustComposer: NSObject, TrustComposing {
             return DisabledDirective(hostName: hostName)
             
         case .standard:
-            return DefaultDirective(hostName: hostName, skipTrustChainValidation: true, skipHostValidation: skipHostNameValidation)
+            return DefaultDirective(hostName: hostName)
             
         case .custom:
             if customValidation == nil {
@@ -111,10 +60,10 @@ open class TrustComposer: NSObject, TrustComposing {
             return CustomDirective(hostName: hostName, customValidation: customValidation!)
             
         case .pinCertificate:
-            return PinCertificateDirective(certificateBundle: certificateBundle, hostName: hostName, skipTrustChainValidation: certificateSkipChainValidation, skipHostValidation: skipHostNameValidation)
+            return PinCertificateDirective( hostName: hostName, certificateBundle: certificateBundle)
             
         case .pinPublicKey:
-            return PinPublicKeyDirective(certificateBundle: certificateBundle, hostName: hostName, skipTrustChainValidation: certificateSkipChainValidation, skipHostValidation: skipHostNameValidation)
+            return PinPublicKeyDirective(hostName: hostName, certificateBundle: certificateBundle)
         }
     }
 }

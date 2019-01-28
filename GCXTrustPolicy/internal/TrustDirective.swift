@@ -18,11 +18,10 @@
 
 import Foundation
 
-class TrustDirective: NSObject, TrustPolicy {
+/// Abstract base class for different trust directives represented via `ValidationType` enum.
+class AbstractDirective: NSObject, TrustPolicy {
 
-    var hostName: String!
-    var skipTrustChainValidation: Bool!
-    var skipHostValidation: Bool!
+    var hostName: String?
     
     override init() {
         let name = NSExceptionName(rawValue: "Unintended initialisation")
@@ -30,11 +29,8 @@ class TrustDirective: NSObject, TrustPolicy {
         NSException(name: name, reason: reason, userInfo: nil).raise()
     }
     
-    init(hostName: String, skipTrustChainValidation: Bool = false, skipHostValidation: Bool = false) {
+    init(hostName: String?) {
         self.hostName = hostName
-        self.skipTrustChainValidation = skipTrustChainValidation
-        self.skipHostValidation = skipHostValidation
-        
         super.init()
     }
     
@@ -44,32 +40,19 @@ class TrustDirective: NSObject, TrustPolicy {
 }
 
 /// Skip any validation and return a false success instead.
-class DisabledDirective: TrustDirective {
+class DisabledDirective: AbstractDirective {
     
     override func validate(trust: SecTrust) -> Bool {
         return true // no validation is performed
     }
 }
 
-/// The standard validation. Evaluate host and certificate chain for successful trust.
-class DefaultDirective: TrustDirective {
-    
-    override func validate(trust: SecTrust) -> Bool {
-        return defaultValidation(trust: trust)
-    }
-    
-    func defaultValidation(trust: SecTrust) -> Bool {
-        if skipHostValidation { return true }
-        return TrustEvaluation.isValid(serverTrust: trust, hostName: hostName)
-    }
-}
-
 /// Uses a closure passed to the object to perform a completely custom validation.
-class CustomDirective: DefaultDirective {
+class CustomDirective: AbstractDirective {
     
     var validationClosure: CustomValidationClosure
-
-    init(hostName: String, customValidation: @escaping CustomValidationClosure) {
+    
+    init(hostName: String?, customValidation: @escaping CustomValidationClosure) {
         self.validationClosure = customValidation
         
         super.init(hostName: hostName)
@@ -80,16 +63,30 @@ class CustomDirective: DefaultDirective {
     }
 }
 
-/// Pin the server certifcate by comparing the local certificate(s) against the remote one(s).
+/// The standard validation. Evaluate host and certificate chain for successful trust.
+class DefaultDirective: AbstractDirective {
+    
+    override func validate(trust: SecTrust) -> Bool {
+        return defaultValidation(trust: trust)
+    }
+    
+    /// Triggers a standard X.509 validation check
+    func defaultValidation(trust: SecTrust) -> Bool {
+        return TrustEvaluation.isValid(serverTrust: trust, hostName: hostName)
+    }
+}
+
+/// Build upon `DefaultDirective` and pins the server certifcate
+/// by comparing the local certificate(s) against the remote one(s).
 class PinCertificateDirective: DefaultDirective {
     
     var pinnedCertDatas: [Data]
     
-    init(certificateBundle bundle: Bundle, hostName: String, skipTrustChainValidation: Bool, skipHostValidation: Bool) {
-        let certificates = TrustEvaluation.readDERCertificates(in: bundle)
+    init(hostName: String?, certificateBundle: Bundle) {
+        let certificates = TrustEvaluation.readDERCertificates(in: certificateBundle)
         pinnedCertDatas = TrustEvaluation.certificateData(from: certificates)
         
-        super.init(hostName: hostName, skipTrustChainValidation: skipTrustChainValidation, skipHostValidation: skipHostValidation)
+        super.init(hostName: hostName)
     }
     
     override func validate(trust: SecTrust) -> Bool {
@@ -108,15 +105,16 @@ class PinCertificateDirective: DefaultDirective {
     }
 }
 
-/// Perform standard validation and check for matching public keys in certificate chain.
+/// Build upon `DefaultDirective` and pins the server certifcate and performs
+/// standard validation and check for matching public keys in certificate chain.
 class PinPublicKeyDirective: DefaultDirective {
     
     var pinnedPublicKeys: [SecKey]
 
-    init(certificateBundle bundle: Bundle, hostName: String, skipTrustChainValidation: Bool, skipHostValidation: Bool) {
-        pinnedPublicKeys = TrustEvaluation.publicKeysFromCertificates(in: bundle)
+    init(hostName: String?, certificateBundle: Bundle) {
+        pinnedPublicKeys = TrustEvaluation.publicKeysFromCertificates(in: certificateBundle)
         
-        super.init(hostName: hostName, skipTrustChainValidation: skipTrustChainValidation, skipHostValidation: skipHostValidation)
+        super.init(hostName: hostName)
     }
 
     override func validate(trust: SecTrust) -> Bool {

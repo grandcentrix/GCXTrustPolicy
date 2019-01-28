@@ -63,3 +63,86 @@ public enum ValidationType: Int {
 
 /// type alias for a closre that provides custom validation
 public typealias CustomValidationClosure = (SecTrust?) -> (Bool)
+
+@objc(GCXTrustComposing)
+/// Protocol defining the creation of 'TrustPolicy' conforming objects.
+public protocol TrustComposing {
+    
+    /// Prepares creation of a `TrustPolicy` object for a given host name.
+    /// The `ValidationType` enummeration values specify which kind of
+    /// trust is constucted upon `create()` call.
+    ///
+    /// - Parameters:
+    ///   - type: `ValidationType` the policy type
+    ///   - host:  optional host name String
+    init(with type: ValidationType, for host: String?)
+    
+    /// Creation method for a new `TrustPolicy'
+    ///
+    /// - Returns: a new created `TrustPolicy` conforming objects.
+    func create() -> TrustPolicy
+    
+    /// The host name that the policy applies for.
+    ///
+    /// Will also used by all non-custom trust validation checks
+    /// (e.g. `ValidationType`: `.standard`, `.pinCertificate`,
+    /// .pinPublicKey`)
+    ///
+    /// Leaving the host name unset will lead the system not take it into
+    /// account during X.509 validation, hence it should be provided
+    /// by the calling client.
+    var hostName: String? { get set }
+    
+    /// The bundle where to search for certificates.
+    /// These certificates have to be bundled with the app.
+    /// (e.g. Xcode project folder)
+    ///
+    /// Taken into account only for certificate required
+    /// `ValidationType`:`.pinPublicKey` and `.pinCertificate`.
+    ///
+    /// Default setting is the main Bundle.
+    var certificateBundle: Bundle { get set }
+    
+    /// A custom closure for validation with `ValidationType`: `.custom`.
+    /// When using this, all validation logic has to be contained in
+    /// the closure.
+    /// A host name check, as part of systems standard
+    /// X.509 validation, is not being performed as well.
+    var customValidation: CustomValidationClosure? { get set }
+}
+
+@objc(GCXTrustManaging)
+/// Trusting protocol describing trust policiy management
+public protocol TrustManaging {
+    
+    /// Dictionary of `TrustPolicy`s.
+    /// It's suggested to use the host's name as key.
+    var policies: [String: TrustPolicy] { get set }
+    
+    /// Retrieve all policy names.
+    var allNames: [String] { get }
+    
+    /// Retrieve all `TrustPolicy` objects.
+    var allPolicies: [TrustPolicy] { get }
+    
+    /// Retrieve matching policy by its name.
+    ///
+    /// - Parameter name: the name of the policy
+    /// - Returns: optional `TrustPolicy` conforming object
+    func policy(for name: String) -> TrustPolicy?
+    
+    /// Adds a new `TrustPolicy` object.
+    ///
+    /// - Parameter policy: `TrustPolicy` conforming object
+    func add(policy: TrustPolicy)
+    
+    /// Adds a batch of `TrustPolicy` objects at once.
+    ///
+    /// - Parameter policies: Array of `TrustPolicy` conforming objects
+    func add(policies: [TrustPolicy])
+    
+    /// Remove a `TrustPolicy` by it's name.
+    ///
+    /// - Parameter name: the name with which the `TrustPolicy` was added
+    func removePolicy(name: String)
+}
