@@ -21,32 +21,26 @@ import Foundation
 @objc(GCXTrustManager)
 /// Class managing trust policies
 open class TrustManager: NSObject {
-
+    
     /// Shared instance to the `TrustManager` object to use
     /// this class as Singleton.
     @objc public static let shared = TrustManager()
     
-    /// `Trusting` protocol implementation
-    @objc open var policies: [String: TrustPolicy] = [:]
-    
-    /// Convenience initializer tha allows to pass an Array
-    /// of `TrustPolicy`s upon initialisation.
-    ///
-    /// Which offers the opportunity to apply different trust
-    /// evaluation policies on a per-host basis.
-    /// E.g. host 1 uses certificate pinning, host 2 simple
-    /// host validation and host 3 uses public key pinning.
-    ///
-    /// - Parameter trustPolicies: Array of `TrustPolicy` conforming objects
-    @objc public convenience init (with policies: [TrustPolicy]) {
-        self.init()
-        
-        add(policies: policies)
-    }
+    /// Trust policies to manage
+    private var _policies: [String: TrustPolicy] = [:]
 }
 
 /// TrustManaging protocol implementation
 @objc extension TrustManager: TrustManaging {
+    
+    public var policies: [String : TrustPolicy] {
+        get {
+            return _policies
+        }
+        set {
+            _policies = newValue
+        }
+    }
     
     public var allPolicies: [TrustPolicy] {
         return Array(policies.values)
@@ -56,6 +50,30 @@ open class TrustManager: NSObject {
         return Array(policies.keys)
     }
     
+    public func create(type: ValidationType, hostName: String?, certificateBundle: Bundle = Bundle.main, customValidation: CustomValidationClosure? = nil) -> TrustPolicy {
+        
+        switch type {
+        case .disabled:
+            return DisabledDirective(hostName: hostName)
+            
+        case .standard:
+            return DefaultDirective(hostName: hostName)
+            
+        case .custom:
+            if customValidation == nil {
+                let name = NSExceptionName(rawValue: "Missing Parameter")
+                let reason = "Please provide a custom validation closure."
+                NSException(name: name, reason: reason, userInfo: nil).raise()
+            }
+            return CustomDirective(hostName: hostName, customValidation: customValidation!)
+            
+        case .pinCertificate:
+            return PinCertificateDirective( hostName: hostName, certificateBundle: certificateBundle)
+            
+        case .pinPublicKey:
+            return PinPublicKeyDirective(hostName: hostName, certificateBundle: certificateBundle)
+        }
+    }
     public func policy(for name: String) -> TrustPolicy? {
         return policies[name]
     }
@@ -70,7 +88,7 @@ open class TrustManager: NSObject {
         }
     }
     
-    public func removePolicy(name: String) {
-        policies.removeValue(forKey: name)
+    public func removePolicy(name: String) -> TrustPolicy? {
+        return policies.removeValue(forKey: name)
     }
 }

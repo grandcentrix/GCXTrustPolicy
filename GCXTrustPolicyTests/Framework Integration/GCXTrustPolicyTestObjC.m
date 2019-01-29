@@ -24,7 +24,7 @@
 @end
 
 @implementation GCXTrustPolicyTestObjC
-
+/*
 - (void)test_integration_objc_shouldWorkFlawlessWithFramework {
     GCXValidationType standardValidationType = GCXValidationTypeStandard;
     GCXComposePolicy *composerA = [[GCXComposePolicy alloc] initWithValidation: standardValidationType forHost: @"A"];
@@ -57,6 +57,6 @@
     XCTAssertTrue(isTrusted, @"We previously defined cusom validation to return TRUE, so it should succeed.");
 }
 
-
+*/
 
 @end

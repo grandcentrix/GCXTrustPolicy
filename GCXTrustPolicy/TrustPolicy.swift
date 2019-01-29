@@ -1,5 +1,5 @@
 //
-//  DataTypesProtocols.swift
+//  TrustPolicy.swift
 //  GCXTrustPolicy
 //
 //  Copyright 2017 grandcentrix GmbH
@@ -17,6 +17,9 @@
 //  limitations under the License.
 
 import Foundation
+
+/// type alias for a closre that provides custom validation
+public typealias CustomValidationClosure = (SecTrust?) -> (Bool)
 
 @objc(GCXValidationType)
 /// Trust policy validation types.
@@ -50,9 +53,6 @@ public enum ValidationType: Int {
     case pinPublicKey
 }
 
-/// type alias for a closre that provides custom validation
-public typealias CustomValidationClosure = (SecTrust?) -> (Bool)
-
 @objc(GCXTrustPolicy)
 /// Protocol definition for validating a policy against a remote trust
 public protocol TrustPolicy {
@@ -62,53 +62,6 @@ public protocol TrustPolicy {
     
     /// Validates a policy against a given trust
     func validate(trust: SecTrust) -> Bool
-}
-
-@objc(GCXTrustComposing)
-/// Protocol defining the creation of 'TrustPolicy' conforming objects.
-public protocol TrustComposing {
-    
-    /// Prepares creation of a `TrustPolicy` object for a given host name.
-    /// The `ValidationType` enummeration values specify which kind of
-    /// trust is constucted upon `create()` call.
-    ///
-    /// - Parameters:
-    ///   - type: `ValidationType` the policy type
-    ///   - host:  optional host name String
-    init(with type: ValidationType, for host: String?)
-    
-    /// Creation method for a new `TrustPolicy'
-    ///
-    /// - Returns: a new created `TrustPolicy` conforming objects.
-    func create() -> TrustPolicy
-    
-    /// The host name that the policy applies for.
-    ///
-    /// Will also used by all non-custom trust validation checks
-    /// (e.g. `ValidationType`: `.standard`, `.pinCertificate`,
-    /// .pinPublicKey`)
-    ///
-    /// Leaving the host name unset will lead the system not take it into
-    /// account during X.509 validation, hence it should be provided
-    /// by the calling client.
-    var hostName: String? { get set }
-    
-    /// The bundle where to search for certificates.
-    /// These certificates have to be bundled with the app.
-    /// (e.g. Xcode project folder)
-    ///
-    /// Taken into account only for certificate required
-    /// `ValidationType`:`.pinPublicKey` and `.pinCertificate`.
-    ///
-    /// Default setting is the main Bundle.
-    var certificateBundle: Bundle { get set }
-    
-    /// A custom closure for validation with `ValidationType`: `.custom`.
-    /// When using this, all validation logic has to be contained in
-    /// the closure.
-    /// A host name check, as part of systems standard
-    /// X.509 validation, is not being performed as well.
-    var customValidation: CustomValidationClosure? { get set }
 }
 
 @objc(GCXTrustManaging)
@@ -124,6 +77,39 @@ public protocol TrustManaging {
     
     /// Retrieve all `TrustPolicy` objects.
     var allPolicies: [TrustPolicy] { get }
+    
+    /// `TrustPolicy` object using a concrete validation method for a given host name.
+    ///
+    /// - Parameters:
+    ///   - type:       The `ValidationType` enummeration values specify which kind
+    ///                 of trust is created.
+    ///
+    ///   - hostName:   Passing a `hostName` String is optional but leaving it unset
+    ///                 will lead the system not take the host`s name into account
+    ///                 during X.509 validation, hence it should be provided
+    ///                 by the calling client.
+    ///                 The `hostName` String will be used by all non-custom trust
+    ///                 validation checks (e.g. `ValidationType`: `.standard`,
+    ///                 `.pinCertificate`, .pinPublicKey`)
+    ///
+    ///   - certificateBundle:  The bundle where to search for certificates.
+    ///                         These certificates have to be bundled with the app.
+    ///                         (e.g. Xcode project folder)
+    ///                         Taken into account only for certificate required
+    ///                         validation `ValidationType`:`.pinPublicKey`
+    ///                         and `.pinCertificate`.
+    ///                         Default value is the main Bundle (`Bundle.main`).
+    ///
+    ///   - customValidation:   A custom closure for validation with `ValidationType`:
+    ///                         `.custom`. When using this, all validation logic has
+    ///                         to be contained within the closure.
+    ///                         A host name check, as part of systems standard
+    ///                         X.509 validation, is not done on custom validation and
+    ///                         and has to be handled by the caller.
+    ///                         Default value is `nil`.
+    ///
+    /// - Returns: a new created `TrustPolicy` conforming object.
+    func create(type: ValidationType, hostName: String?, certificateBundle: Bundle, customValidation: CustomValidationClosure?) -> TrustPolicy
     
     /// Retrieve matching policy by its name.
     ///
@@ -144,5 +130,6 @@ public protocol TrustManaging {
     /// Remove a `TrustPolicy` by it's name.
     ///
     /// - Parameter name: the name with which the `TrustPolicy` was added
-    func removePolicy(name: String)
+    /// - Returns: the removed `TrustPolicy` if removal was successful
+    func removePolicy(name: String) -> TrustPolicy?
 }

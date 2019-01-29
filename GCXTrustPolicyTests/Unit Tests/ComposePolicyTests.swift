@@ -23,7 +23,7 @@ import GCXTrustPolicy
 
 class ComposePolicyTests: XCTestCase {
 
-    
+    /*
     // MARK: - Variables -
     
     let testHost = "www.grandcentrix.net"
@@ -255,4 +255,5 @@ class ComposePolicyTests: XCTestCase {
         isValid = policy.validate(with: trust)
         XCTAssertTrue(isValid, "Should be valid as only pinning related checks are done.")
     }
+ */
 }

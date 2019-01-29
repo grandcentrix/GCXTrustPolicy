@@ -22,7 +22,7 @@ import XCTest
 import GCXTrustPolicy
 
 class TrustDirectiveTests: XCTestCase {
-
+/*
     
     // MARK: - Variables -
     var trust: SecTrust!
@@ -185,4 +185,5 @@ class TrustDirectiveTests: XCTestCase {
         isValid = validation.validate(with: trust)
         XCTAssertFalse(isValid, "Custom validation should return with false.")
     }
+ */
 }

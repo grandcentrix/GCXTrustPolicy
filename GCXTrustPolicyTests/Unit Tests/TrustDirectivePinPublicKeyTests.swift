@@ -23,7 +23,7 @@ import XCTest
 import GCXTrustPolicy
 
 class TrustDirectivePinPublicKeyTests: XCTestCase {
-    
+    /*
     
     // MARK: - Variables -
     
@@ -175,4 +175,5 @@ class TrustDirectivePinPublicKeyTests: XCTestCase {
         isValid = directive.validate(with: trust)
         XCTAssertTrue(isValid, "Validation should only succeed on disabled X.509 standard checks.")
     }
+ */
 }
