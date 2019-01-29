@@ -98,7 +98,8 @@ public protocol TrustManaging {
     ///                         Taken into account only for certificate required
     ///                         validation `ValidationType`:`.pinPublicKey`
     ///                         and `.pinCertificate`.
-    ///                         Default value is the main Bundle (`Bundle.main`).
+    ///                         If omitted or `nil` param is passed the main Bundle
+    ///                         is assumed as default location for certificates.
     ///
     ///   - customValidation:   A custom closure for validation with `ValidationType`:
     ///                         `.custom`. When using this, all validation logic has
@@ -106,10 +107,10 @@ public protocol TrustManaging {
     ///                         A host name check, as part of systems standard
     ///                         X.509 validation, is not done on custom validation and
     ///                         and has to be handled by the caller.
-    ///                         Default value is `nil`.
+    ///                         Swift default value is `nil`.
     ///
     /// - Returns: a new created `TrustPolicy` conforming object.
-    func create(type: ValidationType, hostName: String?, certificateBundle: Bundle, customValidation: CustomValidationClosure?) -> TrustPolicy
+    func create(type: ValidationType, hostName: String?, certificateBundle: Bundle?, customValidation: CustomValidationClosure?) -> TrustPolicy
     
     /// Retrieve matching policy by its name.
     ///

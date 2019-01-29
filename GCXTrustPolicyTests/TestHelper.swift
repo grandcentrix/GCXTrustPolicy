@@ -51,7 +51,7 @@ struct TestCertificates {
 
 // MARK: - Test Trusts -
 
-enum TestTrusts {
+enum TestTrusts: Int {
     
     case validGCXTrustChain
     case expiredGCXTrustChain

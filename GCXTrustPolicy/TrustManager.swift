@@ -34,12 +34,8 @@ open class TrustManager: NSObject {
 @objc extension TrustManager: TrustManaging {
     
     public var policies: [String : TrustPolicy] {
-        get {
-            return _policies
-        }
-        set {
-            _policies = newValue
-        }
+        get { return _policies }
+        set { _policies = newValue }
     }
     
     public var allPolicies: [TrustPolicy] {
@@ -50,7 +46,7 @@ open class TrustManager: NSObject {
         return Array(policies.keys)
     }
     
-    public func create(type: ValidationType, hostName: String?, certificateBundle: Bundle = Bundle.main, customValidation: CustomValidationClosure? = nil) -> TrustPolicy {
+    public func create(type: ValidationType, hostName: String?, certificateBundle: Bundle? = nil, customValidation: CustomValidationClosure? = nil) -> TrustPolicy {
         
         switch type {
         case .disabled:
@@ -68,10 +64,10 @@ open class TrustManager: NSObject {
             return CustomDirective(hostName: hostName, customValidation: customValidation!)
             
         case .pinCertificate:
-            return PinCertificateDirective( hostName: hostName, certificateBundle: certificateBundle)
+            return PinCertificateDirective( hostName: hostName, certificateBundle: certificateBundle ?? Bundle.main)
             
         case .pinPublicKey:
-            return PinPublicKeyDirective(hostName: hostName, certificateBundle: certificateBundle)
+            return PinPublicKeyDirective(hostName: hostName, certificateBundle: certificateBundle ?? Bundle.main)
         }
     }
     public func policy(for name: String) -> TrustPolicy? {

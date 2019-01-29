@@ -17,16 +17,16 @@
 //  limitations under the License.
 
 import XCTest
-@testable import GCXTrustPolicy
+import GCXTrustPolicy
 
 class GCXTrustPolicyTests: XCTestCase {
     
     let testTrust = TestTrusts.validGCXTrustChain.trust // test trust
 
-    func test_policies_createManageRetrieveValidate_works() {
+    func test_swift_createManageRetrieveValidate_works() {
         
         // Trust policy creation tests for each trust validation type
-        let trustManager = TrustManager.shared
+        let trustManager = TrustManager()
         
         let defaultPolicy = trustManager.create(type: .standard, hostName: "defaultHost")
         
@@ -40,6 +40,7 @@ class GCXTrustPolicyTests: XCTestCase {
             /* more sophistic validataion checks should go here... */
             return false
         })
+        
         
         // Trust policy management tests
         XCTAssert(trustManager.allPolicies.count == 0)
@@ -55,7 +56,7 @@ class GCXTrustPolicyTests: XCTestCase {
         
         let removedPolicy = trustManager.removePolicy(name: "disabledHost")!
         
-        XCTAssertFalse(trustManager.allPolicies.contains { $0 === removedPolicy }, "Value should be removed from manager.")
+        XCTAssertFalse(trustManager.allPolicies.contains { $0 === removedPolicy }, "Policy should be removed from manager.")
         XCTAssert(trustManager.allPolicies.count == allCreatedPolicies.count - 1)
         XCTAssert(trustManager.allNames.count == allNames.count - 1)
         
@@ -63,26 +64,27 @@ class GCXTrustPolicyTests: XCTestCase {
         
         XCTAssert(trustManager.allPolicies.count == allCreatedPolicies.count)
         XCTAssert(trustManager.allNames.count == allNames.count)
+        
        
         // Trust policy retrieval and validation tests
         let defaultHostPolicy = trustManager.policy(for: "defaultHost")!
-        var isTrusted = defaultHostPolicy.validate(trust: testTrust)
         XCTAssert(defaultPolicy === defaultHostPolicy, "Objects should be equal.")
+        var isTrusted = defaultHostPolicy.validate(trust: testTrust)
         XCTAssertFalse(isTrusted, "That should FAIL in every condition as the test trust here is no valid trust object.")
         
         let pinCertHostPolicy = trustManager.policy(for: "pinCertHost")!
-        isTrusted = pinCertHostPolicy.validate(trust: testTrust)
         XCTAssert(pinCertificatePolicy === pinCertHostPolicy, "Objects should be equal.")
+        isTrusted = pinCertHostPolicy.validate(trust: testTrust)
         XCTAssertFalse(isTrusted, "That should FAIL in every condition as the test trust here is no valid trust object.")
         
         let pinPubKeyPolicy = trustManager.policy(for: "pinPubKey")!
-        isTrusted = pinPubKeyPolicy.validate(trust: testTrust)
         XCTAssert(pinPubKeyPolicy === pinPubKeyPolicy, "Objects should be equal.")
+        isTrusted = pinPubKeyPolicy.validate(trust: testTrust)
         XCTAssertFalse(isTrusted, "That should FAIL in every condition as the test trust here is no valid trust object.")
         
         let disabledHostPolicy = trustManager.policy(for: "disabledHost")!
-        isTrusted = disabledHostPolicy.validate(trust: testTrust)
         XCTAssert(disabledPolicy === disabledHostPolicy, "Objects should be equal.")
+        isTrusted = disabledHostPolicy.validate(trust: testTrust)
         XCTAssertTrue(isTrusted, "That should SUCCEED because disabled validation always returns TRUE regardless of all input.")
         
         let customHostPolicy = trustManager.policy(for: "customHost")!
