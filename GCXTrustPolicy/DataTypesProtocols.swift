@@ -1,5 +1,5 @@
 //
-//  TrustPolicy.swift
+//  DataTypesProtocols.swift
 //  GCXTrustPolicy
 //
 //  Copyright 2017 grandcentrix GmbH
@@ -17,17 +17,6 @@
 //  limitations under the License.
 
 import Foundation
-
-@objc(GCXTrustPolicy)
-/// Protocol definition for validating a policy against a remote trust
-public protocol TrustPolicy {
-    
-    /// Name of the host
-    var hostName: String! { get set }
-    
-    /// Validates a policy against a given trust
-    func validate(trust: SecTrust) -> Bool
-}
 
 @objc(GCXValidationType)
 /// Trust policy validation types.
@@ -63,6 +52,17 @@ public enum ValidationType: Int {
 
 /// type alias for a closre that provides custom validation
 public typealias CustomValidationClosure = (SecTrust?) -> (Bool)
+
+@objc(GCXTrustPolicy)
+/// Protocol definition for validating a policy against a remote trust
+public protocol TrustPolicy {
+    
+    /// Name of the host
+    var hostName: String! { get set }
+    
+    /// Validates a policy against a given trust
+    func validate(trust: SecTrust) -> Bool
+}
 
 @objc(GCXTrustComposing)
 /// Protocol defining the creation of 'TrustPolicy' conforming objects.

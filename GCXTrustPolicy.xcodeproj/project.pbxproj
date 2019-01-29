@@ -32,7 +32,7 @@
 		4F28B4821E1D37DD00F14DF8 /* TrustDirectivePinPublicKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F28B46C1E1D37DD00F14DF8 /* TrustDirectivePinPublicKeyTests.swift */; };
 		4F28B4831E1D37DD00F14DF8 /* TrustDirectiveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F28B46D1E1D37DD00F14DF8 /* TrustDirectiveTests.swift */; };
 		4F28B4841E1D37DD00F14DF8 /* TrustManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F28B46E1E1D37DD00F14DF8 /* TrustManagerTests.swift */; };
-		4F3DE5CD1D509DCB0069BBD9 /* TrustPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3DE5CC1D509DCB0069BBD9 /* TrustPolicy.swift */; };
+		4F3DE5CD1D509DCB0069BBD9 /* DataTypesProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3DE5CC1D509DCB0069BBD9 /* DataTypesProtocols.swift */; };
 		4F5331571D4A4BA500502FE9 /* TrustManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5331561D4A4BA500502FE9 /* TrustManager.swift */; };
 		4F53315F1D4A65E300502FE9 /* TestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F53315E1D4A65E300502FE9 /* TestHelper.swift */; };
 		4F7FBDED1E1E660F0049B262 /* CA Disig R2I2 Certification Service.cer in Resources */ = {isa = PBXBuildFile; fileRef = 4F7FBDE11E1E660F0049B262 /* CA Disig R2I2 Certification Service.cer */; };
@@ -74,7 +74,7 @@
 		4F28B46C1E1D37DD00F14DF8 /* TrustDirectivePinPublicKeyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrustDirectivePinPublicKeyTests.swift; sourceTree = "<group>"; };
 		4F28B46D1E1D37DD00F14DF8 /* TrustDirectiveTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrustDirectiveTests.swift; sourceTree = "<group>"; };
 		4F28B46E1E1D37DD00F14DF8 /* TrustManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrustManagerTests.swift; sourceTree = "<group>"; };
-		4F3DE5CC1D509DCB0069BBD9 /* TrustPolicy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrustPolicy.swift; sourceTree = "<group>"; };
+		4F3DE5CC1D509DCB0069BBD9 /* DataTypesProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataTypesProtocols.swift; sourceTree = "<group>"; };
 		4F5331561D4A4BA500502FE9 /* TrustManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrustManager.swift; sourceTree = "<group>"; };
 		4F53315E1D4A65E300502FE9 /* TestHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHelper.swift; sourceTree = "<group>"; };
 		4F5331641D4BBD8300502FE9 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -215,7 +215,7 @@
 			children = (
 				4FDD341D1D48F24D0013A271 /* Info.plist */,
 				4FDD341B1D48F24D0013A271 /* GCXTrustPolicy.h */,
-				4F3DE5CC1D509DCB0069BBD9 /* TrustPolicy.swift */,
+				4F3DE5CC1D509DCB0069BBD9 /* DataTypesProtocols.swift */,
 				4F5331561D4A4BA500502FE9 /* TrustManager.swift */,
 				4FBC97081E1BFFDE008BB35C /* TrustComposer.swift */,
 				4F28B44E1E1CFEFB00F14DF8 /* internal */,
@@ -402,7 +402,7 @@
 				4F28B4531E1CFEFB00F14DF8 /* TrustEvaluation.swift in Sources */,
 				4F28B4521E1CFEFB00F14DF8 /* TrustDirective.swift in Sources */,
 				4F5331571D4A4BA500502FE9 /* TrustManager.swift in Sources */,
-				4F3DE5CD1D509DCB0069BBD9 /* TrustPolicy.swift in Sources */,
+				4F3DE5CD1D509DCB0069BBD9 /* DataTypesProtocols.swift in Sources */,
 				4FBC97091E1BFFDE008BB35C /* TrustComposer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
