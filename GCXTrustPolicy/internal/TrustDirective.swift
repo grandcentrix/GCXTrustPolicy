@@ -50,16 +50,17 @@ class DisabledDirective: AbstractDirective {
 /// Uses a closure passed to the object to perform a completely custom validation.
 class CustomDirective: AbstractDirective {
     
-    var validationClosure: CustomValidationClosure
+    var validationClosure: CustomValidationClosure?
     
-    init(hostName: String?, customValidation: @escaping CustomValidationClosure) {
+    init(hostName: String?, customValidation: CustomValidationClosure?) {
         self.validationClosure = customValidation
         
         super.init(hostName: hostName)
     }
     
     override func validate(trust: SecTrust) -> Bool {
-        return validationClosure(trust)
+        guard let closure = validationClosure else { return false } // validation fails without
+        return closure(trust)
     }
 }
 

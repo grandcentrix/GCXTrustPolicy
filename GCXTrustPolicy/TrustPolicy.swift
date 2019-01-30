@@ -18,7 +18,7 @@
 
 import Foundation
 
-/// type alias for a closre that provides custom validation
+/// Type alias for a closre that provides custom validation
 public typealias CustomValidationClosure = (SecTrust?) -> (Bool)
 
 @objc(GCXValidationType)
@@ -109,7 +109,7 @@ public protocol TrustManaging {
     ///                         and has to be handled by the caller.
     ///                         Swift default value is `nil`.
     ///
-    /// - Returns: a new created `TrustPolicy` conforming object.
+    /// - Returns:  a new created `TrustPolicy` conforming object.
     func create(type: ValidationType, hostName: String?, certificateBundle: Bundle?, customValidation: CustomValidationClosure?) -> TrustPolicy
     
     /// Retrieve matching policy by its name.

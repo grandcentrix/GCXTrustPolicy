@@ -56,12 +56,7 @@ open class TrustManager: NSObject {
             return DefaultDirective(hostName: hostName)
             
         case .custom:
-            if customValidation == nil {
-                let name = NSExceptionName(rawValue: "Missing Parameter")
-                let reason = "Please provide a custom validation closure."
-                NSException(name: name, reason: reason, userInfo: nil).raise()
-            }
-            return CustomDirective(hostName: hostName, customValidation: customValidation!)
+            return CustomDirective(hostName: hostName, customValidation: customValidation)
             
         case .pinCertificate:
             return PinCertificateDirective( hostName: hostName, certificateBundle: certificateBundle ?? Bundle.main)
@@ -70,6 +65,7 @@ open class TrustManager: NSObject {
             return PinPublicKeyDirective(hostName: hostName, certificateBundle: certificateBundle ?? Bundle.main)
         }
     }
+    
     public func policy(for name: String) -> TrustPolicy? {
         return policies[name]
     }

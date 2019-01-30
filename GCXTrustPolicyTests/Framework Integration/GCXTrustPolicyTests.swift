@@ -41,7 +41,6 @@ class GCXTrustPolicyTests: XCTestCase {
             return false
         })
         
-        
         // Trust policy management tests
         XCTAssert(trustManager.allPolicies.count == 0)
         XCTAssert(trustManager.allNames.count == 0)
