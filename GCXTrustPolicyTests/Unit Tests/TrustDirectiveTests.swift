@@ -189,4 +189,14 @@ class TrustDirectiveTests: XCTestCase {
         isValid = directive.validate(trust: trust)
         XCTAssertFalse(isValid, "Validate on a custom directive with missing closure must return false.")
     }
+    
+    // MARK: - Abstract directive -
+    
+    func test_abstractDirective_forAllTrusts_notSuccessful() {
+        
+        directive = AbstractDirective(hostName: testHost, settings: ValidationSettings.defaultSettings)
+        trust = TestTrusts.validGCXTrustChain.trust
+        isValid = directive.validate(trust: trust)
+        XCTAssertFalse(isValid, "Abstract directive should return with false.")
+    }
 }

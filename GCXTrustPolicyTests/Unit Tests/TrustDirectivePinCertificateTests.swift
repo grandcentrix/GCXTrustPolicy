@@ -26,7 +26,7 @@ class TrustDirectivePinCertificateTests: XCTestCase {
     var isValid: Bool!
     var directive: PinCertificateDirective!
     let testHost = "grandcentrix.net"
-    let dummyBundle = Bundle(for:TrustDirectivePinCertificateTests.self)
+    let dummyBundle = Bundle(for: TrustDirectivePinCertificateTests.self)
     var settings: ValidationSettings!
     
     // MARK: - Setup -

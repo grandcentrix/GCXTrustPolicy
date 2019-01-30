@@ -131,11 +131,13 @@ class PinPublicKeyDirective: DefaultDirective {
     func verifyCertificate(trust: SecTrust) -> Bool {
         for pinnedPublicKey in pinnedPublicKeys as [AnyObject] {
             for remotePublicKey in TrustEvaluation.publicKeys(from: trust) as [AnyObject] {
+                print("====> remotePublicKey")
                 if pinnedPublicKey.isEqual(remotePublicKey) {
                     return true
                 }
             }
         }
+        print("====> NO Hit")
         return false
     }
 }

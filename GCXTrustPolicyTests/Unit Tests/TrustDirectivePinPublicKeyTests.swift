@@ -28,7 +28,7 @@ class TrustDirectivePinPublicKeyTests: XCTestCase {
     var trust: SecTrust!
     var publicKeys: [SecKey]!
     var testHost: String!
-    let dummyBundle = Bundle(for:TrustDirectivePinPublicKeyTests.self)
+    let dummyBundle = Bundle(for: TrustDirectivePinPublicKeyTests.self)
     var settings: ValidationSettings!
     
     // MARK: - Setup -
@@ -38,6 +38,22 @@ class TrustDirectivePinPublicKeyTests: XCTestCase {
         
         settings = ValidationSettings.defaultSettings
         settings.certificateBundle = dummyBundle
+    }
+    
+    // MARK: - Invalid trust chain tests -
+    
+    func test_regardlessAllSettings_notMatchinPublicKeys_assumedInvalid () {
+
+        settings.certificatePinOnly = true
+        
+        trust = TestTrusts.validGCXRootOnly.trust
+        testHost = "testssl-revoked-r2i2.disig.sk"
+        
+        publicKeys = [TrustEvaluation.publicKey(from: TestCertificates.gcxLeafWildcard)!]
+        directive = PinPublicKeyDirective(hostName: testHost, settings: settings)
+        directive.pinnedPublicKeys = publicKeys
+        isValid = directive.validate(trust: trust)
+        XCTAssertFalse(isValid, "Validation should should not succeed.")
     }
     
     // MARK: - Valid trust chain tests -
@@ -146,7 +162,6 @@ class TrustDirectivePinPublicKeyTests: XCTestCase {
         isValid = directive.validate(trust: trust)
         XCTAssertTrue(isValid, "Validation should only succeed on disabled X.509 standard checks.")
     }
-
     
     // MARK: - Revoked trust chain tests -
     
