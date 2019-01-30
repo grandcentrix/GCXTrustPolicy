@@ -16,269 +16,338 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-
 import XCTest
-
-@testable
-import GCXTrustPolicy
+@testable import GCXTrustPolicy
 
 class TrustDirectivePinCertificateTests: XCTestCase {
     
-   /*
     // MARK: - Variables -
     
-    var isValid:Bool!
+    var isValid: Bool!
     var directive: PinCertificateDirective!
     let testHost = "grandcentrix.net"
     let dummyBundle = Bundle(for:TrustDirectivePinCertificateTests.self)
+    var settings: ValidationSettings!
+    
+    // MARK: - Setup -
+    
+    override func setUp() {
+        super.setUp()
+        
+        settings = ValidationSettings.defaultSettings
+        settings.certificateBundle = dummyBundle
+    }
     
 
-    // MARK: - Certificate Pinning -
+    // MARK: - local self-signed certificate vs. remote self-signed certificate -
     
-    func test_validation_selfSignedVersusSelfSigned_correctBehaviour() {
+    func test_defaultValidation_selfSignedVsSelfSigned_assumedInvalid() {
+
+        let localCertificate = [TestCertificates.gcxSelfSignedValid]
+        let trust = TestTrusts.validGCXSelfSigned.trust
+
+        directive = PinCertificateDirective(hostName: testHost, settings: settings)
+        directive.pinnedCertDatas = TrustEvaluation.certificateData(from: localCertificate)
+        isValid = directive.validate(trust: trust)
+        XCTAssertFalse(isValid, "Validation should not succeed.")
+    }
+    
+    func test_disabledHostValidation_selfSignedVsSelfSigned_assumedInvalid() {
         
-        // local self-signed certificate
-        // vs. remote self-signed certificate
+        settings.sslValidateHostName = false // pinning with disabled host name check
+
+        let localCertificate = [TestCertificates.gcxSelfSignedValid]
+        let trust = TestTrusts.validGCXSelfSigned.trust
+
+        directive = PinCertificateDirective(hostName: testHost, settings: settings)
+        directive.pinnedCertDatas = TrustEvaluation.certificateData(from: localCertificate)
+        isValid = directive.validate(trust: trust)
+        XCTAssertFalse(isValid, "Validation should not succeed.")
+    }
+    
+    func test_disabledSSLCheck_selfSignedVsSelfSigned_assumedValid() {
+        
+        settings.certificatePinOnly = true // skip SSL checks, only compare certs
         
         let localCertificate = [TestCertificates.gcxSelfSignedValid]
         let trust = TestTrusts.validGCXSelfSigned.trust
         
-        
-        // false expectations
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: true)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
-        XCTAssertFalse(isValid, "Validation should not succeed.")
-        
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: false)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
-        XCTAssertFalse(isValid, "Validation should not succeed.")
-        
-        
-        // true expectations
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: false, validateHost: true)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
-        XCTAssertTrue(isValid, "Validation should succeed as we pin against the certificate without standard X.509 validation.")
-        
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: false, validateHost: false)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
+        directive = PinCertificateDirective(hostName: testHost, settings: settings)
+        directive.pinnedCertDatas = TrustEvaluation.certificateData(from: localCertificate)
+        isValid = directive.validate(trust: trust)
         XCTAssertTrue(isValid, "Validation should succeed as we pin against the certificate without standard X.509 validation.")
     }
     
-    func test_validation_expiredSelfSignedVersusSelfSigned_correctBehaviour() {
+    // MARK: - local expired self-signed certificate vs. remote self-signed certificate -
+    
+    func test_defaultValidation_expiredSelfSignedVsSelfSigned_assumedInvalid() {
         
-        // local expired self-signed certificate
-        // vs. remote self-signed certificate
+        let localCertificate = [TestCertificates.gcxSelfSignedValid]
+        let trust = TestTrusts.validGCXSelfSigned.trust
+
+        directive = PinCertificateDirective(hostName: testHost, settings: settings)
+        directive.pinnedCertDatas = TrustEvaluation.certificateData(from: localCertificate)
+        isValid = directive.validate(trust: trust)
+        XCTAssertFalse(isValid, "Validation should not succeed.")
+    }
+    
+    func test_disabledHostValidation_expiredSelfSignedVsSelfSigned_assumedInvalid() {
+        
+        settings.sslValidateHostName = false // pinning with disabled host name check
+        
         let localCertificate = [TestCertificates.gcxSelfSignedValid]
         let trust = TestTrusts.validGCXSelfSigned.trust
         
-        
-        // false expectations
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: true)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
+        directive = PinCertificateDirective(hostName: testHost, settings: settings)
+        directive.pinnedCertDatas = TrustEvaluation.certificateData(from: localCertificate)
+        isValid = directive.validate(trust: trust)
         XCTAssertFalse(isValid, "Validation should not succeed.")
+    }
+    
+    func test_disabledSSLCheck_expiredSelfSignedVsSelfSigned_assumedValid() {
         
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: false)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
-        XCTAssertFalse(isValid, "Validation should not succeed.")
+        settings.certificatePinOnly = true // skip SSL checks, only compare certs
         
+        let localCertificate = [TestCertificates.gcxSelfSignedValid]
+        let trust = TestTrusts.validGCXSelfSigned.trust
         
-        // true expectations
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: false, validateHost: true)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
-        XCTAssertTrue(isValid, "Validation should succeed as we pin against the certificate without standard X.509 validation.")
-        
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: false, validateHost: false)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
+        directive = PinCertificateDirective(hostName: testHost, settings: settings)
+        directive.pinnedCertDatas = TrustEvaluation.certificateData(from: localCertificate)
+        isValid = directive.validate(trust: trust)
         XCTAssertTrue(isValid, "Validation should succeed as we pin against the certificate without standard X.509 validation.")
     }
     
-    func test_validation_expiredSelfSignedVersusExpiredSelfSigned_correctBehaviour() {
+    // MARK: - local expired self-signed certificate vs. remote expired self-signed certificate -
         
-        // local expired self-signed certificate
-        // vs. remote expired self-signed certificate
+    func test_defaultSetting_expiredSelfSignedVsExpiredSelfSigned_assumedInvalid() {
+        
         let localCertificate = [TestCertificates.gcxSelfSignedExpired]
         let trust = TestTrusts.expiredGCXSelfSigned.trust
         
-        
-        // false expectations
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: true)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
+        directive = PinCertificateDirective(hostName: testHost, settings: settings)
+        directive.pinnedCertDatas = TrustEvaluation.certificateData(from: localCertificate)
+        isValid = directive.validate(trust: trust)
         XCTAssertFalse(isValid, "Validation should not succeed.")
+    }
+    
+    func test_disabledHostValidation_expiredSelfSignedVsExpiredSelfSigned_assumedInvalid() {
         
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: false)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
-        XCTAssertFalse(isValid, "Validation should not succeed.")
+        settings.sslValidateHostName = false // pinning with disabled host name check
         
+        let localCertificate = [TestCertificates.gcxSelfSignedExpired]
+        let trust = TestTrusts.expiredGCXSelfSigned.trust
         
-        // true expectations
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: false, validateHost: true)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
-        XCTAssertTrue(isValid, "Validation should succeed as we pin against the certificate without standard X.509 validation.")
+        directive = PinCertificateDirective(hostName: testHost, settings: settings)
+        directive.pinnedCertDatas = TrustEvaluation.certificateData(from: localCertificate)
+        isValid = directive.validate(trust: trust)
+        XCTAssertFalse(isValid, "Validation should succeed as we pin against the certificate without standard X.509 validation.")
+    }
+    
+    func test_disabledSSLCheck_expiredSelfSignedVsExpiredSelfSigned_assumedValid() {
         
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: false, validateHost: false)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
+        settings.certificatePinOnly = true // skip SSL checks, only compare certs
+        
+        let localCertificate = [TestCertificates.gcxSelfSignedExpired]
+        let trust = TestTrusts.expiredGCXSelfSigned.trust
+        
+        directive = PinCertificateDirective(hostName: testHost, settings: settings)
+        directive.pinnedCertDatas = TrustEvaluation.certificateData(from: localCertificate)
+        isValid = directive.validate(trust: trust)
         XCTAssertTrue(isValid, "Validation should succeed as we pin against the certificate without standard X.509 validation.")
     }
     
-    func test_validation_selfSignedVersusValidLeafCertificat_gotRejected() {
+    // MARK: - local self-signed certificate vs. remote valid leaf certificate -
+    
+    func test_defaultSetting_selfSignedVsValidLeafCertificate_assumedInvalid() {
         
-        // local self-signed certificate
-        // vs. remote valid leaf certificate
         let localCertificate = [TestCertificates.gcxSelfSignedValid]
         let trust = TestTrusts.validGCXWildcardOnly.trust
         
-        
-        // false expectations
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: true)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
-        XCTAssertFalse(isValid, "Validation should not succeed.")
-        
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: false)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
-        XCTAssertFalse(isValid, "Validation should not succeed.")
-        
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: false, validateHost: true)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
-        XCTAssertFalse(isValid, "Validation should not succeed.")
-        
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: false, validateHost: false)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
+        directive = PinCertificateDirective(hostName: testHost, settings: settings)
+        directive.pinnedCertDatas = TrustEvaluation.certificateData(from: localCertificate)
+        isValid = directive.validate(trust: trust)
         XCTAssertFalse(isValid, "Validation should not succeed.")
     }
     
-    func test_validation_selfSignedVersusValidTrustChain_gotRejected() {
+    func test_disabledHostValidation_selfSignedVsValidLeafCertificate_assumedInvalid() {
         
-        // local self-signed certificate
-        // vs. remote trust chain
+        settings.sslValidateHostName = false // pinning with disabled host name check
+        
+        let localCertificate = [TestCertificates.gcxSelfSignedValid]
+        let trust = TestTrusts.validGCXWildcardOnly.trust
+        
+        directive = PinCertificateDirective(hostName: testHost, settings: settings)
+        directive.pinnedCertDatas = TrustEvaluation.certificateData(from: localCertificate)
+        isValid = directive.validate(trust: trust)
+        XCTAssertFalse(isValid, "Validation should not succeed.")
+    }
+    
+    func test_disabledSSLCheck_selfSignedVersusValidLeafCertificate_assumedInvalid() {
+        
+        settings.certificatePinOnly = true // skip SSL checks, only compare certs
+        
+        let localCertificate = [TestCertificates.gcxSelfSignedValid]
+        let trust = TestTrusts.validGCXWildcardOnly.trust
+        
+        directive = PinCertificateDirective(hostName: testHost, settings: settings)
+        directive.pinnedCertDatas = TrustEvaluation.certificateData(from: localCertificate)
+        isValid = directive.validate(trust: trust)
+        XCTAssertFalse(isValid, "Validation should not succeed.")
+    }
+
+    // MARK: - local self-signed certificate vs. remote trust chain -
+    
+    func test_defaultSetting_selfSignedVsValidTrustChain_assumedInvalid() {
+        
         let localCertificate = [TestCertificates.gcxSelfSignedValid]
         let trust = TestTrusts.validDisigTrustChain.trust
         
-        
-        // false expectations
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: true)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
-        XCTAssertFalse(isValid, "Validation should not succeed.")
-        
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: false)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
-        XCTAssertFalse(isValid, "Validation should not succeed.")
-        
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: false, validateHost: true)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
-        XCTAssertFalse(isValid, "Validation should not succeed.")
-        
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: false, validateHost: false)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
+        directive = PinCertificateDirective(hostName: testHost, settings: settings)
+        directive.pinnedCertDatas = TrustEvaluation.certificateData(from: localCertificate)
+        isValid = directive.validate(trust: trust)
         XCTAssertFalse(isValid, "Validation should not succeed.")
     }
     
-    func test_validation_leafVersusValidLeafCertificate_gotApproved() {
+    func test_disabledHostValidation_selfSignedVsValidTrustChain_assumedInvalid() {
         
-        // local leaf certificate 
-        // vs. remote leaf certificate
+        settings.sslValidateHostName = false // pinning with disabled host name check
+        
+        let localCertificate = [TestCertificates.gcxSelfSignedValid]
+        let trust = TestTrusts.validDisigTrustChain.trust
+        
+        directive = PinCertificateDirective(hostName: testHost, settings: settings)
+        directive.pinnedCertDatas = TrustEvaluation.certificateData(from: localCertificate)
+        isValid = directive.validate(trust: trust)
+        XCTAssertFalse(isValid, "Validation should not succeed.")
+    }
+    
+    func test_disabledSSLCheck_selfSignedVsValidTrustChain_assumedInvalid() {
+        
+        settings.certificatePinOnly = true // skip SSL checks, only compare certs
+        
+        let localCertificate = [TestCertificates.gcxSelfSignedValid]
+        let trust = TestTrusts.validDisigTrustChain.trust
+        
+        directive = PinCertificateDirective(hostName: testHost, settings: settings)
+        directive.pinnedCertDatas = TrustEvaluation.certificateData(from: localCertificate)
+        isValid = directive.validate(trust: trust)
+        XCTAssertFalse(isValid, "Validation should not succeed.")
+    }
+    
+    // MARK: - local leaf certificate vs. remote leaf certificate -
+    
+    func test_defaultSetting_validLeafVsValidLeafCertificate_assumedValid() {
+        
         let localCertificate = [TestCertificates.gcxLeafWildcard]
         let trust = TestTrusts.validGCXWildcardOnly.trust
         
-        
-        // true expectations
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: true)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
-        XCTAssertTrue(isValid, "Validation should succeed.")
-        
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: false)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
-        XCTAssertTrue(isValid, "Validation should succeed.")
-        
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: false, validateHost: true)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
-        XCTAssertTrue(isValid, "Validation should succeed.")
-        
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: false, validateHost: false)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
+        directive = PinCertificateDirective(hostName: testHost, settings: settings)
+        directive.pinnedCertDatas = TrustEvaluation.certificateData(from: localCertificate)
+        isValid = directive.validate(trust: trust)
         XCTAssertTrue(isValid, "Validation should succeed.")
     }
     
-    func test_validation_validLeafVersusValidChain_gotRejected() {
-
-        // local leaf certificate
-        // vs. remote valid certificate chain
+    func test_disabledHostValidation_validLeafVsValidLeafCertificate_assumedValid() {
+        
+        settings.sslValidateHostName = false // pinning with disabled host name check
+        
+        let localCertificate = [TestCertificates.gcxLeafWildcard]
+        let trust = TestTrusts.validGCXWildcardOnly.trust
+        
+        directive = PinCertificateDirective(hostName: testHost, settings: settings)
+        directive.pinnedCertDatas = TrustEvaluation.certificateData(from: localCertificate)
+        isValid = directive.validate(trust: trust)
+        XCTAssertTrue(isValid, "Validation should succeed.")
+    }
+    
+    func test_disabledSSLCheck_validLeafVsValidLeafCertificate_assumedValid() {
+        
+        settings.certificatePinOnly = true // skip SSL checks, only compare certs
+        
+        let localCertificate = [TestCertificates.gcxLeafWildcard]
+        let trust = TestTrusts.validGCXWildcardOnly.trust
+        
+        directive = PinCertificateDirective(hostName: testHost, settings: settings)
+        directive.pinnedCertDatas = TrustEvaluation.certificateData(from: localCertificate)
+        isValid = directive.validate(trust: trust)
+        XCTAssertTrue(isValid, "Validation should succeed.")
+    }
+    
+    // MARK: - local leaf certificate vs. remote valid certificate chain -
+    
+    func test_defaultSetting_validLeafVsValidChain_assumedInvalid() {
+        
         let localCertificate = [TestCertificates.gcxLeafWildcard]
         let trust = TestTrusts.validDisigTrustChain.trust
-
         
-        // false expectations
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: true)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
-        XCTAssertFalse(isValid, "Validation should not succeed.")
-        
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: false)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
-        XCTAssertFalse(isValid, "Validation should not succeed.")
-        
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: false, validateHost: true)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
-        XCTAssertFalse(isValid, "Validation should not succeed.")
-        
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: false, validateHost: false)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
+        directive = PinCertificateDirective(hostName: testHost, settings: settings)
+        directive.pinnedCertDatas = TrustEvaluation.certificateData(from: localCertificate)
+        isValid = directive.validate(trust: trust)
         XCTAssertFalse(isValid, "Validation should not succeed.")
     }
     
-    func test_validation_certificatePinning_validRootVersusValidChain_gotApproved() {
+    func test_disabledHostValidation_validLeafVsValidChain_assumedInvalid() {
         
-        // valid local root certificate
-        // vs. remote valid certificate chain
+        settings.sslValidateHostName = false // pinning with disabled host name check
+        
+        let localCertificate = [TestCertificates.gcxLeafWildcard]
+        let trust = TestTrusts.validDisigTrustChain.trust
+        
+        directive = PinCertificateDirective(hostName: testHost, settings: settings)
+        directive.pinnedCertDatas = TrustEvaluation.certificateData(from: localCertificate)
+        isValid = directive.validate(trust: trust)
+        XCTAssertFalse(isValid, "Validation should not succeed.")
+    }
+    
+    func test_disabledSSLCheck_validLeafVsValidChain_assumedInvalid() {
+        
+        settings.certificatePinOnly = true // skip SSL checks, only compare certs
+        
+        let localCertificate = [TestCertificates.gcxLeafWildcard]
+        let trust = TestTrusts.validDisigTrustChain.trust
+        
+        directive = PinCertificateDirective(hostName: testHost, settings: settings)
+        directive.pinnedCertDatas = TrustEvaluation.certificateData(from: localCertificate)
+        isValid = directive.validate(trust: trust)
+        XCTAssertFalse(isValid, "Validation should not succeed.")
+    }
+    
+    // MARK: - valid local root certificate vs. remote valid certificate chain -
+    
+    func test_defaultSetting_validRootVsValidChain_assumedValid() {
+        
         let localCertificate = [TestCertificates.gcxRootCA]
         let trust = TestTrusts.validGCXTrustChain.trust
         
-        
-        // true expectations
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: true)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
-        XCTAssertTrue(isValid, "Validation should succeed.")
-        
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: false)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
-        XCTAssertTrue(isValid, "Validation should succeed.")
-        
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: false, validateHost: true)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
-        XCTAssertTrue(isValid, "Validation should succeed.")
-        
-        directive = PinCertificateDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: false, validateHost: false)
-        directive.pinnedCertificateDatas = TrustEvaluation.certificateData(from: localCertificate)
-        isValid = directive.validate(with: trust)
+        directive = PinCertificateDirective(hostName: testHost, settings: settings)
+        directive.pinnedCertDatas = TrustEvaluation.certificateData(from: localCertificate)
+        isValid = directive.validate(trust: trust)
         XCTAssertTrue(isValid, "Validation should succeed.")
     }
- */
+    
+    func test_disabledHostValidation_validRootVsValidChain_assumedValid() {
+        
+        settings.sslValidateHostName = false // pinning with disabled host name check
+        
+        let localCertificate = [TestCertificates.gcxRootCA]
+        let trust = TestTrusts.validGCXTrustChain.trust
+        
+        directive = PinCertificateDirective(hostName: testHost, settings: settings)
+        directive.pinnedCertDatas = TrustEvaluation.certificateData(from: localCertificate)
+        isValid = directive.validate(trust: trust)
+        XCTAssertTrue(isValid, "Validation should succeed.")
+    }
+    
+    func test_disabledSSLCheck_validRootVsValidChain_assumedValid() {
+        
+        settings.certificatePinOnly = true // skip SSL checks, only compare certs
+        
+        let localCertificate = [TestCertificates.gcxRootCA]
+        let trust = TestTrusts.validGCXTrustChain.trust
+        
+        directive = PinCertificateDirective(hostName: testHost, settings: settings)
+        directive.pinnedCertDatas = TrustEvaluation.certificateData(from: localCertificate)
+        isValid = directive.validate(trust: trust)
+        XCTAssertTrue(isValid, "Validation should succeed.")
+    }
 }

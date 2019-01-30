@@ -16,11 +16,8 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-
 import XCTest
-
-@testable
-import GCXTrustPolicy
+@testable import GCXTrustPolicy
 
 class TrustDirectivePinPublicKeyTests: XCTestCase {
     
@@ -127,15 +124,14 @@ class TrustDirectivePinPublicKeyTests: XCTestCase {
     
     func test_disabledSSLCheck_expiredTrustChain_assumedValid () {
         
-        let disabledHostCheckSettings = settings!
-        disabledHostCheckSettings.certificatePinOnly = true
+        settings.certificatePinOnly = true
         
         // securepush leaf certifcate incl. complete chain
         trust = TestTrusts.expiredGCXTrustChain.trust
         testHost = "api.securepush.de"
         
         publicKeys = [TrustEvaluation.publicKey(from: TestCertificates.gcxLeafWildcardExpired)!]
-        directive = PinPublicKeyDirective(hostName: testHost, settings: disabledHostCheckSettings)
+        directive = PinPublicKeyDirective(hostName: testHost, settings: settings)
         directive.pinnedPublicKeys = publicKeys
         isValid = directive.validate(trust: trust)
         XCTAssertTrue(isValid, "Validation should only succeed on disabled X.509 standard checks.")
@@ -145,7 +141,7 @@ class TrustDirectivePinPublicKeyTests: XCTestCase {
         testHost = "testssl-expire-r2i2.disig.sk"
 
         publicKeys = [TrustEvaluation.publicKey(from: TestCertificates.disigLeafExpired)!]
-        directive = PinPublicKeyDirective(hostName: testHost, settings: disabledHostCheckSettings)
+        directive = PinPublicKeyDirective(hostName: testHost, settings: settings)
         directive.pinnedPublicKeys = publicKeys
         isValid = directive.validate(trust: trust)
         XCTAssertTrue(isValid, "Validation should only succeed on disabled X.509 standard checks.")
@@ -169,15 +165,14 @@ class TrustDirectivePinPublicKeyTests: XCTestCase {
     
     func test_disabledSSLCheck_revokedTrustChainWithoutValidation_assumedValid () {
         
-        let disabledHostCheckSettings = settings!
-        disabledHostCheckSettings.certificatePinOnly = true
+        settings.certificatePinOnly = true
         
         // disig revoked leaf certifcate incl. complete chain
         trust = TestTrusts.revokedDisigTrustChain.trust
         testHost =  "testssl-revoked-r2i2.disig.sk"
         
         publicKeys = [TrustEvaluation.publicKey(from: TestCertificates.disigLeafRevoked)!]
-        directive = PinPublicKeyDirective(hostName: testHost, settings: disabledHostCheckSettings)
+        directive = PinPublicKeyDirective(hostName: testHost, settings: settings)
         directive.pinnedPublicKeys = publicKeys
         isValid = directive.validate(trust: trust)
         XCTAssertTrue(isValid, "Validation should only succeed on disabled X.509 standard checks.")
