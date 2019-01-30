@@ -33,55 +33,73 @@ open class TrustManager: NSObject {
 /// TrustManaging protocol implementation
 @objc extension TrustManager: TrustManaging {
     
-    public var policies: [String : TrustPolicy] {
+    open var policies: [String : TrustPolicy] {
         get { return _policies }
         set { _policies = newValue }
     }
     
-    public var allPolicies: [TrustPolicy] {
+    open var allPolicies: [TrustPolicy] {
         return Array(policies.values)
     }
     
-    public var allNames: [String] {
+    open var allNames: [String] {
         return Array(policies.keys)
     }
     
-    public func create(type: ValidationType, hostName: String?, certificateBundle: Bundle? = nil, customValidation: CustomValidationClosure? = nil) -> TrustPolicy {
-        
+    open func create(type: ValidationType, hostName: String, settings: ValidationSettings? = nil) -> TrustPolicy {
+        let settings = settings ?? ValidationSettings.defaultSettings
+
         switch type {
         case .disabled:
-            return DisabledDirective(hostName: hostName)
+            return DisabledDirective(hostName: hostName, settings: settings)
             
         case .standard:
-            return DefaultDirective(hostName: hostName)
+            return DefaultDirective(hostName: hostName, settings: settings)
             
         case .custom:
-            return CustomDirective(hostName: hostName, customValidation: customValidation)
+            return CustomDirective(hostName: hostName, settings: settings)
             
         case .pinCertificate:
-            return PinCertificateDirective( hostName: hostName, certificateBundle: certificateBundle ?? Bundle.main)
+            return PinCertificateDirective(hostName: hostName, settings: settings)
             
         case .pinPublicKey:
-            return PinPublicKeyDirective(hostName: hostName, certificateBundle: certificateBundle ?? Bundle.main)
+            return PinPublicKeyDirective(hostName: hostName, settings: settings)
         }
     }
     
-    public func policy(for name: String) -> TrustPolicy? {
+    open func policy(for name: String) -> TrustPolicy? {
         return policies[name]
     }
     
-    public func add(policy: TrustPolicy) {
+    open func add(policy: TrustPolicy) {
         policies[policy.hostName] = policy
     }
     
-    public func add(policies: [TrustPolicy]) {
+    open func add(policies: [TrustPolicy]) {
         for item in policies {
             add(policy: item)
         }
     }
     
     @discardableResult
-    public func removePolicy(name: String) -> TrustPolicy? {
+    open func removePolicy(name: String) -> TrustPolicy? {
         return policies.removeValue(forKey: name)
     }
+}
+
+@objc(GCXValidationSettings)
+open class ValidationSettings: NSObject, ValidationCustomizable {
+
+    /// Convenience settings that contain an object with default values.
+    @objc public static var defaultSettings: ValidationSettings {
+        return ValidationSettings()
+    }
+
+    open var sslValidateHostName: Bool = true
+    
+    open var certificateBundle: Bundle = Bundle.main
+    
+    open var certificatePinOnly: Bool = false
+    
+    open var customValidation: CustomValidationClosure? = nil
 }

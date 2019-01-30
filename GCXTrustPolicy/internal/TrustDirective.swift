@@ -21,16 +21,13 @@ import Foundation
 /// Abstract base class for different trust directives represented via `ValidationType` enum.
 class AbstractDirective: NSObject, TrustPolicy {
 
-    var hostName: String?
+    var hostName: String
+    var settings: ValidationSettings
     
-    override init() {
-        let name = NSExceptionName(rawValue: "Unintended initialisation")
-        let reason = "Please use a concrete child class to perform initialisation."
-        NSException(name: name, reason: reason, userInfo: nil).raise()
-    }
-    
-    init(hostName: String?) {
+    init(hostName: String, settings: ValidationSettings) {
         self.hostName = hostName
+        self.settings = settings
+        
         super.init()
     }
     
@@ -50,16 +47,8 @@ class DisabledDirective: AbstractDirective {
 /// Uses a closure passed to the object to perform a completely custom validation.
 class CustomDirective: AbstractDirective {
     
-    var validationClosure: CustomValidationClosure?
-    
-    init(hostName: String?, customValidation: CustomValidationClosure?) {
-        self.validationClosure = customValidation
-        
-        super.init(hostName: hostName)
-    }
-    
     override func validate(trust: SecTrust) -> Bool {
-        guard let closure = validationClosure else { return false } // validation fails without
+        guard let closure = settings.customValidation else { return false } // validation fails without
         return closure(trust)
     }
 }
@@ -73,7 +62,7 @@ class DefaultDirective: AbstractDirective {
     
     /// Triggers a standard X.509 validation check
     func defaultValidation(trust: SecTrust) -> Bool {
-        return TrustEvaluation.isValid(serverTrust: trust, hostName: hostName)
+        return TrustEvaluation.isValid(serverTrust: trust, hostName: settings.sslValidateHostName ? hostName : nil)
     }
 }
 
@@ -81,24 +70,33 @@ class DefaultDirective: AbstractDirective {
 /// by comparing the local certificate(s) against the remote one(s).
 class PinCertificateDirective: DefaultDirective {
     
-    var pinnedCertDatas: [Data]
+    var pinnedCertDatas: [Data]!
     
-    init(hostName: String?, certificateBundle: Bundle) {
-        let certificates = TrustEvaluation.readDERCertificates(in: certificateBundle)
-        pinnedCertDatas = TrustEvaluation.certificateData(from: certificates)
+    override init(hostName: String, settings: ValidationSettings) {
+        super.init(hostName: hostName, settings: settings)
         
-        super.init(hostName: hostName)
+        let certificates = TrustEvaluation.readDERCertificates(in: settings.certificateBundle)
+        pinnedCertDatas = TrustEvaluation.certificateData(from: certificates)
     }
     
     override func validate(trust: SecTrust) -> Bool {
+        if settings.certificatePinOnly  {
+            return verifyCertificate(trust: trust)
+        }
+        
         if defaultValidation(trust: trust) {
-            let remoteCertData = TrustEvaluation.certificateData(from: trust)
-            for pinnedData in pinnedCertDatas {
-                for remoteData in remoteCertData {
-                    if (pinnedData as Data) == remoteData {
-                        return true
-                    }
-                    
+            return verifyCertificate(trust: trust)
+        }
+        
+        return false
+    }
+    
+    func verifyCertificate(trust: SecTrust) -> Bool {
+        let remoteCertData = TrustEvaluation.certificateData(from: trust)
+        for pinnedData in pinnedCertDatas {
+            for remoteData in remoteCertData {
+                if (pinnedData as Data) == remoteData {
+                    return true
                 }
             }
         }
@@ -110,25 +108,31 @@ class PinCertificateDirective: DefaultDirective {
 /// standard validation and check for matching public keys in certificate chain.
 class PinPublicKeyDirective: DefaultDirective {
     
-    var pinnedPublicKeys: [SecKey]
+    var pinnedPublicKeys: [SecKey]!
 
-    init(hostName: String?, certificateBundle: Bundle) {
-        pinnedPublicKeys = TrustEvaluation.publicKeysFromCertificates(in: certificateBundle)
+    override init(hostName: String, settings: ValidationSettings) {
+        super.init(hostName: hostName, settings: settings)
         
-        super.init(hostName: hostName)
+        pinnedPublicKeys = TrustEvaluation.publicKeysFromCertificates(in: settings.certificateBundle)
     }
-
+    
     override func validate(trust: SecTrust) -> Bool {
-        return keyPinningValidation(trust: trust)
-    }
-
-    fileprivate func keyPinningValidation(trust: SecTrust) -> Bool {
+        if settings.certificatePinOnly  {
+            return verifyCertificate(trust: trust)
+        }
+        
         if defaultValidation(trust: trust) {
-            for pinnedPublicKey in pinnedPublicKeys as [AnyObject] {
-                for remotePublicKey in TrustEvaluation.publicKeys(from: trust) as [AnyObject] {
-                    if pinnedPublicKey.isEqual(remotePublicKey) {
-                        return true
-                    }
+            return verifyCertificate(trust: trust)
+        }
+        
+        return false
+    }
+    
+    func verifyCertificate(trust: SecTrust) -> Bool {
+        for pinnedPublicKey in pinnedPublicKeys as [AnyObject] {
+            for remotePublicKey in TrustEvaluation.publicKeys(from: trust) as [AnyObject] {
+                if pinnedPublicKey.isEqual(remotePublicKey) {
+                    return true
                 }
             }
         }

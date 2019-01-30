@@ -29,9 +29,9 @@ class TrustDirectiveTests: XCTestCase {
     var isValid: Bool!
     var testBundle = Bundle(for: TrustDirectiveTests.self)
     var testHost = "grandcentrix.net"
-    var closure: CustomValidationClosure!
+    var settings = ValidationSettings.defaultSettings
     var directive: AbstractDirective!
-
+    
     // MARK: - Discarding of invalid certificates -
     
     func test_certificateLoading_fromTestBundle_invalidCertificatesSkipped() {
@@ -68,7 +68,7 @@ class TrustDirectiveTests: XCTestCase {
 
     func test_disableValidation_forAllTrusts_successful() {
         
-        directive = DisabledDirective(hostName: testHost)
+        directive = DisabledDirective(hostName: testHost, settings: ValidationSettings.defaultSettings)
         
         // true expectations
         trust = TestTrusts.validGCXTrustChain.trust
@@ -96,7 +96,7 @@ class TrustDirectiveTests: XCTestCase {
 
     func test_defaultDirective_withHostNameValidation_successfulForValidTrusts() {
         
-        directive = DefaultDirective(hostName: testHost)
+        directive = DefaultDirective(hostName: testHost, settings: ValidationSettings.defaultSettings)
         
         // true expectations
         trust = TestTrusts.validGCXTrustChain.trust
@@ -126,8 +126,9 @@ class TrustDirectiveTests: XCTestCase {
     }
     
     func test_defaultDirective_noHostNameValidation_successfulForValidTrusts() {
-    
-        directive = DefaultDirective(hostName: nil)
+        let settings = ValidationSettings.defaultSettings
+        settings.sslValidateHostName = false
+        directive = DefaultDirective(hostName: testHost, settings: settings)
         
         // true expectations
         trust = TestTrusts.validGCXTrustChain.trust
@@ -138,9 +139,9 @@ class TrustDirectiveTests: XCTestCase {
         isValid = directive.validate(trust: trust)
         XCTAssertTrue(isValid, "Should be valid for leaf certificate.")
         
-        trust = TestTrusts.validGCXWildcardOnly.trust
+        trust = TestTrusts.validGCXIntermediateAndRootOnly.trust
         isValid = directive.validate(trust: trust)
-        XCTAssertTrue(isValid, "Should be valid for stripped down chain.")
+        XCTAssertTrue(isValid, "Should be invalid for intermediate and anchor certificate.")
         
         trust = TestTrusts.validGCXRootOnly.trust
         isValid = directive.validate(trust: trust)
@@ -161,10 +162,10 @@ class TrustDirectiveTests: XCTestCase {
     func test_customValidation_correct_dependingOnClosureReturn() {
 
         // true expectations
-        closure = { trust -> Bool in
+        settings.customValidation = { trust -> Bool in
             return true
         }
-        directive = CustomDirective(hostName: testHost, customValidation: closure)
+        directive = CustomDirective(hostName: testHost, settings: settings)
         
         trust = TestTrusts.validGCXTrustChain.trust
         isValid = directive.validate(trust: trust)
@@ -172,10 +173,10 @@ class TrustDirectiveTests: XCTestCase {
         
         
         // false expectations
-        closure = { trust -> Bool in
+        settings.customValidation = { trust -> Bool in
             return false
         }
-        directive = CustomDirective(hostName: testHost, customValidation: closure)
+        directive = CustomDirective(hostName: testHost, settings: settings)
         
         trust = TestTrusts.validGCXTrustChain.trust
         isValid = directive.validate(trust: trust)
@@ -184,7 +185,7 @@ class TrustDirectiveTests: XCTestCase {
     
     func test_customValidation_missingValidationClosure_validationFails() {
         
-        directive = CustomDirective(hostName: testHost, customValidation: nil)
+        directive = CustomDirective(hostName: testHost, settings: settings)
         
         trust = TestTrusts.validGCXTrustChain.trust
         isValid = directive.validate(trust: trust)

@@ -28,20 +28,19 @@ public typealias CustomValidationClosure = (SecTrust?) -> (Bool)
 ///				It is advised to be careful with disabling validation
 ///				because *any* server trust will always be considerd as valid.
 ///
-/// - standard: Performs a standard validation.
-///				Using the system provided standard mechanism that is basically a
-///				X.509 certificate trust evaluation in a recursive two-step
-///				process down to the trusted anchor certificate.
+/// - standard: Performs the system standard X.509 trust validation that involves
+///             server identity checks to ensure talking to the correct server.
 ///
-/// - custom:	Performx a completely custom validation.
+/// - custom:	Performx a completely custom trust validation.
 ///				Handling the validation process is completely up to the developer.
 ///
-/// - pinCertificate: 	Perform a validation by pinning certificate(s).
+/// - pinCertificate: 	Perform a standard SSL validation *and* pins the trusted certificate(s).
 ///						The validation process is considered successful if one of the pinned
 ///						public key(s) match one of the servers public key(s) and standard
 ///						X.509 trust validation has also been successful.
 ///
-/// - pinPublicKey:     Perform a validation by pinning the certificate(s) public key.
+/// - pinPublicKey:     Perform a standard SSL validation and pins the trusted certificate(s)
+///                     public key(s).
 ///                     The validation process is considered successful if one of the pinned
 ///                     public key(s) match one of the servers public key(s) and standard
 ///                     X.509 trust validation has also been successful.
@@ -64,6 +63,47 @@ public protocol TrustPolicy {
     func validate(trust: SecTrust) -> Bool
 }
 
+@objc(GCXValidationCustomizable)
+/// Protocol defines an object containing validation settings
+public protocol ValidationCustomizable {
+    
+    /// Define if the host name will be checked during SSL validation.
+    ///
+    /// Default value is TRUE.
+    var sslValidateHostName: Bool { get set }
+    
+    /// The bundle where to search for certificates.
+    /// These certificates have to be bundled with the app, e.g. Xcode project folder.
+    ///
+    /// Taken into account only for certificate required validation, e.g.
+    /// `ValidationType`:`.pinPublicKey` and `.pinCertificate`.
+    ///
+    /// By default the main Bundle is used as location for certificates.
+    var certificateBundle: Bundle { get set }
+    
+    /// Allows to skip SSL validation and take only SSL pinning into account.
+    ///
+    /// This will completely skip certificate chain validation and host name checks
+    /// during standard X.509 validation.
+    /// Unsecure, but useful when performing validation with servers that utilize
+    /// self-signed or expired certificates.
+    ///
+    /// Taken into account only for certificate required validation, e.g.
+    /// `ValidationType`:`.pinPublicKey` and `.pinCertificate`.
+    ///
+    /// Default value is FALSE.
+    var certificatePinOnly: Bool { get set }
+    
+    /// A custom closure for validation with `ValidationType`: `.custom`.
+    /// When using this, all validation logic has to be contained within the closure.
+    ///
+    /// SSL validation checks are not done when using custom validation
+    /// that has completey to be handled by the caller.
+    ///
+    /// By default the value is `nil`.
+    var customValidation: CustomValidationClosure? { get set }
+}
+
 @objc(GCXTrustManaging)
 /// Trusting protocol describing trust policiy management
 public protocol TrustManaging {
@@ -84,33 +124,27 @@ public protocol TrustManaging {
     ///   - type:       The `ValidationType` enummeration values specify which kind
     ///                 of trust is created.
     ///
-    ///   - hostName:   Passing a `hostName` String is optional but leaving it unset
-    ///                 will lead the system not take the host`s name into account
-    ///                 during X.509 validation, hence it should be provided
-    ///                 by the calling client.
-    ///                 The `hostName` String will be used by all non-custom trust
-    ///                 validation checks (e.g. `ValidationType`: `.standard`,
-    ///                 `.pinCertificate`, .pinPublicKey`)
+    ///   - hostName:   The host name URL as string that the policy applies for.
     ///
-    ///   - certificateBundle:  The bundle where to search for certificates.
-    ///                         These certificates have to be bundled with the app.
-    ///                         (e.g. Xcode project folder)
-    ///                         Taken into account only for certificate required
-    ///                         validation `ValidationType`:`.pinPublicKey`
-    ///                         and `.pinCertificate`.
-    ///                         If omitted or `nil` param is passed the main Bundle
-    ///                         is assumed as default location for certificates.
+    ///                 The `TrustManager` handles policies by its name but
+    ///                 it is also used for standard SSL validation where the
+    ///                 server identity is verified by the host name URL.
     ///
-    ///   - customValidation:   A custom closure for validation with `ValidationType`:
-    ///                         `.custom`. When using this, all validation logic has
-    ///                         to be contained within the closure.
-    ///                         A host name check, as part of systems standard
-    ///                         X.509 validation, is not done on custom validation and
-    ///                         and has to be handled by the caller.
-    ///                         Swift default value is `nil`.
+    ///                 The host portion of the provided URL string should match
+    ///                 `dnsName` field in the `subjectAltName` field of the certificate.
+    ///
+    ///                 By default the `hostName` URL string will be used by all non-custom
+    ///                 trust validation checks, e.g. `ValidationType`: `.standard`,
+    ///                 `.pinCertificate` and .pinPublicKey`)
+    ///                 It is possible to skip the host name check by passing a
+    ///                 `ValidationSettings` object with `skipHostNameValidation = true`.
+    ///                 This allows to use an arbitrary string instead of an URL string.
+    ///
+    ///   - settings:   An optional `ValidationSettings` object.
+    ///                 Can safely be omitted. In that case the default settings will be used.
     ///
     /// - Returns:  a new created `TrustPolicy` conforming object.
-    func create(type: ValidationType, hostName: String?, certificateBundle: Bundle?, customValidation: CustomValidationClosure?) -> TrustPolicy
+    func create(type: ValidationType, hostName: String, settings: ValidationSettings?) -> TrustPolicy
     
     /// Retrieve matching policy by its name.
     ///
