@@ -134,13 +134,13 @@
 			path = Certificates;
 			sourceTree = "<group>";
 		};
-		4F28B4661E1D37DD00F14DF8 /* Framework Integration */ = {
+		4F28B4661E1D37DD00F14DF8 /* Integration Tests */ = {
 			isa = PBXGroup;
 			children = (
 				4F28B4671E1D37DD00F14DF8 /* GCXTrustPolicyTestObjC.m */,
 				4F28B4681E1D37DD00F14DF8 /* GCXTrustPolicyTests.swift */,
 			);
-			path = "Framework Integration";
+			path = "Integration Tests";
 			sourceTree = "<group>";
 		};
 		4F28B4691E1D37DD00F14DF8 /* Unit Tests */ = {
@@ -223,7 +223,7 @@
 		4FDD34261D48F24D0013A271 /* GCXTrustPolicyTests */ = {
 			isa = PBXGroup;
 			children = (
-				4F28B4661E1D37DD00F14DF8 /* Framework Integration */,
+				4F28B4661E1D37DD00F14DF8 /* Integration Tests */,
 				4F28B4691E1D37DD00F14DF8 /* Unit Tests */,
 				4FDD34291D48F24D0013A271 /* Info.plist */,
 				4F53315E1D4A65E300502FE9 /* TestHelper.swift */,

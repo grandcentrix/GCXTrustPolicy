@@ -80,6 +80,7 @@ open class TrustManager: NSObject {
         }
     }
     
+    @discardableResult
     public func removePolicy(name: String) -> TrustPolicy? {
         return policies.removeValue(forKey: name)
     }
