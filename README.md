@@ -28,7 +28,6 @@ When using a self-signed certificate, connecting to a host by IP address (where 
 If you encounter problems check our [troubleshooting section](#Troubleshooting) or file an Issue.
 We will give our best trying to help you out. 🙂
 
-<br />
 
 #### Carthage
 
@@ -36,13 +35,11 @@ We will give our best trying to help you out. 🙂
 github "grandcentrix/GCXTrustPolicy"
 ```
 
-<br />
 
-#### Carthage
+#### Cocoa Pods
 
 Coming Soon!
 
-<br />
 
 #### Manual
 
@@ -53,12 +50,8 @@ Coming Soon!
 - Add `GCXTrustPolicy.framework` to the "Embedded Binaries" section
 - Build and Run
 
-<br />
-
 
 ## Example
-
-<br />
 
 #### General Steps
 
@@ -68,10 +61,8 @@ Coming Soon!
 * URLSessionDelegate receives an authentication challenge
 * Validate the policy against the remote trust
 
-<br />
 
 #### Simple example 
-
 
 ```swift
 // create a policy for the host:
@@ -94,8 +85,6 @@ if isTrusted {
     
 ```
 
-<br />
-
 #### Validation types
 
 GCXTrustPolicy offers multiple validation types:
@@ -106,13 +95,11 @@ GCXTrustPolicy offers multiple validation types:
 - Use default validation of the operation system
 - Disable validation for a given host
 
-<br />
 
 #### Detailed examples
 
 For detailed examples please refer to [Examples](Examples.md) or source code examples for Swift and ObjC in [Integration Tests](https://github.com/grandcentrix/GCXTrustPolicy/tree/feature/swift4x/GCXTrustPolicyTests/Integration%20Tests).
 
-<br />
 
 ## Documentation
 
