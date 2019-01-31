@@ -2,7 +2,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) ![Release](https://img.shields.io/github/release/grandcentrix/GCXTrustPolicy.svg) [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
 
-SSL pinning and trust validation framework for iOS.  💻  <- 👮 -> ☁️
+SSL-pinning and trust validation framework for iOS.  💻  <- 👮 -> ☁️
 
 Optimized for Swift and working from plain old Objective-C as well.
 
@@ -10,7 +10,7 @@ Optimized for Swift and working from plain old Objective-C as well.
 
 ## Abstract
 
-Users, developers and applications expect end-to-end security on their secure channels, but some secure channels are not meeting the expectation. Specifically, channels built using well known protocols such as VPN, SSL, and TLS can be vulnerable to a number of attacks. This is where SSL-validation come into play as it prevents from Man-in-The-Middle attacks and other vulnerabilities.
+Users, developers and applications expect end-to-end security on their secure channels, but some secure channels are not meeting the expectation. Specifically, channels built using well known protocols such as VPN, SSL and TLS can be vulnerable to a number of attacks. This is where SSL-validation come into play as it prevents from Man-in-The-Middle attacks and other vulnerabilities.
 This framework is intended as customizable drop-in-solution that makes SSL-validation more comfortable and reliable secure.
 
 
