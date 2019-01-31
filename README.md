@@ -109,6 +109,22 @@ Please see source code documentation in [TrustPolicy.swift](TrustPolicy.swift) f
 
 <br />
 
+## Glossary
+
+TLS
+Transport Layer Security (TLS) is a cryptographic protocols designed to provide communications security over a computer network
+
+SSL
+Secure Sockets Layer (SSL) is a cryptographic protocol that is deprecated and has been replaced by TLS
+
+Certificate
+A certificate is a digital file that is usable for SSL or TLS. The certificate assists with authenticating and verifying the identity of a host or website. It also enables the encryption of the exchanged information.
+
+X.509
+A standard defining a Public Key Infrastructure (PKI) to verify that a public key belongs to the identity contained within the certificate.
+
+<br />
+
 ## Troubleshooting
 
 * If you running an Objective-C project and encounter  an  `dyld: Library not loaded: @rpath/libswiftCore.dylib` error try to
