@@ -31,6 +31,7 @@
 		4F28B4821E1D37DD00F14DF8 /* TrustDirectivePinPublicKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F28B46C1E1D37DD00F14DF8 /* TrustDirectivePinPublicKeyTests.swift */; };
 		4F28B4831E1D37DD00F14DF8 /* TrustDirectiveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F28B46D1E1D37DD00F14DF8 /* TrustDirectiveTests.swift */; };
 		4F28B4841E1D37DD00F14DF8 /* TrustManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F28B46E1E1D37DD00F14DF8 /* TrustManagerTests.swift */; };
+		4F3DBF1E2203283E00EA5483 /* Examples.md in Resources */ = {isa = PBXBuildFile; fileRef = 4F3DBF1D2203283E00EA5483 /* Examples.md */; };
 		4F3DE5CD1D509DCB0069BBD9 /* TrustPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3DE5CC1D509DCB0069BBD9 /* TrustPolicy.swift */; };
 		4F5331571D4A4BA500502FE9 /* TrustManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5331561D4A4BA500502FE9 /* TrustManager.swift */; };
 		4F53315F1D4A65E300502FE9 /* TestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F53315E1D4A65E300502FE9 /* TestHelper.swift */; };
@@ -71,6 +72,7 @@
 		4F28B46C1E1D37DD00F14DF8 /* TrustDirectivePinPublicKeyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrustDirectivePinPublicKeyTests.swift; sourceTree = "<group>"; };
 		4F28B46D1E1D37DD00F14DF8 /* TrustDirectiveTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrustDirectiveTests.swift; sourceTree = "<group>"; };
 		4F28B46E1E1D37DD00F14DF8 /* TrustManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrustManagerTests.swift; sourceTree = "<group>"; };
+		4F3DBF1D2203283E00EA5483 /* Examples.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = Examples.md; sourceTree = "<group>"; };
 		4F3DE5CC1D509DCB0069BBD9 /* TrustPolicy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrustPolicy.swift; sourceTree = "<group>"; };
 		4F5331561D4A4BA500502FE9 /* TrustManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrustManager.swift; sourceTree = "<group>"; };
 		4F53315E1D4A65E300502FE9 /* TestHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHelper.swift; sourceTree = "<group>"; };
@@ -189,6 +191,7 @@
 			isa = PBXGroup;
 			children = (
 				4F5331641D4BBD8300502FE9 /* README.md */,
+				4F3DBF1D2203283E00EA5483 /* Examples.md */,
 				4FDD341A1D48F24D0013A271 /* GCXTrustPolicy */,
 				4FDD34261D48F24D0013A271 /* GCXTrustPolicyTests */,
 				4FDD34191D48F24D0013A271 /* Products */,
@@ -346,6 +349,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4F3DBF1E2203283E00EA5483 /* Examples.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
