@@ -26,6 +26,7 @@ When using a self-signed certificate, connecting to a host by IP address (where 
 ## Installation
 
 If you encounter problems check our [troubleshooting section](#Troubleshooting) or file an Issue.
+
 We will give our best trying to help you out. 🙂
 
 
@@ -38,7 +39,7 @@ github "grandcentrix/GCXTrustPolicy"
 
 #### Cocoa Pods
 
-Coming Soon!
+Coming Soon!  
 
 
 #### Manual
@@ -50,6 +51,7 @@ Coming Soon!
 - Add `GCXTrustPolicy.framework` to the "Embedded Binaries" section
 - Build and Run
 
+<br />
 
 ## Example
 
@@ -100,6 +102,7 @@ GCXTrustPolicy offers multiple validation types:
 
 For detailed examples please refer to [Examples](Examples.md) or source code examples for Swift and ObjC in [Integration Tests](https://github.com/grandcentrix/GCXTrustPolicy/tree/feature/swift4x/GCXTrustPolicyTests/Integration%20Tests).
 
+<br />
 
 ## Documentation
 
