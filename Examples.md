@@ -1,41 +1,15 @@
-
-
 # Examples
 
-## Usage
+#### General steps: 
 
-Depending on your needs you can either provide a custom validation (by using the `CustomValidation` closure) according to [Apple Developer: Overriding SSL-Chain Validation](https://developer.apple.com/library/mac/documentation/NetworkingInternet/Conceptual/NetworkingTopics/Articles/OverridingSSLChainValidationCorrectly.html). It is also possible to only rely on pinning by skipping the certificate chain validation process by setting `allowInsecureServerTrust = true`. A third option is to pin again a trusted Server, which provides the valid certificates for a given domain.
-
-If you want to use Pinning do not forget to add the certificates into your Project. If you want to use a different bundle than the main NSBundle (default setting) you will have to advice the `ComposePolicy` to use it.
-
-1. Define a host and a `ValidationType` to evaluate
-2. Create the `TrustPolicy` using the `ComposePolicy` abstraction class
-3. Use the `TrustManager` to manage multiple trust policies
-4. Use the `-validate(withTrust: SecTrust)` of the `TrustPolicy` to evaluate authentication challenges
-
-<br />
-
-## Hands-On
-### Host name
-
-The provided host name must match either the leaf certificate’s Common Name or one of the names in its Subject Alternate Name extension.
-
-### Validation types
-
-- `standard`: Perform a standard validation. Using the system provided standard mechanism that is basically a X.509 certificate trust evaluation in a recursive two-step process down to the trusted anchor certificate.
-
-- `pinPublicKey`: Public key pinning: Uses the pinned public keys to validate the server trust. The server trust is considered valid if one of the pinned public keys match one of the server certificate public keys. A default host validation like in 'DefaultValidation' is also done. Note: Applications that use public key pinning usually don't need an app update if the server renews it's certificate(s) as the underlying public key remains valid.
-
-- `pinCertificate`: Certificate pinning: Uses the pinned certificates to validate the server trust. The server trust is considered valid if one of the pinned certificates match one of the server certificates. A default host validation like in 'DefaultValidation' is also done. A drawback is that if the server renews it's certificate(s) a new app with new certificate has to be shipped as the old one bundeled with the app is no longer valid.
-
-- `disabled`: No validation at all. This will always consider any server trust as valid.
-
-- `custom`: Perform a complete custom validation using a closure.
+* Add the certificate(s) to pin to your project
+* Create a validation policy 
+* Perform a URL request using a secure connection (such as https)
+* URLSessionDelegate receives an authentication challenge
+* Validate the policy against the remote trust
 
 
-### TrustPolicyType enumeration
-
-#### Swift
+#### Validation types
 
 ```swift
 public enum ValidationType: Int {
@@ -47,124 +21,39 @@ public enum ValidationType: Int {
 }
 ```
 
-
-#### Objective-C
-
-```objective-c
-typedef SWIFT_ENUM_NAMED(NSInteger, GCXValidationType, "ValidationType") {
-  GCXValidationTypeDisabled = 0,
-  GCXValidationTypeStandard = 1,
-  GCXValidationTypeCustom = 2,
-  GCXValidationTypePinCertificate = 3,
-  GCXValidationTypePinPublicKey = 4
-};
-```
-
-
-###  Setup example
-
-#### Preparations: 
-
-* add certificates to pin to your project
-* create the policy
-* add the policy to the TrustManager
-* on authentication challenge, validate the trust against the policy
-
-#### Simple setup: 
-
+#### Create policies example
 
 ```swift
-let exampleHost = "https://www.the-host-to-pin.com"
-    
-// create a policy
-let pinningPolicy = ComposePolicy(withValidation: .pinPublicKey, forHost: exampleHost).create()
-    
-// use add(policy:) for adding a singe policy
-TrustManager.shared.add(policy: pinningPolicy)
-    
+// Create a simple policy:
+let pinPolicy = trustManager.create(type: .pinPublicKey, hostName: "pinnedHost.com")
+
+// Create a customised policy:
+let settings = ValidationSettings.defaultSettings
+settings.sslValidateHostName = false
+let noHostCheckPolicy = trustManager.create(type: .pinPublicKey, hostName: "otherPinnedHost.com", settings: settings)
+
+// Add policies to trust manager:
+trustManager.add(policies: [pinPolicy, noHostCheckPolicy]])
 ```
 
-#### Simple validation: 
+#### Validation example
 
-```swift
-if let policy = TrustManager.shared.policy(forHost: challengedHost) {
-   if policy.validate(with: trust) {
-        // Success! Server trust has been established.
-   } else {
-        // Failed validation! Not secure to connect!!!
-   }
-    
-```
+Perform the policy validation in URLSessionDelegate or NSURLConnectionDelegate  callback in response to an authentication request:
 
-#### Setup of multiple policies (Swift):
-
-```swift
-
-func setupTrustPolicies() {
-
-    // - .standard: - //
-    // compose and build a default validation policy
-    let exampleHost = "https://www.the-host-to-pin.com"
-    let defaultPolicy = ComposePolicy(withValidation: .standard, forHost: exampleHost).create()
-
-    // - .pinPublicKey: - //
-    // compose and build a public key pinning policy
-    let pinningHost = URL(string:PINNING_HOST_URL_STRING)!.host!
-    let composer = ComposePolicy(withValidation: .pinPublicKey, forHost: pinningHost)
-    let pinningPolicy = composer.create()
-
-    // add the three policies to the manager class at once
-    TrustManager.shared.add(policies: [defaultPolicy, pinningPolicy])
-}
-```
-
-#### Setup of multiple policies (Objective-C)
-
-```objective-c
-
-- (void)setupTrustPolicies {
-
-    // - .standard: - //
-    // compose and build a default validation policy
-    NSString *exampleHost = "https://www.the-host-to-pin.com";
-    id<GCXTrustPolicy> defaultPolicy = [[[GCXComposePolicy alloc] initWithValidation:GCXValidationTypeStandard forHost:exampleHost] create];
-
-    // - .pinPublicKey: - //
-    // compose and build a public key pinning policy
-    NSString *pinningHost = [NSURL URLWithString:PINNING_HOST_URL_STRING].host;
-    GCXComposePolicy *composer = [[GCXComposePolicy alloc] initWithValidation:GCXValidationTypePinPublicKey forHost:pinningHost];
-    id<GCXTrustPolicy> pinningPolicy = [composer create];
-    
-    // add the three policies to the manager class at once
-    GCXTrustManager *manager = [GCXTrustManager shared];
-    [manager addWithPolicies:@[defaultPolicy, pinningPolicy]];
-}
-```
-
-
-### Validation example
-
-#### Swift
-
-Perform the policy validation in your URLSessionDelegate callback in response to an authentication request:
-You can also use NSURLConnection to authenticate.
 ```swift
 extension ViewController: URLSessionDelegate {
-   // Of course it is also possible to use NSURLConnection here...
-   func urlSession(_ session: URLSession, 
-        didReceive challenge: URLAuthenticationChallenge, 
-        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+
+   func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
         
        let challengedHost = challenge.protectionSpace.host
         
-       // Validate the remote trust
-       if let trust = challenge.protectionSpace.serverTrust {
+       // Validate remote trust
+       if let serverTrust = challenge.protectionSpace.serverTrust {
            var isTrusted = false
             
            // Retrieve a matching policy for the challenged host
-           
-           if let policy = TrustManager.shared.policy(forHost: challengedHost) {
-               isTrusted = policy.validate(with: trust)
+           if let policy = TrustManager.shared.policy(for: challengedHost) {
+               isTrusted = policy.validate(trust: serverTrust)
                 
                if isTrusted {
                    // Success! Server trust has been established.
@@ -181,103 +70,76 @@ extension ViewController: URLSessionDelegate {
 
 ```
 
+<br />
 
-#### Objective-C
+## Further usage advise
 
-Perform the policy validation in your URLSessionDelegate callback in response to an authentication request:
-You can also use NSURLConnection to authenticate.
+### Validation types
 
-```objective-c
-// Of course it is also possible to use NSURLConnection here...
--(void)URLSession:(NSURLSession *)session 
-       didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge 
-       completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable))completionHandler
-{
-    NSString *challengedHost = challenge.protectionSpace.host;
-    NSString *authorizationMethod = challenge.protectionSpace.authenticationMethod;
-    
-    // Validate the remote trust
-    if([authorizationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-        BOOL isTrusted = NO;
-        SecTrustRef serverTrust = challenge.protectionSpace.serverTrust;
-        
-        // Retrieve a matching policy for the challenged host
-        id <GCXTrustPolicy> policy = [[GCXTrustManager shared] policyForHost:challengedHost];
-        
-        // Validate the server trust
-        isTrusted = [policy validateWith:serverTrust];
-        if (isTrusted) {
-            // Success! Server trust has been established.
-            NSURLCredential *credential = [NSURLCredential credentialForTrust:serverTrust];
-            completionHandler(NSURLSessionAuthChallengeUseCredential, credential);
-            return;
-        }
-    }
-    
-    // Cancel the challenge
-    completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
-}
-```
+- disabled: 
+Performs no validation at all. It is advised to be careful with disabling validation because *any* server trust will always be considerd as valid.
 
+- standard:
+Performs the system standard X.509 trust validation that involves server identity checks to ensure talking to the correct server.
 
-### Examples on validation customization:
+- custom:
+Perform a completely custom trust validation. Handling the validation process is completely up to the developer.
 
+- pinCertificate:
+Perform a standard SSL validation *and* pins the trusted certificate(s).
+The validation process is considered successful if one of the pinned public key(s) match one of the servers public key(s) and standard X.509 trust validation has also been successful.
 
-#### Swift
+- pinPublicKey:
+Perform a standard SSL validation and pins the trusted certificate(s) public key(s).
+The validation process is considered successful if one of the pinned
+public key(s) match one of the servers public key(s) and standard X.509 trust validation has also been successful.
 
-```swift
-// construct the TrustPolicyComposer
-let type: ValidationType = /* a type */
-let exampleHost: String =  /* a host */
-let composer = ComposePolicy(withValidation: type, forHost: exampleHost)
-        
-// default setting, checks host name too when performing certificate chain validation
-// must match either the leaf certificate’s Common Name or one of the names in its Subject Alternate Name extension
-composer.validateHostName = true
+<br />
 
-// default setting, uses all certificates from the specified bundle
-// assign a custom bundle if needed
-composer.certificateBundle = Bundle.main
+#### Custom validation
 
-// default setting, self-signed and invalid certificates are assumed as insecure
-// when `true` no hostname and no certificate chain validation is performed
-composer.allowInsecureServerTrust = false;
+Depending on your needs you can provide a custom validation by using the `CustomValidationClosure` closure. For implementation approaches please 
+refer to [Apple Developer: Overriding SSL-Chain Validation](https://developer.apple.com/library/mac/documentation/NetworkingInternet/Conceptual/NetworkingTopics/Articles/OverridingSSLChainValidationCorrectly.html). 
 
-// Custom validation closure, has to be assigned when performing
-// a custom validation of type .CustomValidation
-composer.customValidation = {(trust: SecTrust?) -> Bool in
-    let isTrusted = /* perform your custom validation ... */
-    return isTrusted
-}
-```
+<br />
 
+#### Pinning
 
-##### Objective-C
+Is possible, but not advised, to rely only on pinning by skipping the default SSL certificate chain validation. Assign `certificatePinOnly = true` in `ValidationSettings` object. Unsecure, but useful when performing validation with servers that utilize self-signed or expired certificates.
+When using Pinning the corresponding certificates have to be added to the Project. During validation check all necessary informations (e.g. Public Key) will be extracted. If you want to use a different bundle than the main Bundle (e.g. for updatability of certificates) you can use `ValidationSettings.
 
-```objective-c
-// construct the TrustPolicyComposer
-TrustPolicyType type = /* a type */
-NSString *exampleHost =  /* a host */
-GCXComposePolicy *composer = [[GCXComposePolicy alloc] initWithValidation:type forHost:exampleHost];
-  
-// default setting, checks host name too when performing certificate chain validation
-// must match either the leaf certificate’s Common Name or one of the names in its Subject Alternate Name extension
-composer.validateHostName = YES;
+<br />
 
-// default setting, uses all certificates from the specified bundle
-// assign a custom bundle if needed
-composer.certificateBundle = [NSBundle mainBundle];
+### Host name
 
-// default setting, self-signed and invalid certificates are assumed as insecure
-// when `true` no hostname and no certificate chain validation is performed
-composer.allowInsecureServerTrust = NO;
+The provided host name must match either the leaf certificate’s Common Name or one of the names in its Subject Alternate Name extension.
 
-// Custom validation closure, has to be assigned when performing
-// a custom validation of type .CustomValidation
-composer.customValidation = ^BOOL(SecTrustRef _Null_unspecified trust) {
-    BOOL isTrusted = /* perform your custom validation ... */
-    return isTrusted;
-}
-```
+<br />
+
+### Multiple trust policies
+
+Use the `TrustManager` to manage multiple trust policies
+
+<br />
+
+### Validation types
+
+- disabled: 
+Performs no validation at all. It is advised to be careful with disabling validation because *any* server trust will always be considerd as valid.
+
+- standard:
+Performs the system standard X.509 trust validation that involves server identity checks to ensure talking to the correct server.
+
+- custom:
+Perform a completely custom trust validation. Handling the validation process is completely up to the developer.
+
+- pinCertificate:
+Perform a standard SSL validation *and* pins the trusted certificate(s).
+The validation process is considered successful if one of the pinned public key(s) match one of the servers public key(s) and standard X.509 trust validation has also been successful.
+
+- pinPublicKey:
+Perform a standard SSL validation and pins the trusted certificate(s) public key(s).
+The validation process is considered successful if one of the pinned
+public key(s) match one of the servers public key(s) and standard X.509 trust validation has also been successful.
 
 <br />

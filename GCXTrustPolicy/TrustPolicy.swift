@@ -31,7 +31,7 @@ public typealias CustomValidationClosure = (SecTrust?) -> (Bool)
 /// - standard: Performs the system standard X.509 trust validation that involves
 ///             server identity checks to ensure talking to the correct server.
 ///
-/// - custom:	Performx a completely custom trust validation.
+/// - custom:	Performs a completely custom trust validation.
 ///				Handling the validation process is completely up to the developer.
 ///
 /// - pinCertificate: 	Perform a standard SSL validation *and* pins the trusted certificate(s).

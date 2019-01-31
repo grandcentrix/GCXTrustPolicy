@@ -26,8 +26,9 @@ When using a self-signed certificate, connecting to a host by IP address (where 
 ## Installation
 
 If you encounter problems check our [troubleshooting section](#Troubleshooting) or file an Issue.
-
 We will give our best trying to help you out. 🙂
+
+<br />
 
 #### Carthage
 
@@ -35,10 +36,13 @@ We will give our best trying to help you out. 🙂
 github "grandcentrix/GCXTrustPolicy"
 ```
 
+<br />
+
 #### Carthage
 
 Coming Soon!
 
+<br />
 
 #### Manual
 
@@ -54,7 +58,9 @@ Coming Soon!
 
 ## Example
 
-#### Steps: 
+<br />
+
+#### General Steps
 
 * Add the certificate(s) to pin to your project
 * Create a validation policy 
@@ -62,6 +68,7 @@ Coming Soon!
 * URLSessionDelegate receives an authentication challenge
 * Validate the policy against the remote trust
 
+<br />
 
 #### Simple example 
 
@@ -70,7 +77,7 @@ Coming Soon!
 // create a policy for the host:
 let policy = trustManager.create(type: .pinPublicKey, hostName: "pinnedHost.com")
     
-// [--- perform network call urlSession(_:didReceive:completionHandler:) ---]
+// >>> perform URL request to remot host <<<
 
 // In URLSessionDelegate or NSURLConnectionDelegate callbacks retrieve the remote trust on authentication challenge:
 guard let serverTrust = challenge.protectionSpace.serverTrust else { /* handle case ... */ }
@@ -87,9 +94,11 @@ if isTrusted {
     
 ```
 
+<br />
+
 #### Validation types
 
-With GCXTrustPolicy offers multiple validation types:
+GCXTrustPolicy offers multiple validation types:
 
 - Pin a Certificate's Public Key
 - Pin a Certificate
@@ -97,38 +106,39 @@ With GCXTrustPolicy offers multiple validation types:
 - Use default validation of the operation system
 - Disable validation for a given host
 
+<br />
+
 #### Detailed examples
 
-For more examples please refer to [Examples](Examples.md)
+For detailed examples please refer to [Examples](Examples.md) or source code examples for Swift and ObjC in [Integration Tests](https://github.com/grandcentrix/GCXTrustPolicy/tree/feature/swift4x/GCXTrustPolicyTests/Integration%20Tests).
 
 <br />
 
 ## Documentation
 
-Please see source code documentation in [TrustPolicy.swift](TrustPolicy.swift) for further information.
+Please see source code documentation in [TrustPolicy.swift](GCXTrustPolicy/TrustPolicy.swift) for detailed information.
 
 <br />
 
 ## Glossary
 
-TLS
+#### TLS
 Transport Layer Security (TLS) is a cryptographic protocols designed to provide communications security over a computer network
 
-SSL
+#### SSL
 Secure Sockets Layer (SSL) is a cryptographic protocol that is deprecated and has been replaced by TLS
 
-Certificate
+#### Certificate
 A certificate is a digital file that is usable for SSL or TLS. The certificate assists with authenticating and verifying the identity of a host or website. It also enables the encryption of the exchanged information.
 
-X.509
+#### X.509
 A standard defining a Public Key Infrastructure (PKI) to verify that a public key belongs to the identity contained within the certificate.
 
 <br />
 
 ## Troubleshooting
 
-* If you running an Objective-C project and encounter  an  `dyld: Library not loaded: @rpath/libswiftCore.dylib` error try to
-set the Xcode build option 'Embedded Content Contains Swift Code' to 'YES'.
+If running an Objective-C project and encounter `dyld: Library not loaded: @rpath/libswiftCore.dylib` error try to setting the Xcode build option 'Embedded Content Contains Swift Code' to 'YES'.
 
 <br />
 
