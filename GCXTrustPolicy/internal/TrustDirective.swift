@@ -16,150 +16,87 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-
-////////////////////////////////////////////////
-///
-/// TrustDirective
-///
-////////////////////////////////////////////////
-
 import Foundation
 
-// MARK: - Base class for validation -
+/// Abstract base class for different trust directives represented via `ValidationType` enum.
+class AbstractDirective: NSObject, TrustPolicy {
 
-class TrustDirective: NSObject, TrustPolicy {
+    var hostName: String
+    var settings: ValidationSettings
     
-
-    // MARK: - Variables -
-    
-    var hostName: String!
-    
-    fileprivate var validateServerTrust: Bool!
-    fileprivate var validateHost: Bool!
-    
-    
-    // MARK: - Initialisation -
-    
-    override init() {
-        NSException(name: NSExceptionName(rawValue: "Unintended initialisation"),
-                    reason: "Please use a concrete child class to perform initialisation.",
-                    userInfo: nil).raise()
-    }
-    
-    fileprivate init(withHostName host: String, validateServerTrust: Bool, validateHost: Bool) {
-        self.hostName = host
-        self.validateServerTrust = validateServerTrust
-        self.validateHost = validateHost
+    init(hostName: String, settings: ValidationSettings) {
+        self.hostName = hostName
+        self.settings = settings
         
         super.init()
     }
     
-    
-    // MARK: - TrustPolicy -
-    
-    func validate(with trust: SecTrust) -> Bool {
-        return false
+    func validate(trust: SecTrust) -> Bool {
+        return false // intended to override in subclass
     }
 }
 
-
-// MARK: - Disabled validation -
-
-/**
-  Skip any validation and return a false success instead.
- */
-class DisabledDirective: TrustDirective {
+/// Skip any validation and return a false success instead.
+class DisabledDirective: AbstractDirective {
     
-    init(withHostName host: String) {
-        super.init(withHostName: host, validateServerTrust: false, validateHost: false)
-    }
-    
-    override func validate(with trust: SecTrust) -> Bool {
+    override func validate(trust: SecTrust) -> Bool {
         return true // no validation is performed
     }
 }
 
-
-// MARK: - Standard validation -
-
-/**
-  The standard procedure. Evaluate host and certificate chain for successful trust.
- */
-class DefaultDirective: TrustDirective {
+/// Uses a closure passed to the object to perform a completely custom validation.
+class CustomDirective: AbstractDirective {
     
-    override init(withHostName host: String, validateServerTrust: Bool, validateHost: Bool) {
-        super.init(withHostName: host, validateServerTrust: validateServerTrust, validateHost: validateHost)
-    }
-    
-    override func validate(with trust: SecTrust) -> Bool {
-        return defaultValidation(withTrust: trust)
-    }
-    
-    fileprivate func defaultValidation(withTrust trust: SecTrust, skipValidation: Bool = false) -> Bool {
-        var isServerTrustValidationSuccessful = true
-        if !skipValidation {
-            let host: String? = validateHost ? hostName : nil
-            isServerTrustValidationSuccessful = TrustEvaluation.isValid(serverTrust: trust, hostName: host)
-        }
-        return isServerTrustValidationSuccessful
+    override func validate(trust: SecTrust) -> Bool {
+        guard let closure = settings.customValidation else { return false } // validation fails without
+        return closure(trust)
     }
 }
 
-
-// MARK: - Custom validation -
-
-/**
-  Using a closure to perform a customized validation.
- */
-class CustomDirective: DefaultDirective {
+/// The standard validation. Evaluate host and certificate chain for successful trust.
+class DefaultDirective: AbstractDirective {
     
-    var validationClosure: CustomValidationClosure
-
-    
-    init(withHostName host: String, customValidation: @escaping CustomValidationClosure) {
-        self.validationClosure = customValidation
-        
-        super.init(withHostName: host, validateServerTrust: false, validateHost: false)
+    override func validate(trust: SecTrust) -> Bool {
+        return defaultValidation(trust: trust)
     }
     
-    override func validate(with trust: SecTrust) -> Bool {
-        return customValidation(withTrust: trust)
-    }
-    
-    fileprivate func customValidation(withTrust trust: SecTrust) -> Bool {
-        return validationClosure(trust)
+    /// Triggers a standard X.509 validation check
+    func defaultValidation(trust: SecTrust) -> Bool {
+        return TrustEvaluation.isValid(serverTrust: trust, hostName: settings.sslValidateHostName ? hostName : nil)
     }
 }
 
-
-// MARK: - Certificate pinning -
-
-/**
-  Pin the server certifcate by comparing the local certificate(s) against the remote one(s).
- */
+/// Build upon `DefaultDirective` and pins the server certifcate
+/// by comparing the local certificate(s) against the remote one(s).
 class PinCertificateDirective: DefaultDirective {
     
-    var pinnedCertificateDatas: [Data]
+    var pinnedCertDatas: [Data]!
     
-    init(certificateBundle bundle: Bundle, hostName: String, validateServerTrust: Bool, validateHost: Bool) {
-        let certificates = TrustEvaluation.readDERCertificates(in: bundle)
-        pinnedCertificateDatas = TrustEvaluation.certificateData(from: certificates)
+    override init(hostName: String, settings: ValidationSettings) {
+        super.init(hostName: hostName, settings: settings)
         
-        super.init(withHostName: hostName, validateServerTrust: validateServerTrust, validateHost: validateHost)
+        let certificates = TrustEvaluation.readDERCertificates(in: settings.certificateBundle)
+        pinnedCertDatas = TrustEvaluation.certificateData(from: certificates)
     }
     
-    override func validate(with trust: SecTrust) -> Bool {
-        return certificatePinningValidation(withTrust: trust)
+    override func validate(trust: SecTrust) -> Bool {
+        if settings.certificatePinOnly  {
+            return verifyCertificate(trust: trust)
+        }
+        
+        if defaultValidation(trust: trust) {
+            return verifyCertificate(trust: trust)
+        }
+        
+        return false
     }
     
-    fileprivate func certificatePinningValidation(withTrust trust: SecTrust) -> Bool {
-        if defaultValidation(withTrust: trust, skipValidation: !validateServerTrust) {
-            let remoteCertificateDatas = TrustEvaluation.certificateData(from: trust)
-            for pinnedCertificateData in pinnedCertificateDatas {
-                for remoteCertificateData in remoteCertificateDatas {
-                    if (pinnedCertificateData as Data) == remoteCertificateData {
-                        return true
-                    }
+    func verifyCertificate(trust: SecTrust) -> Bool {
+        let remoteCertData = TrustEvaluation.certificateData(from: trust)
+        for pinnedData in pinnedCertDatas {
+            for remoteData in remoteCertData {
+                if (pinnedData as Data) == remoteData {
+                    return true
                 }
             }
         }
@@ -167,33 +104,35 @@ class PinCertificateDirective: DefaultDirective {
     }
 }
 
-
-// MARK: - Public key pinning -
-
-/**
-  Perform standard validation and check for matching public keys in certificate chain.
- */
+/// Build upon `DefaultDirective` and pins the server certifcate and performs
+/// standard validation and check for matching public keys in certificate chain.
 class PinPublicKeyDirective: DefaultDirective {
     
-    var pinnedPublicKeys: [SecKey]
+    var pinnedPublicKeys: [SecKey]!
 
-    init(certificateBundle bundle: Bundle, hostName: String, validateServerTrust: Bool, validateHost: Bool) {
-        pinnedPublicKeys = TrustEvaluation.publicKeysFromCertificates(in: bundle)
+    override init(hostName: String, settings: ValidationSettings) {
+        super.init(hostName: hostName, settings: settings)
         
-        super.init(withHostName: hostName, validateServerTrust: validateServerTrust, validateHost: validateHost)
+        pinnedPublicKeys = TrustEvaluation.publicKeysFromCertificates(in: settings.certificateBundle)
     }
-
-    override func validate(with trust: SecTrust) -> Bool {
-        return keyPinningValidation(withTrust: trust)
+    
+    override func validate(trust: SecTrust) -> Bool {
+        if settings.certificatePinOnly  {
+            return verifyCertificate(trust: trust)
+        }
+        
+        if defaultValidation(trust: trust) {
+            return verifyCertificate(trust: trust)
+        }
+        
+        return false
     }
-
-    fileprivate func keyPinningValidation(withTrust trust: SecTrust) -> Bool {
-        if defaultValidation(withTrust: trust, skipValidation: !validateServerTrust) {
-            for pinnedPublicKey in pinnedPublicKeys as [AnyObject] {
-                for remotePublicKey in TrustEvaluation.publicKeys(from: trust) as [AnyObject] {
-                    if pinnedPublicKey.isEqual(remotePublicKey) {
-                        return true
-                    }
+    
+    func verifyCertificate(trust: SecTrust) -> Bool {
+        for pinnedPublicKey in pinnedPublicKeys as [AnyObject] {
+            for remotePublicKey in TrustEvaluation.publicKeys(from: trust) as [AnyObject] {
+                if pinnedPublicKey.isEqual(remotePublicKey) {
+                    return true
                 }
             }
         }

@@ -16,24 +16,24 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-
 import XCTest
-@testable
-import GCXTrustPolicy
+@testable import GCXTrustPolicy
 
 class TrustDirectiveTests: XCTestCase {
-
     
     // MARK: - Variables -
+    
     var trust: SecTrust!
-    var isValid:Bool!
-    var testBundle = Bundle(for:TrustDirectiveTests.self)
+    var isValid: Bool!
+    var testBundle = Bundle(for: TrustDirectiveTests.self)
     var testHost = "grandcentrix.net"
-
-
+    var settings = ValidationSettings.defaultSettings
+    var directive: AbstractDirective!
+    
     // MARK: - Discarding of invalid certificates -
     
-    func test_validation_certificateLoadingFromTestBundle_invalidCertificatesSkipped() {
+    func test_certificateLoading_fromTestBundle_invalidCertificatesSkipped() {
+        
         let localCertificates = [
             "CA Disig Root R2",
             "CA Disig R2I2 Certification Service",
@@ -48,141 +48,155 @@ class TrustDirectiveTests: XCTestCase {
             "gcx-selfsigned-expired",
             "gcx-selfsigned-valid"]
         
-        let loadedCertificatesCount = localCertificates.map {
-            let fileURL = testBundle.url(forResource: $0 as String, withExtension: "cer")
-            XCTAssertNotNil(fileURL, "File URLs should be valid.")
-            }.count
+        let loadedCertificatesCount = localCertificates
+            .map {
+                let fileURL = testBundle.url(forResource: $0 as String, withExtension: "cer")
+                XCTAssertNotNil(fileURL, "File URLs should be valid.")
+            }
+            .count
+        
         let validLocalCertificatesCount = loadedCertificatesCount - 1 // randomGibberish.cer is expected as invalid
         let certificatesCount = TrustEvaluation.readDERCertificates(in: testBundle).count
         let hasEqualCount = certificatesCount == validLocalCertificatesCount
         
         XCTAssertTrue(hasEqualCount, "Certificate count should match the count of valid certificates.")
     }
-
     
     // MARK: - Disabled validation -
-    
-    func test_validation_disableValidation_successfulForAllTrusts() {
-        let validation = DisabledDirective(withHostName: testHost)
+
+    func test_disableValidation_forAllTrusts_successful() {
+        
+        directive = DisabledDirective(hostName: testHost, settings: ValidationSettings.defaultSettings)
         
         // true expectations
         trust = TestTrusts.validGCXTrustChain.trust
-        isValid = validation.validate(with: trust)
-        XCTAssertTrue(isValid, "Disabled validation should return with true.")
+        isValid = directive.validate(trust: trust)
+        XCTAssertTrue(isValid, "Disabled directive should return with true.")
         
         trust = TestTrusts.expiredGCXTrustChain.trust
-        isValid = validation.validate(with: trust)
-        XCTAssertTrue(isValid, "Disabled validation should return with true.")
+        isValid = directive.validate(trust: trust)
+        XCTAssertTrue(isValid, "Disabled directive should return with true.")
         
         trust = TestTrusts.validDisigTrustChain.trust
-        isValid = validation.validate(with: trust)
-        XCTAssertTrue(isValid, "Disabled validation should return with true.")
+        isValid = directive.validate(trust: trust)
+        XCTAssertTrue(isValid, "Disabled directive should return with true.")
         
         trust = TestTrusts.expiredDisigTrustChain.trust
-        isValid = validation.validate(with: trust)
-        XCTAssertTrue(isValid, "Disabled validation should return with true.")
+        isValid = directive.validate(trust: trust)
+        XCTAssertTrue(isValid, "Disabled directive should return with true.")
         
         trust = TestTrusts.expiredGCXSelfSigned.trust
-        isValid = validation.validate(with: trust)
-        XCTAssertTrue(isValid, "Disabled validation should return with true.")
+        isValid = directive.validate(trust: trust)
+        XCTAssertTrue(isValid, "Disabled directive should return with true.")
     }
     
-    
-    // MARK: - Standard validation -
-    
-    func test_validation_standardWithHostNameValidation_successfulForValidTrusts() {
+    // MARK: - Default validation -
+
+    func test_defaultDirective_withHostNameValidation_successfulForValidTrusts() {
         
-        let validation = DefaultDirective(withHostName: testHost, validateServerTrust: true, validateHost: true)
+        directive = DefaultDirective(hostName: testHost, settings: ValidationSettings.defaultSettings)
         
         // true expectations
         trust = TestTrusts.validGCXTrustChain.trust
-        isValid = validation.validate(with: trust)
+        isValid = directive.validate(trust: trust)
         XCTAssertTrue(isValid, "Should be valid for certificate chain.")
         
         trust = TestTrusts.validGCXWildcardOnly.trust
-        isValid = validation.validate(with: trust)
+        isValid = directive.validate(trust: trust)
         XCTAssertTrue(isValid, "Should be valid for leaf certificate.")
         
         // false expectations
         trust = TestTrusts.validGCXIntermediateAndRootOnly.trust
-        isValid = validation.validate(with: trust)
-        XCTAssertFalse(isValid, "Should be invalid for intermediate and anchor certificate with hostname validation.")
+        isValid = directive.validate(trust: trust)
+        XCTAssertFalse(isValid, "Should be invalid for intermediate and anchor certificate.")
         
         trust = TestTrusts.validGCXRootOnly.trust
-        isValid = validation.validate(with: trust)
-        XCTAssertFalse(isValid, "Should be invalid for anchor certificate with hostname validation.")
+        isValid = directive.validate(trust: trust)
+        XCTAssertFalse(isValid, "Should be invalid for anchor certificate.")
         
         trust = TestTrusts.expiredGCXSelfSigned.trust
-        isValid = validation.validate(with: trust)
+        isValid = directive.validate(trust: trust)
         XCTAssertFalse(isValid, "Should be invalid.")
         
         trust = TestTrusts.validGCXSelfSigned.trust
-        isValid = validation.validate(with: trust)
+        isValid = directive.validate(trust: trust)
         XCTAssertFalse(isValid, "Should be invalid.")
     }
     
-    func test_validation_standardNoHostNameValidation_successfulForValidTrusts() {
-    
-        let validation = DefaultDirective(withHostName: testHost, validateServerTrust: true, validateHost: false)
+    func test_defaultDirective_noHostNameValidation_successfulForValidTrusts() {
+        let settings = ValidationSettings.defaultSettings
+        settings.sslValidateHostName = false
+        directive = DefaultDirective(hostName: testHost, settings: settings)
         
         // true expectations
         trust = TestTrusts.validGCXTrustChain.trust
-        isValid = validation.validate(with: trust)
+        isValid = directive.validate(trust: trust)
         XCTAssertTrue(isValid, "Should be valid for certificate chain.")
         
         trust = TestTrusts.validGCXWildcardOnly.trust
-        isValid = validation.validate(with: trust)
+        isValid = directive.validate(trust: trust)
         XCTAssertTrue(isValid, "Should be valid for leaf certificate.")
         
-        trust = TestTrusts.validGCXWildcardOnly.trust
-        isValid = validation.validate(with: trust)
-        XCTAssertTrue(isValid, "Should be valid for stripped down chain.")
+        trust = TestTrusts.validGCXIntermediateAndRootOnly.trust
+        isValid = directive.validate(trust: trust)
+        XCTAssertTrue(isValid, "Should be invalid for intermediate and anchor certificate.")
         
         trust = TestTrusts.validGCXRootOnly.trust
-        isValid = validation.validate(with: trust)
+        isValid = directive.validate(trust: trust)
         XCTAssertTrue(isValid, "Should be valid for anchor certificate.")
-        
-        
-        
-// TODO: that should work
+
         // false expectations
         trust = TestTrusts.validGCXSelfSigned.trust
-        isValid = validation.validate(with: trust)
+        isValid = directive.validate(trust: trust)
         XCTAssertFalse(isValid, "Should be invalid.")
         
         trust = TestTrusts.expiredGCXSelfSigned.trust
-        isValid = validation.validate(with: trust)
+        isValid = directive.validate(trust: trust)
         XCTAssertFalse(isValid, "Should be invalid.")
     }
     
-
     // MARK: - Custom validation -
     
-    func test_validation_customValidation_successfulDependingOnReturnValue() {
-        var closure: CustomValidationClosure!
-        var validation: CustomDirective!
-            
+    func test_customValidation_correct_dependingOnClosureReturn() {
+
         // true expectations
-        closure = { trust -> Bool in
-            // do some custom validation based on the given trust
+        settings.customValidation = { trust -> Bool in
             return true
         }
-        validation = CustomDirective(withHostName: testHost, customValidation: closure)
+        directive = CustomDirective(hostName: testHost, settings: settings)
         
         trust = TestTrusts.validGCXTrustChain.trust
-        isValid = validation.validate(with: trust)
-        XCTAssertTrue(isValid, "Custom validation should return with true.")
+        isValid = directive.validate(trust: trust)
+        XCTAssertTrue(isValid, "Custom directive should return with true.")
         
         
         // false expectations
-        closure = { trust -> Bool in
-            // do some custom validation based on the given trust
+        settings.customValidation = { trust -> Bool in
             return false
         }
-        validation = CustomDirective(withHostName: testHost, customValidation: closure)
+        directive = CustomDirective(hostName: testHost, settings: settings)
         
         trust = TestTrusts.validGCXTrustChain.trust
-        isValid = validation.validate(with: trust)
-        XCTAssertFalse(isValid, "Custom validation should return with false.")
+        isValid = directive.validate(trust: trust)
+        XCTAssertFalse(isValid, "Custom directive should return with false.")
+    }
+    
+    func test_customValidation_missingValidationClosure_validationFails() {
+        
+        directive = CustomDirective(hostName: testHost, settings: settings)
+        
+        trust = TestTrusts.validGCXTrustChain.trust
+        isValid = directive.validate(trust: trust)
+        XCTAssertFalse(isValid, "Validate on a custom directive with missing closure must return false.")
+    }
+    
+    // MARK: - Abstract directive -
+    
+    func test_abstractDirective_forAllTrusts_notSuccessful() {
+        
+        directive = AbstractDirective(hostName: testHost, settings: ValidationSettings.defaultSettings)
+        trust = TestTrusts.validGCXTrustChain.trust
+        isValid = directive.validate(trust: trust)
+        XCTAssertFalse(isValid, "Abstract directive should return with false.")
     }
 }

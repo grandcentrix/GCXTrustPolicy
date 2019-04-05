@@ -16,14 +16,10 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-
 import XCTest
-
-@testable
-import GCXTrustPolicy
+@testable import GCXTrustPolicy
 
 class TrustDirectivePinPublicKeyTests: XCTestCase {
-    
     
     // MARK: - Variables -
     
@@ -32,108 +28,128 @@ class TrustDirectivePinPublicKeyTests: XCTestCase {
     var trust: SecTrust!
     var publicKeys: [SecKey]!
     var testHost: String!
-    let dummyBundle = Bundle(for:TrustDirectivePinPublicKeyTests.self)
+    let dummyBundle = Bundle(for: TrustDirectivePinPublicKeyTests.self)
+    var settings: ValidationSettings!
     
+    // MARK: - Setup -
+    
+    override func setUp() {
+        super.setUp()
+        
+        settings = ValidationSettings.defaultSettings
+        settings.certificateBundle = dummyBundle
+    }
+    
+    // MARK: - Invalid trust chain tests -
+    
+    func test_regardlessAllSettings_notMatchinPublicKeys_assumedInvalid () {
+
+        settings.certificatePinOnly = true
+        
+        trust = TestTrusts.validGCXRootOnly.trust
+        testHost = "testssl-revoked-r2i2.disig.sk"
+        
+        publicKeys = [TrustEvaluation.publicKey(from: TestCertificates.gcxLeafWildcard)!]
+        directive = PinPublicKeyDirective(hostName: testHost, settings: settings)
+        directive.pinnedPublicKeys = publicKeys
+        isValid = directive.validate(trust: trust)
+        XCTAssertFalse(isValid, "Validation should should not succeed.")
+    }
     
     // MARK: - Valid trust chain tests -
     
-    func test_validCertificatePinnedKey_validTrustChain_gotApproved () {
+    func test_defaultSettings_validTrustChain_assumedValid () {
         
         // wildcard *.grandcentrix leaf certifcate incl. complete chain
         trust = TestTrusts.validGCXTrustChain.trust
         testHost = "grandcentrix.net"
         
         publicKeys = [TrustEvaluation.publicKey(from: TestCertificates.gcxLeafWildcard)!]
-        directive = PinPublicKeyDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: true)
+        directive = PinPublicKeyDirective(hostName: testHost, settings: settings)
         directive.pinnedPublicKeys = publicKeys
-        isValid = directive.validate(with: trust)
+        isValid = directive.validate(trust: trust)
         XCTAssertTrue(isValid, "Validation should succeed.")
         
         publicKeys = [TrustEvaluation.publicKey(from: TestCertificates.gcxIntermediateCA)!]
-        directive = PinPublicKeyDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: true)
+        directive = PinPublicKeyDirective(hostName: testHost, settings: settings)
         directive.pinnedPublicKeys = publicKeys
-        isValid = directive.validate(with: trust)
+        isValid = directive.validate(trust: trust)
         XCTAssertTrue(isValid, "Validation should succeed.")
         
         publicKeys = [TrustEvaluation.publicKey(from: TestCertificates.gcxRootCA)!]
-        directive = PinPublicKeyDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: true)
+        directive = PinPublicKeyDirective(hostName: testHost, settings: settings)
         directive.pinnedPublicKeys = publicKeys
-        isValid = directive.validate(with: trust)
+        isValid = directive.validate(trust: trust)
+        XCTAssertTrue(isValid, "Validation should succeed.")
+
+        // disig leaf certifcate incl. complete chain
+        trust = TestTrusts.validDisigTrustChain.trust
+        testHost =  "testssl-valid-r2i2.disig.sk"
+        
+        publicKeys = [TrustEvaluation.publicKey(from: TestCertificates.disigLeafValid)!]
+        directive = PinPublicKeyDirective(hostName: testHost, settings: settings)
+        directive.pinnedPublicKeys = publicKeys
+        isValid = directive.validate(trust: trust)
         XCTAssertTrue(isValid, "Validation should succeed.")
         
+        publicKeys = [TrustEvaluation.publicKey(from: TestCertificates.disigIntermediateCA)!]
+        directive = PinPublicKeyDirective(hostName: testHost, settings: settings)
+        directive.pinnedPublicKeys = publicKeys
+        isValid = directive.validate(trust: trust)
+        XCTAssertTrue(isValid, "Validation should succeed.")
         
-/*
- Note: The valid Disig Test certificate has been expired in 11/2016 and has not been renewed yet.
- Now the tests fail (which is correct) but for a clear understanding of the testing setup we uncomment them for now.
- */
-        
-//        // disig leaf certifcate incl. complete chain
-//        trust = TestTrusts.validDisigTrustChain.trust
-//        testHost =  "testssl-valid-r2i2.disig.sk"
-//        
-//        publicKeys = [TrustEvaluation.publicKey(from: TestCertificates.disigLeafValid)!]
-//        directive = PinPublicKeyDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: true)
-//        directive.pinnedPublicKeys = publicKeys
-//        isValid = directive.validate(with: trust)
-//        XCTAssertTrue(isValid, "Validation should succeed.")
-//        
-//        publicKeys = [TrustEvaluation.publicKey(from: TestCertificates.disigIntermediateCA)!]
-//        directive = PinPublicKeyDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: true)
-//        directive.pinnedPublicKeys = publicKeys
-//        isValid = directive.validate(with: trust)
-//        XCTAssertTrue(isValid, "Validation should succeed.")
-//        
-//        publicKeys = [TrustEvaluation.publicKey(from: TestCertificates.disigRootCA)!]
-//        directive = PinPublicKeyDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: true)
-//        directive.pinnedPublicKeys = publicKeys
-//        isValid = directive.validate(with: trust)
-//        XCTAssertTrue(isValid, "Validation should succeed.")
+        publicKeys = [TrustEvaluation.publicKey(from: TestCertificates.disigRootCA)!]
+        directive = PinPublicKeyDirective(hostName: testHost, settings: settings)
+        directive.pinnedPublicKeys = publicKeys
+        isValid = directive.validate(trust: trust)
+        XCTAssertTrue(isValid, "Validation should succeed.")
     }
 
-    
     // MARK: - Expired trust chain tests -
     
-    func test_expiredCertificatePinnedKey_expiredTrustChain_gotApproved () {
+    func test_defaultSettings_expiredTrustChain_assumedInvalid () {
         
         // securepush leaf certifcate incl. complete chain
         trust = TestTrusts.expiredGCXTrustChain.trust
         testHost = "api.securepush.de"
         
         publicKeys = [TrustEvaluation.publicKey(from: TestCertificates.gcxLeafWildcardExpired)!]
-        directive = PinPublicKeyDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: true)
+        directive = PinPublicKeyDirective(hostName: testHost, settings: settings)
         directive.pinnedPublicKeys = publicKeys
-        isValid = directive.validate(with: trust)
+        isValid = directive.validate(trust: trust)
         XCTAssertFalse(isValid, "Validation should not succeed.")
         
         publicKeys = [TrustEvaluation.publicKey(from: TestCertificates.gcxLeafWildcardExpired)!]
-        directive = PinPublicKeyDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: true)
+        directive = PinPublicKeyDirective(hostName: testHost, settings: settings)
         directive.pinnedPublicKeys = publicKeys
-        isValid = directive.validate(with: trust)
+        isValid = directive.validate(trust: trust)
         XCTAssertFalse(isValid, "Validation should not succeed.")
         
         publicKeys = [TrustEvaluation.publicKey(from: TestCertificates.gcxIntermediateCA)!]
-        directive = PinPublicKeyDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: true)
+        directive = PinPublicKeyDirective(hostName: testHost, settings: settings)
         directive.pinnedPublicKeys = publicKeys
-        isValid = directive.validate(with: trust)
+        isValid = directive.validate(trust: trust)
         XCTAssertFalse(isValid, "Validation should not succeed.")
         
         publicKeys = [TrustEvaluation.publicKey(from: TestCertificates.gcxRootCA)!]
-        directive = PinPublicKeyDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: true)
+        directive = PinPublicKeyDirective(hostName: testHost, settings: settings)
         directive.pinnedPublicKeys = publicKeys
-        isValid = directive.validate(with: trust)
+        isValid = directive.validate(trust: trust)
         XCTAssertFalse(isValid, "Validation should not succeed.")
     }
     
-    func test_expiredCertificatePinnedKey_expiredTrustChain_gotRejected () {
+    func test_disabledSSLCheck_expiredTrustChain_assumedValid () {
+        
+        settings.certificatePinOnly = true
         
         // securepush leaf certifcate incl. complete chain
         trust = TestTrusts.expiredGCXTrustChain.trust
         testHost = "api.securepush.de"
         
         publicKeys = [TrustEvaluation.publicKey(from: TestCertificates.gcxLeafWildcardExpired)!]
-        directive = PinPublicKeyDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: false, validateHost: true)
+        directive = PinPublicKeyDirective(hostName: testHost, settings: settings)
         directive.pinnedPublicKeys = publicKeys
-        isValid = directive.validate(with: trust)
+        isValid = directive.validate(trust: trust)
         XCTAssertTrue(isValid, "Validation should only succeed on disabled X.509 standard checks.")
         
         // disig expired leaf certifcate incl. complete chain
@@ -141,38 +157,39 @@ class TrustDirectivePinPublicKeyTests: XCTestCase {
         testHost = "testssl-expire-r2i2.disig.sk"
 
         publicKeys = [TrustEvaluation.publicKey(from: TestCertificates.disigLeafExpired)!]
-        directive = PinPublicKeyDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: false, validateHost: false)
+        directive = PinPublicKeyDirective(hostName: testHost, settings: settings)
         directive.pinnedPublicKeys = publicKeys
-        isValid = directive.validate(with: trust)
+        isValid = directive.validate(trust: trust)
         XCTAssertTrue(isValid, "Validation should only succeed on disabled X.509 standard checks.")
     }
-
     
     // MARK: - Revoked trust chain tests -
     
-    func test_revokedCertificatePinnedKey_revokedTrustChain_gotRejected () {
+    func test_defaultSettings_revokedTrustChain_assumedInvalid () {
         
         // disig revoked leaf certifcate incl. complete chain
         trust = TestTrusts.revokedDisigTrustChain.trust
-        testHost =  "testssl-revoked-r2i2.disig.sk"
+        testHost = "testssl-revoked-r2i2.disig.sk"
         
         publicKeys = [TrustEvaluation.publicKey(from: TestCertificates.disigLeafRevoked)!]
-        directive = PinPublicKeyDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: true, validateHost: true)
+        directive = PinPublicKeyDirective(hostName: testHost, settings: settings)
         directive.pinnedPublicKeys = publicKeys
-        isValid = directive.validate(with: trust)
+        isValid = directive.validate(trust: trust)
         XCTAssertFalse(isValid, "Validation should not succeed.")
     }
     
-    func test_revokedCertificatePinnedKey_revokedTrustChainWithoutValidation_gotApproved () {
+    func test_disabledSSLCheck_revokedTrustChainWithoutValidation_assumedValid () {
+        
+        settings.certificatePinOnly = true
         
         // disig revoked leaf certifcate incl. complete chain
         trust = TestTrusts.revokedDisigTrustChain.trust
         testHost =  "testssl-revoked-r2i2.disig.sk"
         
         publicKeys = [TrustEvaluation.publicKey(from: TestCertificates.disigLeafRevoked)!]
-        directive = PinPublicKeyDirective(certificateBundle: dummyBundle, hostName: testHost, validateServerTrust: false, validateHost: false)
+        directive = PinPublicKeyDirective(hostName: testHost, settings: settings)
         directive.pinnedPublicKeys = publicKeys
-        isValid = directive.validate(with: trust)
+        isValid = directive.validate(trust: trust)
         XCTAssertTrue(isValid, "Validation should only succeed on disabled X.509 standard checks.")
     }
 }

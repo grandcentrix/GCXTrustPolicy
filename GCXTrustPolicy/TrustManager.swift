@@ -19,100 +19,87 @@
 import Foundation
 
 @objc(GCXTrustManager)
+/// Class managing trust policies
 open class TrustManager: NSObject {
+    
+    /// Shared instance to the `TrustManager` object to use
+    /// this class as Singleton.
+    @objc public static let shared = TrustManager()
+    
+    /// Trust policies to manage
+    private var _policies: [String: TrustPolicy] = [:]
+}
 
+/// TrustManaging protocol implementation
+@objc extension TrustManager: TrustManaging {
     
-    /// trust policies by hostname
-    private var policies: [String: TrustPolicy] = [:]
-    
-
-    /**
-      A shared instance to use from e.g. NSURLSession or NSURLConnection.
-      Will call the default initializer -init().
-     */
-    @objc open static let sharedInstance = TrustManager()
-    
-    /**
-      Convenience initializer for trust policies per host.
-      This offers the opportunity to apply different trust
-      evaluation policies on a per-host basis.
-      e.g. host 1 uses certificate pinning, host 2 simple 
-      host validation and host 3 uses public key pinning.
-     
-      - parameter trustPolicies: an Array containing TrustPolicy conforming objects
-     
-      - returns: the instance
-     */
-    @objc public convenience init (trustPolicies: [TrustPolicy]) {
-        self.init()
-        
-        add(policies: trustPolicies)
+    open var policies: [String : TrustPolicy] {
+        get { return _policies }
+        set { _policies = newValue }
     }
     
-    
-    /**
-      Retrieve the matching policy per host.
-     
-      - parameter hostName: the name of the host
-     
-      - returns: a TrustPolicy conforming object
-     */
-    @objc open func policy(forHost hostName: String) -> TrustPolicy? {
-        return policies[hostName]
-    }
-    
-
-    /** 
-      Retrieve all registered host names.
-     
-      - returns: an array of string
-     */
-    @objc open func allHostNames() -> [String] {
-        return Array(policies.keys)
-    }
-    
-    
-    /**
-        Retrieve all registered TrustPolicy objects.
-     
-        - returns: array of TrustPolicy conforming objects
-     */
-    @objc open func allPolicies() -> [TrustPolicy] {
+    open var allPolicies: [TrustPolicy] {
         return Array(policies.values)
     }
     
-    
-    /**
-      Add a new TrustPolicy object.
-      Key is the TrustPolicy`s 'hostName' property.
-     
-      - parameter policy: a TrustPolicy conforming object
-     */
-    @objc open func add(policy trustPolicy: TrustPolicy) {
-        policies[trustPolicy.hostName] = trustPolicy
+    open var allNames: [String] {
+        return Array(policies.keys)
     }
     
+    open func create(type: ValidationType, hostName: String, settings: ValidationSettings? = nil) -> TrustPolicy {
+        let settings = settings ?? ValidationSettings.defaultSettings
+
+        switch type {
+        case .disabled:
+            return DisabledDirective(hostName: hostName, settings: settings)
+            
+        case .standard:
+            return DefaultDirective(hostName: hostName, settings: settings)
+            
+        case .custom:
+            return CustomDirective(hostName: hostName, settings: settings)
+            
+        case .pinCertificate:
+            return PinCertificateDirective(hostName: hostName, settings: settings)
+            
+        case .pinPublicKey:
+            return PinPublicKeyDirective(hostName: hostName, settings: settings)
+        }
+    }
     
-    /**
-      Convenience function to add a batch of TrustPolicy objects.
-      Key is the TrustPolicy`s 'hostName' property.
-     
-      - parameter policies: a TrustPolicy conforming object
-     */
-    @objc open func add(policies trustPolicies: [TrustPolicy]) {
-        for item in trustPolicies {
+    open func policy(for name: String) -> TrustPolicy? {
+        return policies[name]
+    }
+    
+    open func add(policy: TrustPolicy) {
+        policies[policy.hostName] = policy
+    }
+    
+    open func add(policies: [TrustPolicy]) {
+        for item in policies {
             add(policy: item)
         }
     }
     
-    
-    /**
-      Remove a TrustPolicy object by it`s key.
-      Key is the TrustPolicy`s 'hostName' property
-     
-     - parameter hostName: a host name
-     */
-    @objc open func removePolicy(for hostName: String) {
-        policies.removeValue(forKey: hostName)
+    @discardableResult
+    open func removePolicy(name: String) -> TrustPolicy? {
+        return policies.removeValue(forKey: name)
     }
+}
+
+@objc(GCXValidationSettings)
+open class ValidationSettings: NSObject, ValidationCustomizable {
+
+    /// Convenience settings that contain an object with default values.
+    @objc public static var defaultSettings: ValidationSettings {
+        return ValidationSettings()
+    }
+
+    open var sslValidateHostName: Bool = true
+    
+    open var certificateBundle: Bundle = Bundle.main
+    
+    open var certificatePinOnly: Bool = false
+    
+    open var customValidation: CustomValidationClosure? = nil
 }
