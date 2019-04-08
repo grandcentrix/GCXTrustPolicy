@@ -45,11 +45,6 @@ pod 'GCXTrustPolicy'
 
 ```
 
-#### Cocoa Pods
-
-Coming Soon!  
-
-
 #### Manual
 
 - Start a new XCode Workspace.
