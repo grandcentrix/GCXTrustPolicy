@@ -1,5 +1,5 @@
 # GCXTrustPolicy
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) ![Release](https://img.shields.io/github/release/grandcentrix/GCXTrustPolicy.svg) [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) ![Release](https://img.shields.io/github/release/grandcentrix/GCXTrustPolicy.svg) [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)  [![Cocoapods compatible](https://img.shields.io/cocoapods/v/RxGCXMulticastDNSKit.svg)](https://cocoapods.org/)
 
 
 SSL-pinning and trust validation framework for iOS.  💻  <- 👮 -> ☁️
@@ -36,6 +36,14 @@ We will give our best trying to help you out. 🙂
 github "grandcentrix/GCXTrustPolicy"
 ```
 
+### Cocoapods
+
+```ruby
+use_frameworks!
+
+pod 'GCXTrustPolicy'
+
+```
 
 #### Cocoa Pods
 
@@ -69,7 +77,7 @@ Coming Soon!
 ```swift
 // create a policy for the host:
 let policy = trustManager.create(type: .pinPublicKey, hostName: "pinnedHost.com")
-    
+
 // >>> perform URL request to remot host <<<
 
 // In URLSessionDelegate or NSURLConnectionDelegate callbacks retrieve the remote trust on authentication challenge:
@@ -80,11 +88,11 @@ let isTrusted = pinningPolicy.validate(trust: serverTrust)
 
 // Reject connection to suspicious servers
 if isTrusted {
-  // Success! Server trust has been established.
+// Success! Server trust has been established.
 } else {
-  // Fail! Non-trustable server!
+// Fail! Non-trustable server!
 }
-    
+
 ```
 
 #### Validation types
@@ -158,7 +166,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -168,3 +176,4 @@ limitations under the License.
 ```
 
 <br />
+
